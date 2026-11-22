@@ -45,8 +45,7 @@ class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingOb
   void didUpdateWidget(covariant BuytivaLordicon oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.assetPath != widget.assetPath) {
-      _controller.removeStatusListener(_handleControllerStatus);
-      _controller.clearStatusListeners();
+      _disposeController(_controller);
       _controller = _createController(widget.assetPath);
       _controller.addStatusListener(_handleControllerStatus);
       setState(() => _ready = false);
@@ -76,10 +75,15 @@ class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingOb
 
   @override
   void dispose() {
-    _controller.removeStatusListener(_handleControllerStatus);
-    _controller.clearStatusListeners();
+    _disposeController(_controller);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _disposeController(IconController controller) {
+    controller.removeStatusListener(_handleControllerStatus);
+    controller.clearStatusListeners();
+    controller.dispose();
   }
 
   @override
@@ -92,13 +96,30 @@ class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingOb
     );
   }
 
+  Widget get _fallbackIcon {
+    if (widget.staticFallback != null) return widget.staticFallback!;
+    final icon = switch (widget.assetPath.split('/').last) {
+      'cart.json' => Icons.shopping_basket_outlined,
+      'location.json' => Icons.location_on_outlined,
+      'check.json' => Icons.check_circle_outline,
+      'warning.json' => Icons.warning_amber_outlined,
+      'spinner.json' => Icons.refresh,
+      'theme.json' => Icons.brightness_6_outlined,
+      'person_exit.json' => Icons.logout,
+      'home.json' => Icons.home_outlined,
+      'search.json' => Icons.search,
+      _ => Icons.auto_awesome_outlined,
+    };
+    return Icon(icon, size: 28);
+  }
+
   Widget _buildFallback() => Semantics(
         image: true,
         label: widget.label,
         child: SizedBox(
           width: widget.width,
           height: widget.height,
-          child: Center(child: widget.staticFallback ?? const SizedBox.shrink()),
+          child: Center(child: _fallbackIcon),
         ),
       );
 }

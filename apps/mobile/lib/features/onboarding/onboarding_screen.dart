@@ -179,7 +179,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                             height: 52,
                             playOnLoad: true,
                             playKey: index == _index ? _index + 1 : 0,
-                            staticFallback: const SizedBox.shrink(),
+                            staticFallback: const Icon(Icons.shopping_basket_outlined, size: 28),
                           ),
                         ),
                       ],

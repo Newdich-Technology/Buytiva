@@ -4,6 +4,6 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit({ adapter: adapter() })],
-	server: { host: '0.0.0.0', allowedHosts: true },
-	preview: { host: '0.0.0.0', allowedHosts: true }
+	server: { host: process.env.BUYTIVA_WEB_DEV_HOST ?? 'localhost' },
+	preview: { host: process.env.BUYTIVA_WEB_PREVIEW_HOST ?? 'localhost' }
 });

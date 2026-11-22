@@ -1,16 +1,108 @@
 {
   "creator": "Oluwayemi Oyinlola",
-  "delivery": "official Lordicon CDN via IconController.network; local exports may replace these after licensed download",
+  "delivery": "official Lordicon CDN through IconController.network; static semantic fallback is used if unavailable",
   "attribution": "Animated icons by Lordicon.com",
   "icons": [
-    { "name": "cart", "source": "https://lordicon.com/icons/system/solid/146-cart", "cdn": "https://cdn.lordicon.com/system-solid-146-cart.json", "license": "free", "screens": ["onboarding.list", "home"], "state": "hover-pinch" },
-    { "name": "check", "source": "https://lordicon.com/icons/system/outline/37-check", "cdn": "https://cdn.lordicon.com/system-outline-37-check.json", "license": "free", "screens": ["onboarding.complete", "home"], "state": "in-reveal" },
-    { "name": "directions", "source": "https://lordicon.com/icons/system/solid/220-arrows-right-left", "cdn": "https://cdn.lordicon.com/system-solid-220-arrows-right-left.json", "license": "free", "screens": ["shared.actions"], "state": "hover-slide" },
-    { "name": "home", "source": "https://lordicon.com/icons/system/solid/63-home", "cdn": "https://cdn.lordicon.com/system-solid-63-home.json", "license": "free", "screens": ["shared.account"], "state": "hover-pinch" },
-    { "name": "location",  "source": "https://lordicon.com/icons/system/solid/18-location-pin", "cdn": "https://cdn.lordicon.com/system-solid-18-location-pin.json", "license": "free", "screens": ["onboarding.match"], "state": "hover-pinch" },
-    { "name": "spinner", "source": "https://lordicon.com/icons/system/outline/4029-spinner-dashes", "cdn": "https://cdn.lordicon.com/laducuyh.json", "license": "free", "screens": ["admin.staff.refresh"], "state": "loop-cycle" },
-    { "name": "theme", "source": "https://lordicon.com/icons/system/solid/237-star", "cdn": "https://cdn.lordicon.com/system-solid-237-star.json", "license": "free", "screens": ["home.theme"], "state": "hover-pinch" },
-    { "name": "person-exit", "source": "https://lordicon.com/icons/system/solid/1725-person-exit", "cdn": "https://cdn.lordicon.com/system-solid-1725-person-exit.json", "license": "free", "screens": ["home.sign-out"], "state": "hover-pinch" },
-    { "name": "warning",  "source": "https://lordicon.com/icons/system/outline/260-warning-circle", "cdn": "https://cdn.lordicon.com/system-outline-260-warning-circle.json", "license": "free", "screens": ["security.revoke"], "state": "hover-pinch" }
+    {
+      "name": "cart",
+      "source": "https://lordicon.com/icons/system/solid/146-cart",
+      "license": "free",
+      "screens": [
+        "onboarding.list",
+        "home"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-solid-146-cart.json"
+    },
+    {
+      "name": "check",
+      "source": "https://lordicon.com/icons/system/outline/37-check",
+      "license": "free",
+      "screens": [
+        "onboarding.complete",
+        "home"
+      ],
+      "state": "in-reveal",
+      "asset_url": "https://cdn.lordicon.com/system-outline-37-check.json"
+    },
+    {
+      "name": "directions",
+      "source": "https://lordicon.com/icons/system/solid/220-arrows-right-left",
+      "license": "free",
+      "screens": [
+        "shared.actions"
+      ],
+      "state": "hover-slide",
+      "asset_url": "https://cdn.lordicon.com/system-solid-220-arrows-right-left.json"
+    },
+    {
+      "name": "home",
+      "source": "https://lordicon.com/icons/system/solid/63-home",
+      "license": "free",
+      "screens": [
+        "shared.account"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-solid-63-home.json"
+    },
+    {
+      "name": "location",
+      "source": "https://lordicon.com/icons/system/solid/18-location-pin",
+      "license": "free",
+      "screens": [
+        "onboarding.match"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-solid-18-location-pin.json"
+    },
+    {
+      "name": "spinner",
+      "source": "https://lordicon.com/icons/system/outline/4029-spinner-dashes",
+      "license": "free",
+      "screens": [
+        "admin.staff.refresh"
+      ],
+      "state": "loop-cycle",
+      "asset_url": "https://cdn.lordicon.com/laducuyh.json"
+    },
+    {
+      "name": "theme",
+      "source": "https://lordicon.com/icons/system/solid/237-star",
+      "license": "free",
+      "screens": [
+        "home.theme"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-solid-237-star.json"
+    },
+    {
+      "name": "person-exit",
+      "source": "https://lordicon.com/icons/system/solid/1725-person-exit",
+      "license": "free",
+      "screens": [
+        "home.sign-out"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-solid-1725-person-exit.json"
+    },
+    {
+      "name": "warning",
+      "source": "https://lordicon.com/icons/system/outline/260-warning-circle",
+      "license": "free",
+      "screens": [
+        "security.revoke"
+      ],
+      "state": "hover-pinch",
+      "asset_url": "https://cdn.lordicon.com/system-outline-260-warning-circle.json"
+    },
+    {
+      "name": "theme",
+      "source": "https://lordicon.com/icons/system/solid/804-sun",
+      "license": "free",
+      "screens": [
+        "shared.theme"
+      ],
+      "state": "morph-moon"
+    }
   ]
 }

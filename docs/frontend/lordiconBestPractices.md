@@ -18,8 +18,8 @@ Reviewed the complete Lordicon best-practices page on 2026-11-22:
 
 ## Sources and delivery
 
-The web registry is `apps/web/src/lib/constants/lordiconRegistry.ts` and uses official Lordicon CDN Lottie sources. Flutter uses the same source registry in `apps/mobile/lib/core/design_system/lordicon_sources.dart` through `IconController.network`, with static fallback behavior when motion is reduced or the network asset is unavailable.
+The web registry is `apps/web/src/lib/constants/lordiconRegistry.ts` and uses official Lordicon CDN Lottie sources. Flutter uses the same icon selection in `apps/mobile/lib/core/design_system/lordicon_sources.dart` through `IconController.network`, with visible static fallback behavior when motion is reduced or an asset cannot load.
 
-The active icon set is recorded with source pages and free-plan metadata in the registry. Attribution is retained in the large web footer as “Animated icons by Lordicon.com.” Pro-only assets are not used.
+The active icon set is recorded with source pages and license metadata in the web and mobile registries. Attribution is retained in the large web footer as “Animated icons by Lordicon.com.”
 
 The existing original Buytiva illustrations remain Buytiva-owned artwork. They are animated with restrained SVG/CSS motion and are not represented as Lordicon assets.

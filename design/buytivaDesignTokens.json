@@ -1,0 +1,392 @@
+{
+  "$schema": "Buytiva UI Tokens v1 - custom semantic mapping, proposed design baseline",
+  "brand": {
+    "name": "Buytiva",
+    "operator": "Newdich",
+    "direction": "bright editorial, joyful, confident, professional for financial screens"
+  },
+  "primitives": {
+    "blue": {
+      "50": "#EFF4FF",
+      "100": "#DCE7FF",
+      "300": "#92BAFF",
+      "500": "#3475FF",
+      "600": "#2457E7",
+      "700": "#1C45B5"
+    },
+    "navy": {
+      "950": "#0D1429",
+      "900": "#111D38",
+      "800": "#1A2A48"
+    },
+    "coral": {
+      "100": "#FFE3DD",
+      "400": "#FF8A7A",
+      "500": "#FF675B"
+    },
+    "orange": {
+      "100": "#FFF0D8",
+      "400": "#FFBD66",
+      "500": "#FF9E42"
+    },
+    "lime": {
+      "100": "#F0FFD4",
+      "400": "#B5EB5A"
+    },
+    "lilac": {
+      "100": "#EEE7FF",
+      "400": "#B399FF"
+    },
+    "cream": {
+      "50": "#FFFCF6",
+      "100": "#FFF5E9"
+    },
+    "white": "#FFFFFF",
+    "black": "#0A1020",
+    "neon_pink": {
+      "100": "#37021a",
+      "200": "#6e0434",
+      "300": "#a5064e",
+      "400": "#dc0868",
+      "500": "#f72585",
+      "600": "#f9529d",
+      "700": "#fa7db5",
+      "800": "#fca8ce",
+      "900": "#fdd4e6"
+    },
+    "raspberry_plum": {
+      "100": "#24051f",
+      "200": "#48093f",
+      "300": "#6c0e5e",
+      "400": "#90137e",
+      "500": "#b5179e",
+      "600": "#e326c7",
+      "700": "#ea5dd5",
+      "800": "#f193e3",
+      "900": "#f8c9f1"
+    },
+    "indigo_bloom": {
+      "100": "#170225",
+      "200": "#2e034a",
+      "300": "#45056f",
+      "400": "#5c0794",
+      "500": "#7209b7",
+      "600": "#980df4",
+      "700": "#b14af6",
+      "800": "#cb86f9",
+      "900": "#e5c3fc"
+    },
+    "ultrasonic_blue": {
+      "100": "#110223",
+      "200": "#230445",
+      "300": "#340768",
+      "400": "#45098a",
+      "500": "#560bad",
+      "600": "#750fea",
+      "700": "#9747f3",
+      "800": "#ba84f7",
+      "900": "#dcc2fb"
+    },
+    "true_azure": {
+      "100": "#0e0221",
+      "200": "#1c0543",
+      "300": "#2b0764",
+      "400": "#390986",
+      "500": "#480ca8",
+      "600": "#6210e5",
+      "700": "#8745f2",
+      "800": "#af83f6",
+      "900": "#d7c1fb"
+    },
+    "vivid_royal": {
+      "100": "#0b0220",
+      "200": "#170541",
+      "300": "#220761",
+      "400": "#2e0a81",
+      "500": "#3a0ca3",
+      "600": "#4f11e0",
+      "700": "#7743f1",
+      "800": "#a582f6",
+      "900": "#d2c0fa"
+    },
+    "bright_indigo": {
+      "100": "#0c0b28",
+      "200": "#191650",
+      "300": "#252178",
+      "400": "#322ca0",
+      "500": "#3f37c9",
+      "600": "#655fd3",
+      "700": "#8b87de",
+      "800": "#b2afe9",
+      "900": "#d8d7f4"
+    },
+    "electric_sapphire": {
+      "100": "#050f38",
+      "200": "#0a1d70",
+      "300": "#102ca8",
+      "400": "#153ae0",
+      "500": "#4361ee",
+      "600": "#6a83f1",
+      "700": "#8fa2f5",
+      "800": "#b4c1f8",
+      "900": "#dae0fc"
+    },
+    "blue_energy": {
+      "100": "#051d39",
+      "200": "#0a3b72",
+      "300": "#0f58ac",
+      "400": "#1475e5",
+      "500": "#4895ef",
+      "600": "#6dabf2",
+      "700": "#91c0f5",
+      "800": "#b6d5f9",
+      "900": "#daeafc"
+    },
+    "sky_aqua": {
+      "100": "#052e3a",
+      "200": "#095c75",
+      "300": "#0e8aaf",
+      "400": "#13b8ea",
+      "500": "#4cc9f0",
+      "600": "#70d5f3",
+      "700": "#93dff6",
+      "800": "#b7eaf9",
+      "900": "#dbf4fc"
+    }
+  },
+  "themes": {
+    "light": {
+      "background.canvas": "#FFFCF6",
+      "background.surface": "#FFFFFF",
+      "background.subtle": "#DBF4FC",
+      "background.raised": "#FFFFFF",
+      "text.primary": "#0E0221",
+      "text.secondary": "#1C0543",
+      "text.muted": "#45056F",
+      "text.inverse": "#FFFFFF",
+      "border.default": "#DCE5F1",
+      "border.strong": "#A8B7CF",
+      "action.primary": "#4361EE",
+      "action.onPrimary": "#FFFFFF",
+      "action.primaryHover": "#102CA8",
+      "action.secondary": "#3A0CA3",
+      "action.onSecondary": "#FFFFFF",
+      "focus.ring": "#480CA8",
+      "overlay.scrim": "#0D1429CC",
+      "accent.coral": "#F72585",
+      "accent.orange": "#B5179E",
+      "accent.lime": "#B5EB5A",
+      "accent.lilac": "#7209B7",
+      "illustration.skin": "#D98B63",
+      "status.success.foreground": "#146B50",
+      "status.success.surface": "#E2F8ED",
+      "status.warning.foreground": "#805000",
+      "status.warning.surface": "#FFF1CD",
+      "status.error.foreground": "#AD2737",
+      "status.error.surface": "#FCE8EB",
+      "status.info.foreground": "#102CA8",
+      "status.info.surface": "#DAE0FC",
+      "finance.goods": "#4361EE",
+      "finance.earnings": "#146B50",
+      "finance.pending": "#805000",
+      "skeleton.base": "#E9EFF8",
+      "skeleton.shimmer": "#F8FAFE",
+      "footer.top": "#3A0CA3",
+      "footer.bottom": "#F8C9F1",
+      "surface.hero": "#F8C9F1",
+      "surface.hero-deep": "#DBF4FC"
+    },
+    "dark": {
+      "background.canvas": "#0B0220",
+      "background.surface": "#170225",
+      "background.subtle": "#24051F",
+      "background.raised": "#1C0543",
+      "text.primary": "#F8FAFF",
+      "text.secondary": "#D8D7F4",
+      "text.muted": "#B2AFE9",
+      "text.inverse": "#0D1429",
+      "border.default": "#334764",
+      "border.strong": "#59708E",
+      "action.primary": "#8FA2F5",
+      "action.onPrimary": "#0B0220",
+      "action.primaryHover": "#B4C1F8",
+      "action.secondary": "#CB86F9",
+      "action.onSecondary": "#170225",
+      "focus.ring": "#70D5F3",
+      "overlay.scrim": "#050A18E0",
+      "accent.coral": "#F9529D",
+      "accent.orange": "#E326C7",
+      "accent.lime": "#CCF589",
+      "accent.lilac": "#B14AF6",
+      "illustration.skin": "#FFC3A4",
+      "status.success.foreground": "#8EE2BD",
+      "status.success.surface": "#193E35",
+      "status.warning.foreground": "#FFD28A",
+      "status.warning.surface": "#45351C",
+      "status.error.foreground": "#FFA6B0",
+      "status.error.surface": "#491F30",
+      "status.info.foreground": "#B4C1F8",
+      "status.info.surface": "#1C0543",
+      "finance.goods": "#8FA2F5",
+      "finance.earnings": "#8EE2BD",
+      "finance.pending": "#FFD28A",
+      "skeleton.base": "#253651",
+      "skeleton.shimmer": "#334964",
+      "footer.top": "#0B0220",
+      "footer.bottom": "#24051F",
+      "surface.hero": "#24051F",
+      "surface.hero-deep": "#1C0543"
+    }
+  },
+  "typography": {
+    "displayFamily": "Space Grotesk",
+    "bodyFamily": "Inter",
+    "heroDesktop": {
+      "min": 76,
+      "max": 156,
+      "weight": 700,
+      "lineHeight": 0.89
+    },
+    "heroMobile": {
+      "min": 48,
+      "max": 78,
+      "weight": 700,
+      "lineHeight": 0.96
+    },
+    "pageTitleDesktop": {
+      "fontSize": 36,
+      "weight": 700,
+      "lineHeight": 1.12
+    },
+    "pageTitleMobile": {
+      "fontSize": 28,
+      "weight": 700,
+      "lineHeight": 1.14
+    },
+    "sectionTitle": {
+      "fontSize": 28,
+      "weight": 700
+    },
+    "cardTitle": {
+      "fontSize": 20,
+      "weight": 650
+    },
+    "bodyLarge": {
+      "fontSize": 18,
+      "weight": 400,
+      "lineHeight": 1.55
+    },
+    "body": {
+      "fontSize": 16,
+      "weight": 400,
+      "lineHeight": 1.5
+    },
+    "small": {
+      "fontSize": 14,
+      "weight": 450,
+      "lineHeight": 1.45
+    },
+    "caption": {
+      "fontSize": 12,
+      "weight": 450,
+      "lineHeight": 1.4
+    },
+    "amount": {
+      "fontSize": 32,
+      "weight": 700,
+      "fontVariant": "tabular-nums"
+    }
+  },
+  "spacing": {
+    "0": 0,
+    "1": 4,
+    "2": 8,
+    "3": 12,
+    "4": 16,
+    "5": 20,
+    "6": 24,
+    "8": 32,
+    "10": 40,
+    "12": 48,
+    "16": 64,
+    "20": 80,
+    "24": 96
+  },
+  "radius": {
+    "xs": 6,
+    "sm": 10,
+    "md": 14,
+    "lg": 18,
+    "xl": 24,
+    "2xl": 32,
+    "pill": 9999
+  },
+  "components": {
+    "button": {
+      "height": 52,
+      "radius": "md",
+      "targetMin": 48
+    },
+    "input": {
+      "height": 56,
+      "radius": "md"
+    },
+    "card": {
+      "radius": "lg",
+      "padding": 20
+    },
+    "modal": {
+      "radius": "xl"
+    },
+    "bottomSheet": {
+      "radius": "xl"
+    },
+    "iconButton": {
+      "targetMin": 48,
+      "visualSize": 24
+    },
+    "nav": {
+      "desktopHeight": 72,
+      "mobileHeight": 64
+    },
+    "sidebar": {
+      "desktopWidth": 248
+    },
+    "focusOutlinePx": 3
+  },
+  "motion": {
+    "instantMs": 100,
+    "tapMs": 160,
+    "fastMs": 220,
+    "normalMs": 300,
+    "successMs": 420,
+    "illustrationMs": 750,
+    "entranceStaggerMs": 90,
+    "easingStandard": "cubic-bezier(0.2,0.8,0.2,1)",
+    "easingExit": "cubic-bezier(0.4,0,1,1)",
+    "reducedMotion": "static state / opacity-only where safe, no loop or parallax"
+  },
+  "breakpoints": {
+    "compactMax": 599,
+    "mediumMin": 600,
+    "mediumMax": 1023,
+    "desktopMin": 1024,
+    "wideMin": 1440
+  },
+  "content": {
+    "publicMaxWidth": 1280,
+    "dashboardMaxWidth": 1560,
+    "mobileGutter": 20,
+    "desktopGutter": 32,
+    "heroViewportMaxWidth": 1600
+  },
+  "designRules": [
+    "Single canonical source translated to Flutter ThemeData/ThemeExtensions and CSS variables",
+    "Primitives not referenced directly in business screens; use semantic tokens",
+    "Accent colors are illustrative and require contrast checks before used as text",
+    "Never invert logo/illustrations for dark mode",
+    "Typography and spacing adapt to OS text scaling",
+    "Icons and images have reserved dimensions to prevent layout shift",
+    "No hardcoded backend commission or delivery prices in tokens"
+  ]
+}

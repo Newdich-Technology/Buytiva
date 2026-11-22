@@ -10,7 +10,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
-    "test": "vitest run",
+    "test": "tsx scripts/runTests.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "check:file-length": "tsx scripts/checkFileLength.ts",
     "audit:web": "tsx scripts/auditWebRoutes.ts",
