@@ -20,6 +20,7 @@ model User {
   email                    String
   emailNormalized          String                    @unique
   passwordHash             String?
+  displayName              String?
   emailVerifiedAt          DateTime?
   status                   UserStatus                @default(ACTIVE)
   createdAt                DateTime                  @default(now())
@@ -32,6 +33,16 @@ model User {
   procurerApplications     ProcurerApplication[]
   reviewedApplications     ProcurerApplicationStatusHistory[] @relation("ApplicationReviewer")
   auditEvents              AuditLog[]                @relation("AuditActor")
+  credential               Credential?
+  emailOtpChallenges       EmailOtpChallenge[]
+  loginChallenges          LoginChallenge[]
+  permissionGrants         UserPermissionGrant[]
+  grantedPermissionGrants UserPermissionGrant[]       @relation("PermissionGrantor")
+  createdInvitations       AccountInvitation[]        @relation("InvitationIssuer")
+  acceptedInvitations      AccountInvitation[]        @relation("InvitationAcceptor")
+  procurerProfile          ProcurerProfile?
+  passwordResetTokens     PasswordResetToken[]
+  staffProfile            StaffProfile?
 
   @@index([status, createdAt])
   @@map("users")
@@ -59,8 +70,14 @@ model AuthSession {
   expiresAt  DateTime
   revokedAt  DateTime?
   lastUsedAt DateTime?
+  familyId   String    @default(uuid()) @db.Uuid
+  deviceLabel String?
+  assurance  String    @default("PASSWORD")
+  mfaVerifiedAt DateTime?
+  revokedReason String?
   createdAt  DateTime  @default(now())
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
 
   @@index([userId, revokedAt, expiresAt])
   @@map("auth_sessions")
@@ -85,6 +102,8 @@ model MfaFactor {
   type            MfaFactorType
   secretCiphertext Bytes
   enabledAt       DateTime?
+  disabledAt      DateTime?
+  lastAcceptedTimeStep BigInt?
   createdAt       DateTime      @default(now())
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 

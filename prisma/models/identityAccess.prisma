@@ -1,0 +1,84 @@
+model UserPermissionGrant {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid
+  permission  String
+  grantedById String?   @db.Uuid
+  profileName String?
+  grantedAt   DateTime  @default(now())
+  revokedAt   DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  grantedBy   User?     @relation("PermissionGrantor", fields: [grantedById], references: [id], onDelete: Restrict)
+
+  @@unique([userId, permission])
+  @@index([userId, revokedAt])
+  @@map("user_permission_grants")
+}
+
+enum InvitationKind {
+  PROCURER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model AccountInvitation {
+  id               String         @id @default(uuid()) @db.Uuid
+  kind             InvitationKind
+  emailNormalized String
+  displayName      String
+  tokenHash        String         @unique
+  permissionCodes  String[]       @default([])
+  applicationId    String?        @db.Uuid
+  issuedById       String?        @db.Uuid
+  acceptedById     String?        @db.Uuid
+  expiresAt        DateTime
+  consumedAt       DateTime?
+  revokedAt        DateTime?
+  createdAt        DateTime       @default(now())
+  issuedBy         User?          @relation("InvitationIssuer", fields: [issuedById], references: [id], onDelete: Restrict)
+  acceptedBy       User?          @relation("InvitationAcceptor", fields: [acceptedById], references: [id], onDelete: Restrict)
+  application      ProcurerApplication? @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([emailNormalized, kind, expiresAt])
+  @@index([issuedById, createdAt])
+  @@map("account_invitations")
+}
+
+enum ProcurerProfileStatus {
+  PENDING_SETUP
+  PENDING_COMPLIANCE
+  ACTIVE
+  SUSPENDED
+}
+
+model ProcurerProfile {
+  id            String               @id @default(uuid()) @db.Uuid
+  userId        String               @unique @db.Uuid
+  applicationId String               @unique @db.Uuid
+  status        ProcurerProfileStatus @default(PENDING_SETUP)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  application   ProcurerApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([status, createdAt])
+  @@map("procurer_profiles")
+}
+
+enum StaffProfileStatus {
+  PENDING_SETUP
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+model StaffProfile {
+  id          String            @id @default(uuid()) @db.Uuid
+  userId      String            @unique @db.Uuid
+  status      StaffProfileStatus @default(PENDING_SETUP)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([status, updatedAt])
+  @@map("staff_profiles")
+}

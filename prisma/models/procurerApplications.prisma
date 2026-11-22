@@ -19,7 +19,8 @@ enum ProcurerInvitationStatus {
 
 model ProcurerApplication {
   id                    String                             @id @default(uuid()) @db.Uuid
-  publicReference       String                             @unique
+  applicationNumber     Int                                @unique @default(autoincrement())
+  publicReference       String?                            @unique
   applicantEmail        String
   applicantEmailNormalized String
   activeApplicationKey  String?                            @unique
@@ -35,6 +36,10 @@ model ProcurerApplication {
   consentAt             DateTime
   status                ProcurerApplicationStatus          @default(SUBMITTED)
   emailVerifiedAt       DateTime?
+  identityVerifiedAt    DateTime?
+  complianceVerifiedAt  DateTime?
+  identityEvidenceReference String?
+  complianceEvidenceReference String?
   linkedUserId          String?                            @db.Uuid
   submittedAt           DateTime                           @default(now())
   updatedAt             DateTime                           @updatedAt
@@ -42,6 +47,9 @@ model ProcurerApplication {
   statusHistory         ProcurerApplicationStatusHistory[]
   verificationTokens    ProcurerApplicationVerificationToken[]
   invitations           ProcurerInvitationToken[]
+  profile               ProcurerProfile?
+  emailChallenges       EmailOtpChallenge[]
+  accountInvitations    AccountInvitation[]
 
   @@index([applicantEmailNormalized, status])
   @@index([status, submittedAt])
