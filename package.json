@@ -13,6 +13,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "check:file-length": "tsx scripts/checkFileLength.ts",
+    "design:tokens": "tsx scripts/generateFrontendTokens.ts",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
     "db:sync": "prisma db push",
