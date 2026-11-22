@@ -36,6 +36,7 @@ jobs:
           node-version: 22.17.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @buytiva/web check
       - run: pnpm db:generate
       # This is an isolated, disposable database; no migrations exist yet.
       - run: pnpm db:sync
@@ -74,5 +75,17 @@ jobs:
             python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-pub.log').read_text()[-8000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
             exit 1
           }
-      - run: flutter analyze
-      - run: flutter test
+      - name: Analyze Flutter
+        run: |
+          set -o pipefail
+          flutter analyze --no-pub 2>&1 | tee /tmp/flutter-analyze.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-analyze.log').read_text()[-7000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
+      - name: Test Flutter
+        run: |
+          set -o pipefail
+          flutter test --no-pub 2>&1 | tee /tmp/flutter-test.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-test.log').read_text()[-7000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
