@@ -1,0 +1,93 @@
+enum ProcurerApplicationStatus {
+  SUBMITTED
+  EMAIL_VERIFICATION_PENDING
+  UNDER_REVIEW
+  MORE_INFO_REQUIRED
+  APPROVED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+  SUSPENDED
+}
+
+enum ProcurerInvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+model ProcurerApplication {
+  id                    String                             @id @default(uuid()) @db.Uuid
+  publicReference       String                             @unique
+  applicantEmail        String
+  applicantEmailNormalized String
+  activeApplicationKey  String?                            @unique
+  firstName             String
+  lastName              String
+  phone                 String?
+  proposedCountry       String
+  proposedRegion        String?
+  proposedCity          String
+  proposedArea          String?
+  categories            String[]
+  experience            String?
+  consentAt             DateTime
+  status                ProcurerApplicationStatus          @default(SUBMITTED)
+  emailVerifiedAt       DateTime?
+  linkedUserId          String?                            @db.Uuid
+  submittedAt           DateTime                           @default(now())
+  updatedAt             DateTime                           @updatedAt
+  linkedUser            User?                              @relation(fields: [linkedUserId], references: [id], onDelete: Restrict)
+  statusHistory         ProcurerApplicationStatusHistory[]
+  verificationTokens    ProcurerApplicationVerificationToken[]
+  invitations           ProcurerInvitationToken[]
+
+  @@index([applicantEmailNormalized, status])
+  @@index([status, submittedAt])
+  @@map("procurer_applications")
+}
+
+model ProcurerApplicationStatusHistory {
+  id            String                       @id @default(uuid()) @db.Uuid
+  applicationId String                       @db.Uuid
+  previousStatus ProcurerApplicationStatus?
+  nextStatus    ProcurerApplicationStatus
+  reviewerId    String?                      @db.Uuid
+  reason        String?
+  createdAt     DateTime                     @default(now())
+  application   ProcurerApplication          @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  reviewer      User?                        @relation("ApplicationReviewer", fields: [reviewerId], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, createdAt])
+  @@map("procurer_application_status_history")
+}
+
+model ProcurerApplicationVerificationToken {
+  id            String              @id @default(uuid()) @db.Uuid
+  applicationId String              @db.Uuid
+  tokenHash     String              @unique
+  expiresAt     DateTime
+  consumedAt    DateTime?
+  createdAt     DateTime            @default(now())
+  application   ProcurerApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, expiresAt])
+  @@map("procurer_application_verification_tokens")
+}
+
+model ProcurerInvitationToken {
+  id            String                    @id @default(uuid()) @db.Uuid
+  applicationId String                    @db.Uuid
+  emailNormalized String
+  tokenHash     String                    @unique
+  status        ProcurerInvitationStatus  @default(PENDING)
+  expiresAt     DateTime
+  consumedAt    DateTime?
+  revokedAt     DateTime?
+  createdAt     DateTime                  @default(now())
+  application   ProcurerApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, status, expiresAt])
+  @@map("procurer_invitation_tokens")
+}
