@@ -1,0 +1,209 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 15352
+  },
+  {
+    "route": "/how-it-works",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 10908
+  },
+  {
+    "route": "/for-procurers",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9752
+  },
+  {
+    "route": "/faq",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 10139
+  },
+  {
+    "route": "/about",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9325
+  },
+  {
+    "route": "/contact",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9354
+  },
+  {
+    "route": "/support",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9124
+  },
+  {
+    "route": "/coverage",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9064
+  },
+  {
+    "route": "/terms",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8974
+  },
+  {
+    "route": "/privacy",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9012
+  },
+  {
+    "route": "/refund-policy",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9068
+  },
+  {
+    "route": "/accessibility",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 9036
+  },
+  {
+    "route": "/cookies",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 10052
+  },
+  {
+    "route": "/login",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/register",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11534
+  },
+  {
+    "route": "/apply/procurer",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 10106
+  },
+  {
+    "route": "/apply/procurer/verify",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8405
+  },
+  {
+    "route": "/application/status",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8458
+  },
+  {
+    "route": "/invitation",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8096
+  },
+  {
+    "route": "/verifyEmail",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8446
+  },
+  {
+    "route": "/forgotPassword",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 8033
+  },
+  {
+    "route": "/changePassword",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/overview",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/orders",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/messages",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/pricing",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/deliveryZones",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/customers",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/auditLogs",
+    "status": 200,
+    "header": true,
+    "footer": true,
+    "bytes": 11090
+  },
+  {
+    "route": "/not-a-real-route",
+    "error": "HTTP Error 404: Not Found"
+  }
+]
