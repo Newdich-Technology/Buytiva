@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">A clear quote before checkout</title>
+  <desc id="desc">A quote card shows the shopping total and service fee before the customer confirms the next step.</desc>
+  <style>.receipt{animation:receipt 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.spark{animation:spark 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes receipt{50%{transform:translateY(-7px) rotate(1deg)}}@keyframes spark{50%{transform:scale(1.12) rotate(8deg)}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}</style>
+  <circle cx="589" cy="112" r="57" fill="#B5EB5A"/><path d="m560 112 18 18 38-45" stroke="#111D38" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M56 391c101-139 197-166 309-102 114 65 205 38 322-131" stroke="#2457E7" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 17"/>
+  <ellipse cx="378" cy="469" rx="263" ry="25" fill="#111D38" fill-opacity=".13"/>
+  <g class="receipt"><path d="M188 82h317v343l-35-22-35 22-35-22-35 22-35-22-35 22-35-22-35 22-35-22-35 22V82Z" fill="#FFFCF6" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/><path d="M224 136h150" stroke="#111D38" stroke-width="11" stroke-linecap="round"/><path d="M224 188h216M224 226h174" stroke="#A8B7CF" stroke-width="9" stroke-linecap="round"/><path d="M224 280h100m102 0h49M224 318h142m60 0h49" stroke="#485872" stroke-width="8" stroke-linecap="round"/><path d="M224 373h159" stroke="#2457E7" stroke-width="12" stroke-linecap="round"/><circle cx="423" cy="373" r="11" fill="#B5EB5A"/></g>
+  <path class="spark" d="m135 152 8 19 20 8-20 8-8 20-8-20-20-8 20-8z" fill="#FF675B"/><path d="M547 338c-30 17-51 38-63 65" stroke="#D98B63" stroke-width="18" stroke-linecap="round"/><path d="M546 337c29 17 47 40 57 67" stroke="#111D38" stroke-width="18" stroke-linecap="round"/><circle cx="550" cy="328" r="12" fill="#D98B63" stroke="#111D38" stroke-width="6"/>
+</svg>

@@ -8,7 +8,8 @@
 		<p>Buytiva connects your request with a verified procurer who serves your delivery area, then keeps the important decisions visible before a purchase moves forward.</p>
 	</div>
 	<div class="journey-board">
-		<img src="/illustrations/marketing/customer-procurer-scene.svg" alt="A customer shopping list travels to a verified procurer who prepares a parcel." loading="lazy" />
+		<img class="journey-main" src="/illustrations/marketing/route-match.svg" alt="A customer shopping list travels along a route to a verified procurer who prepares a parcel." loading="lazy" />
+		<figure class="board-detail"><img src="/illustrations/marketing/shopping-list-builder.svg" alt="A customer organizes a colorful shopping list." loading="lazy" /><figcaption>01 / List first</figcaption></figure>
 		<div class="board-caption"><span>One connected journey · not five disconnected steps</span><strong>Designed around clarity</strong></div>
 	</div>
 	<div class="step-rail" aria-label="Buytiva journey steps">

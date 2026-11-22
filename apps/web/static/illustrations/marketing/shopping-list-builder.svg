@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 560" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">A shopping list taking shape</title>
+  <desc id="desc">A Buytiva customer organizes a colorful shopping list before sending it along a route.</desc>
+  <style>
+    .float{animation:float 5s ease-in-out infinite}.float-slow{animation:float 6s 1s ease-in-out infinite}.dash{animation:dash 7s linear infinite}.spark{animation:spark 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes float{50%{transform:translateY(-8px) rotate(1deg)}}@keyframes dash{to{stroke-dashoffset:-150}}@keyframes spark{50%{transform:scale(1.12) rotate(8deg)}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  </style>
+  <path class="dash" d="M55 423c113-171 239-205 351-132 123 80 215 37 369-157" stroke="#2457E7" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 18"/>
+  <circle cx="108" cy="411" r="25" fill="#FF9E42"/><circle class="spark" cx="728" cy="117" r="38" fill="#B5EB5A"/><path d="m710 118 13 13 25-30" stroke="#111D38" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="407" cy="500" rx="302" ry="28" fill="#111D38" fill-opacity=".13"/>
+  <g class="float">
+    <path d="M162 104h288c18 0 32 14 32 32v312H130V136c0-18 14-32 32-32Z" fill="#FFFCF6" stroke="#111D38" stroke-width="8"/>
+    <path d="M183 159h223" stroke="#111D38" stroke-width="8" stroke-linecap="round"/><path d="M183 191h176" stroke="#A8B7CF" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="185" cy="256" r="13" fill="#FF675B"/><path d="M219 256h164" stroke="#2457E7" stroke-width="11" stroke-linecap="round"/><path d="m366 249 10 10 18-21" stroke="#146B50" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="185" cy="311" r="13" fill="#FF9E42"/><path d="M219 311h133" stroke="#A8B7CF" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="185" cy="366" r="13" fill="#B399FF"/><path d="M219 366h151" stroke="#A8B7CF" stroke-width="11" stroke-linecap="round"/>
+    <path d="M180 417h145" stroke="#2457E7" stroke-width="10" stroke-linecap="round" stroke-dasharray="3 14"/><circle cx="361" cy="417" r="8" fill="#B5EB5A"/>
+  </g>
+  <g class="float-slow">
+    <path d="M563 285c0-50 35-86 81-86 46 0 81 36 81 86 0 35-19 65-51 79l-11 54h-45l-10-54c-29-15-45-45-45-79Z" fill="#D98B63" stroke="#111D38" stroke-width="8"/>
+    <path d="M559 279c4-57 36-92 85-92 42 0 75 25 82 73-21-9-38-16-53-21-20 25-57 37-114 40Z" fill="#111D38" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M604 293h4m48 0h4m-46 39c9 9 20 9 29 0" stroke="#111D38" stroke-width="7" stroke-linecap="round"/>
+    <path d="M545 513c12-43 40-70 85-84l25 22 25-22c39 15 63 43 71 84H545Z" fill="#2457E7" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M558 390c-42 24-68 51-78 81" stroke="#D98B63" stroke-width="18" stroke-linecap="round"/><path d="M482 470h-46" stroke="#111D38" stroke-width="18" stroke-linecap="round"/>
+    <path d="m413 445 45-17 23 50-47 18z" fill="#FF9E42" stroke="#111D38" stroke-width="7" stroke-linejoin="round"/><path d="M432 451c9-29 30-42 53-39" stroke="#111D38" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <path class="spark" d="m512 106 7 17 18 7-18 7-7 18-7-18-18-7 18-7z" fill="#FF675B"/>
+</svg>

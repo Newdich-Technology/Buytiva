@@ -5,8 +5,12 @@
     { "source": "design/illustrations/errors/lost_list.light.svg", "exports": ["apps/web/static/illustrations/errors/lost_list.light.svg", "apps/mobile/assets/illustrations/errors/lost_list.light.svg"], "theme": "light", "purpose": "not_found" },
     { "source": "design/illustrations/errors/lost_list.dark.svg", "exports": ["apps/web/static/illustrations/errors/lost_list.dark.svg", "apps/mobile/assets/illustrations/errors/lost_list.dark.svg"], "theme": "dark", "purpose": "not_found" },
     { "source": "apps/web/static/illustrations/marketing/customer-procurer-scene.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "marketing hero shopping journey" },
+    { "source": "apps/web/static/illustrations/marketing/shopping-list-builder.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "shopping list creation" },
+    { "source": "apps/web/static/illustrations/marketing/route-match.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "procurer discovery and delivery route" },
+    { "source": "apps/web/static/illustrations/marketing/checkout-clarity.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "quote review before checkout" },
     { "source": "apps/web/static/illustrations/marketing/footer-journey.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "signature footer journey" },
     { "source": "apps/web/static/illustrations/procurer/application-journey.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "procurer application journey" },
+    { "source": "apps/web/static/illustrations/procurer/community-procurer.svg", "exports": ["apps/web"], "theme": "adaptive", "purpose": "procurer community and market knowledge" },
     { "source": "apps/mobile/lib/features/onboarding/onboarding_screen.dart", "exports": ["apps/mobile"], "theme": "theme tokens", "purpose": "native onboarding scenes" }
   ]
 }

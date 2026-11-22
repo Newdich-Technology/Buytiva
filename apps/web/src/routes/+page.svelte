@@ -18,7 +18,7 @@
 <main class="landing-page">
 	<EditorialHero />
 	<ScrollReveal><HowItWorks /></ScrollReveal>
-	<ScrollReveal><section class="clarity-section" aria-labelledby="clarity-title"><div class="clarity-art"><img src="/illustrations/marketing/footer-journey.svg" alt="A parcel travels along a route after a shopping request is prepared." loading="lazy" /></div><div class="clarity-copy"><p class="section-eyebrow">Thoughtful from the first item</p><h2 id="clarity-title">Clear choices. <span>At every step.</span></h2><p>Choose from procurers serving your delivery area. Review the request and quote before checkout. Keep messages and updates close to the journey.</p><a class="clarity-link" href="/register">Make your first list <span aria-hidden="true">↗</span></a></div></section></ScrollReveal>
+	<ScrollReveal><section class="clarity-section" aria-labelledby="clarity-title"><div class="clarity-art"><img src="/illustrations/marketing/checkout-clarity.svg" alt="A clear quote shows shopping costs before the customer confirms the next step." loading="lazy" /></div><div class="clarity-copy"><p class="section-eyebrow">Thoughtful from the first item</p><h2 id="clarity-title">Clear choices. <span>At every step.</span></h2><p>Choose from procurers serving your delivery area. Review the request and quote before checkout. Keep messages and updates close to the journey.</p><a class="clarity-link" href="/register">Make your first list <span aria-hidden="true">↗</span></a></div></section></ScrollReveal>
 	<ScrollReveal><ProcurerSection /></ScrollReveal>
 	<ScrollReveal><QuestionsAndDownload /></ScrollReveal>
 </main>
