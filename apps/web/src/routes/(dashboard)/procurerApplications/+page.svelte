@@ -1,0 +1,10 @@
+<script lang="ts">let { data, form } = $props();</script>
+<svelte:head><title>Procurer applications | BUYTIVA</title></svelte:head>
+<main><h1>Procurer applications</h1>{#if data.error}<p role="alert">{data.error}</p>{/if}{#if form?.error}<p role="alert">{form.error}</p>{/if}{#if form?.updated}<p>{form.message}</p>{/if}
+{#each data.applications as application}<article><h2>{application.firstName} {application.lastName}</h2><p>{application.publicReference} · {application.status}</p><p>{application.applicantEmail} · {application.phone}</p><p>{application.proposedCity}, {application.proposedRegion ?? ''}, {application.proposedCountry}</p><p>Categories: {application.categories.join(', ')}</p><p>Identity: {application.identityVerifiedAt ? 'Recorded' : 'Pending'} · Compliance: {application.complianceVerifiedAt ? 'Recorded' : 'Pending'}</p>
+{#if data.canReview}<form method="POST" action="?/checks"><input type="hidden" name="applicationId" value={application.id} /><label>Identity evidence reference <input name="identityEvidenceReference" minlength="16" required /></label><label>Compliance evidence reference <input name="complianceEvidenceReference" minlength="16" required /></label><label>Reason <input name="reason" minlength="8" maxlength="1000" required /></label><button>Record completed checks</button></form>
+<form method="POST" action="?/requestInformation"><input type="hidden" name="applicationId" value={application.id} /><label>Reason <input name="reason" minlength="8" maxlength="1000" required /></label><button>Request more information</button></form>
+<form method="POST" action="?/approve"><input type="hidden" name="applicationId" value={application.id} /><label>Approval reason <input name="reason" minlength="8" maxlength="1000" required /></label><button>Approve and invite</button></form>
+<form method="POST" action="?/reject"><input type="hidden" name="applicationId" value={application.id} /><label>Rejection reason <input name="reason" minlength="8" maxlength="1000" required /></label><button>Reject application</button></form>
+{/if}
+</article>{/each}</main>
