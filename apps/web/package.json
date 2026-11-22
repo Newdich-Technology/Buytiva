@@ -1,0 +1,24 @@
+{
+  "name": "@buytiva/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.10.0"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^9.0.0",
+    "@sveltejs/kit": "^3.4.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "svelte": "^5.59.1",
+    "svelte-check": "^4.7.8",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.8"
+  },
+  "author": "Oluwayemi Oyinlola"
+}
