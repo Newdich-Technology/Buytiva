@@ -58,6 +58,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
     await _perform(() => _repository.logoutAll(token), refresh: false);
     if (_error == null && mounted) {
       await _store.clear();
+      if (!mounted) return;
       await Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     }
   }

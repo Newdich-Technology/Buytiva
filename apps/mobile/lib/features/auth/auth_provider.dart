@@ -77,7 +77,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> changePassword(String currentPassword, String password, String confirmPassword) => _run(() async {
         session ??= await _repository.readSession();
         final token = session?['accessToken'] as String?;
-        if (token == null) throw const ApiError(authClientErrorMessages['sessionRequired']!);
+        if (token == null) throw ApiError(authClientErrorMessages['sessionRequired']!);
         await _repository.changePassword(token, currentPassword, password, confirmPassword);
         await _repository.signOut(token);
         session = null;

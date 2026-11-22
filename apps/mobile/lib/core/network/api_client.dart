@@ -30,7 +30,7 @@ class ApiClient {
       await _send(path, 'DELETE', null, token) as Map<String, dynamic>;
 
   Future<dynamic> _send(String path, String method, Map<String, dynamic>? body, String? token) async {
-    if (apiBaseUrl.isEmpty) throw const ApiError(authClientErrorMessages['apiBaseRequired']!);
+    if (apiBaseUrl.isEmpty) throw ApiError(authClientErrorMessages['apiBaseRequired']!);
     final uri = Uri.parse('$apiBaseUrl$apiVersionPrefix$path');
     final request = await _httpClient.openUrl(method, uri);
     request.headers.set(HttpHeaders.acceptHeader, 'application/json');

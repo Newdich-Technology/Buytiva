@@ -19,7 +19,7 @@ See the migration plan at docs/architecture/marketplaceMigration.md for the comp
 
 - Node.js 22.17 or newer and pnpm 11.24.0
 - PostgreSQL for database-backed features
-- Flutter stable SDK and Dart for mobile analysis and tests
+- Flutter 3.38.9 (Dart 3.10) or newer for mobile analysis and tests
 
 ## Start the backend
 
@@ -48,6 +48,8 @@ flutter run
 ## Checks
 
 ```sh
+pnpm db:generate
+pnpm --filter @buytiva/web check
 pnpm test
 pnpm typecheck
 pnpm build
@@ -57,3 +59,7 @@ pnpm db:validate
 ```
 
 Use pnpm db:sync only after reviewing the configured target database. Production financial transfers stay disabled until Paystack eligibility, funds availability, compliance, and approvals are verified.
+
+CI runs the database-backed auth tests against a disposable PostgreSQL database. To run them locally, set `DATABASE_URL` and `AUTH_TEST_DATABASE_URL` to the same dedicated test database, then run `pnpm db:sync` and `pnpm test --no-file-parallelism`. These tests delete authentication records; never point them at production or a shared database. The empty migration directory means this test setup uses schema synchronization, not migration validation.
+
+The mobile error catalog mirrors `apps/web/src/lib/constants/errorCatalog.data.json`; update both copies together. CI checks that they match. The mobile package lockfile has not yet been generated, so Flutter dependency resolution is not currently locked.
