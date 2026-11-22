@@ -1,12 +1,25 @@
-# Buytiva Procurement Platform
+# BUYTIVA Procurement Platform
 
-Monorepo for Buytiva: a Fastify/TypeScript backend at the repository root, an owner's SvelteKit dashboard in `apps/web`, and a Flutter customer/admin app in `apps/mobile`. The project follows the layered architecture and naming rules in the supplied Ansofra structure brief.
+
+BUYTIVA is a procurement platform built with Flutter and Dart in apps/mobile, SvelteKit in apps/web, a Node.js, TypeScript, and Fastify API in root src, and PostgreSQL with Prisma in root prisma.
+
+The Ansofra structure is preserved as the complete file map. A path being present does not mean its capability is implemented. Procurer registration, role-management endpoints, discovery, checkout, payment collection, payouts, chat, and file moderation are not yet working features.
+
+## Current verified behavior
+
+- Fastify serves GET /api/v1/health and returns a successful status response.
+- The web app renders the procurement landing page with BUYTIVA branding.
+- The Flutter app renders the procurement entry screen with the existing green Material 3 theme.
+- Prisma schema files define the current database contract. The db:sync package script applies schema synchronization to a configured database after it has been reviewed.
+- No production database has been synchronized by this workspace.
+
+See the migration plan at docs/architecture/marketplaceMigration.md for the compatibility audit, phase results, tests, and external blockers. The Ansofra layout remains documented in ansofra-procurement-corrected-structure.md.
 
 ## Requirements
 
-- Node.js 22 or newer and pnpm 10 or newer
+- Node.js 22.17 or newer and pnpm 11.24.0
 - PostgreSQL for database-backed features
-- Flutter stable SDK and Dart for the mobile app
+- Flutter stable SDK and Dart for mobile analysis and tests
 
 ## Start the backend
 
@@ -16,9 +29,9 @@ pnpm install
 pnpm dev
 ```
 
-The API listens on port 3000. `GET /health` returns `{ "status": "ok" }`.
+The API listens on port 3000. Its implemented endpoint is GET /api/v1/health.
 
-## Start the dashboard
+## Start the web app
 
 ```sh
 pnpm --filter @buytiva/web dev
@@ -32,14 +45,15 @@ flutter pub get
 flutter run
 ```
 
-Flutter and Dart are not installed in the current environment. Install the Flutter stable SDK to generate native platform runner files and run the mobile app.
-
 ## Checks
 
 ```sh
-pnpm typecheck
 pnpm test
+pnpm typecheck
 pnpm build
+pnpm check:file-length
+pnpm --filter @buytiva/web check
 pnpm db:validate
 ```
 
+Use pnpm db:sync only after reviewing the configured target database. Production financial transfers stay disabled until Paystack eligibility, funds availability, compliance, and approvals are verified.
