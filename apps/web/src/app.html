@@ -2,7 +2,9 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="data:," />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<script>try{const p=JSON.parse(localStorage.getItem('buytiva-cookie-preferences-v1')||'null');const allowed=p?.version===1&&p?.functional===true;const t=allowed?localStorage.getItem('buytiva-theme'):null;if(!allowed)localStorage.removeItem('buytiva-theme');document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch{document.documentElement.dataset.theme='light'}</script>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		%sveltekit.head%
 	</head>
