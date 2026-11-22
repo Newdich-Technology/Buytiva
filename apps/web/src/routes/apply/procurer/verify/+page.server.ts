@@ -1,7 +1,9 @@
 import { fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { AUTH_ROUTES } from '../../../../lib/constants/auth.js';
 import { requestAuthApi } from '../../../../lib/auth/server.js';
+
+export const load: PageServerLoad = ({ url }) => ({ email: url.searchParams.get('email') ?? '', challengeId: url.searchParams.get('challengeId') ?? '' });
 
 export const actions: Actions = {
 	default: async ({ request, fetch }) => {

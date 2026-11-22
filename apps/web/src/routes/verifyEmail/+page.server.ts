@@ -11,5 +11,10 @@ export const actions: Actions = {
 			email: String(form.get('email') ?? ''), challengeId: String(form.get('challengeId') ?? ''), code: String(form.get('code') ?? '')
 		});
 		return result.ok ? { verified: true } : fail(result.status, { error: result.data.message ?? 'Email verification failed.' });
+	},
+	resend: async ({ request, fetch }) => {
+		const form = await request.formData();
+		const result = await requestAuthApi(fetch, AUTH_ROUTES.resendEmailOtp, 'POST', { email: String(form.get('email') ?? '') });
+		return result.ok ? { resent: true, message: result.data.message } : fail(result.status, { error: result.data.message ?? 'Verification email could not be resent.' });
 	}
 };

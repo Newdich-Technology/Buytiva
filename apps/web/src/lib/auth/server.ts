@@ -9,7 +9,7 @@ export type AuthSession = {
 	refreshToken: string;
 	accessTokenExpiresAt: string;
 	refreshTokenExpiresAt: string;
-	user: { id: string; email: string; displayName: string | null; roles: string[]; currentRole: string | null };
+	user: { id: string; email: string; displayName: string | null; roles: string[]; currentRole: string | null; permissions?: string[] };
 };
 
 export async function requestAuthApi(fetcher: typeof fetch, path: string, method: string, body?: unknown, accessToken?: string) {

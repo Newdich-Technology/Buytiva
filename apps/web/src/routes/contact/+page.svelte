@@ -1,0 +1,14 @@
+<script lang="ts">
+	import PublicPageFrame from '../../lib/components/marketing/PublicPageFrame.svelte';
+</script>
+
+<svelte:head><title>Contact Buytiva</title></svelte:head>
+<PublicPageFrame eyebrow="Contact" title="We’re preparing the right way to reach us." description="A public support email address and contact form have not been verified for this release, so we will not publish a guessed contact channel.">
+	<section class="contact-options"><article><span>01</span><h2>Questions about the product?</h2><p>Read the current answers and availability notes.</p><a href="/faq">Visit the FAQ</a></article><article><span>02</span><h2>Already applied?</h2><p>Use the secure email verification flow to check your procurer application.</p><a href="/application/status">Track an application</a></article><article><span>03</span><h2>Account access?</h2><p>Use the supported sign-in and password recovery flows.</p><a href="/login">Go to sign in</a></article></section>
+	<section class="contact-guide"><div><p class="eyebrow">Choose a safe next step</p><h2>Keep private account details private.</h2><p>There is no verified public support email or contact form in this release. Use the product’s available sign-in and application flows. Never send a password, one-time code or invitation link through an unverified channel.</p></div><a href="/support">See all current help options <span aria-hidden="true">↗</span></a></section>
+</PublicPageFrame>
+
+<style>
+	.contact-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.contact-options article{min-height:235px;padding:23px;border:1px solid var(--border-default);border-radius:20px;background:var(--background-surface)}.contact-options article>span{color:var(--action-primary);font-size:12px;font-weight:800}.contact-options h2{margin:27px 0 8px;font:700 22px/1.1 'Space Grotesk',sans-serif;letter-spacing:-.04em}.contact-options p{color:var(--text-secondary);font-size:14px;line-height:1.6}.contact-options a{color:var(--action-primary);font-weight:750;text-underline-offset:4px}.contact-guide{display:grid;grid-template-columns:1fr auto;align-items:center;gap:25px;margin-top:32px;padding:clamp(22px,5vw,40px);border-radius:22px;background:var(--background-subtle)}.eyebrow{margin:0 0 11px;color:var(--action-primary);font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.contact-guide h2{max-width:560px;margin:0;font:750 clamp(27px,4vw,40px)/1.05 'Space Grotesk',sans-serif;letter-spacing:-.045em}.contact-guide p:not(.eyebrow){max-width:670px;color:var(--text-secondary);font-size:14px;line-height:1.65}.contact-guide>a{color:var(--action-primary);font-weight:800;white-space:nowrap;text-underline-offset:4px}
+	@media(max-width:760px){.contact-options{grid-template-columns:1fr}.contact-options article{min-height:0}.contact-guide{grid-template-columns:1fr}.contact-guide>a{white-space:normal}}
+</style>

@@ -1,0 +1,14 @@
+<script lang="ts">
+	import PublicPageFrame from '../../lib/components/marketing/PublicPageFrame.svelte';
+</script>
+
+<svelte:head><title>Buytiva support</title></svelte:head>
+<PublicPageFrame eyebrow="Support" title="Find the next useful step." description="Live support conversations are not enabled in the current web API. These paths use currently available product flows.">
+	<section class="support-paths"><a href="/faq"><span>Product questions</span><strong>Read the FAQ ↗</strong></a><a href="/application/status"><span>Procurer application</span><strong>Check application status ↗</strong></a><a href="/login"><span>Account access</span><strong>Sign in or recover access ↗</strong></a><a href="/contact"><span>Contact channels</span><strong>See what is currently verified ↗</strong></a></section>
+	<section class="support-safety"><div><p class="section-label">Account safety</p><h2>Keep sign-in and invitation details to yourself.</h2><p>Buytiva will not ask you to publish your password, one-time code or private invitation link. If a link has expired, use the application status and support pages to find the available next step.</p></div><div class="safety-list"><p><span>01</span>Use the email address on your account.</p><p><span>02</span>Keep your application reference somewhere private.</p><p><span>03</span>Do not repeat a sensitive action when its status is unclear.</p></div></section>
+</PublicPageFrame>
+
+<style>
+	.support-paths{display:grid;grid-template-columns:1fr 1fr;gap:12px}.support-paths a{display:grid;gap:30px;min-height:150px;padding:22px;border:1px solid var(--border-default);border-radius:20px;color:var(--text-primary);background:var(--background-surface);text-decoration:none}.support-paths a:hover{border-color:var(--action-primary)}.support-paths span{color:var(--text-secondary);font-size:13px}.support-paths strong{font:700 22px/1.2 'Space Grotesk',sans-serif}.support-safety{display:grid;grid-template-columns:1fr 1fr;gap:35px;margin-top:clamp(45px,7vw,80px);padding:clamp(22px,5vw,40px);border-radius:22px;background:var(--background-subtle)}.section-label{margin:0 0 11px;color:var(--action-primary);font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.support-safety h2{max-width:480px;margin:0;font:750 clamp(27px,4vw,39px)/1.05 'Space Grotesk',sans-serif;letter-spacing:-.045em}.support-safety>div>p:not(.section-label){color:var(--text-secondary);font-size:14px;line-height:1.65}.safety-list{display:grid;align-content:center;gap:0}.safety-list p{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:center;margin:0;padding:13px 0;border-bottom:1px solid var(--border-default);color:var(--text-secondary);font-size:13px;line-height:1.5}.safety-list span{color:var(--action-primary);font-weight:850}
+	@media(max-width:620px){.support-paths{grid-template-columns:1fr}.support-paths a{min-height:120px;gap:20px}.support-safety{grid-template-columns:1fr;gap:15px}}
+</style>

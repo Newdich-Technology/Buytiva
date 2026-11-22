@@ -1,7 +1,10 @@
 <script lang="ts">
-	let { children, data } = $props();
+	let { children } = $props();
 </script>
-<svelte:head><title>BUYTIVA dashboard</title></svelte:head>
-<header><a href="/dashboard/overview">BUYTIVA</a><span>{data.user?.displayName ?? data.user?.email}</span><form method="POST" action="/login?/logout"><button>Sign out</button></form></header>
-<nav aria-label="Dashboard"><a href="/dashboard/overview">Overview</a>{#if data.roles?.includes('PROCURER')}<a href="/dashboard/application">My application</a>{/if}{#if data.roles?.includes('SUPER_ADMIN') || data.user?.permissions?.includes('procurerApplication.read')}<a href="/dashboard/procurerApplications">Procurer applications</a>{/if}{#if data.roles?.includes('SUPER_ADMIN')}<a href="/dashboard/administrators">Staff</a><a href="/dashboard/auditLogs">Audit log</a>{/if}</nav>
-{@render children()}
+
+<svelte:head><title>Buytiva workspace</title></svelte:head>
+<div class="workspace"><main>{@render children()}</main></div>
+
+<style>
+	.workspace{min-height:calc(100vh - 150px);color:var(--text-primary);background:var(--background-canvas)}main{width:min(1440px,100%);padding:clamp(24px,4vw,56px);margin:auto}
+</style>
