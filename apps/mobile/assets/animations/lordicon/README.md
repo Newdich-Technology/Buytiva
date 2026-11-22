@@ -1,5 +1,5 @@
-# Local Lordicon assets
+# Lordicon animation assets
 
-Approved animation JSON files and matching static SVG fallbacks belong in this directory. Record each icon name, download source, license type, required attribution, intended screen, and playback state in `apps/mobile/assets/animations/lordicon/asset-manifest.json` before shipping it.
+Licensed Lordicon JSON exports may be checked into this directory when the production download workflow is available. Record each icon name, source page, license type, required attribution, intended screen, and playback state in `asset-manifest.json` before shipping it.
 
-No third-party animation files are bundled yet. The reusable player widget remains available for licensed local files; Buytiva onboarding currently uses original Flutter vector artwork.
+The current implementation uses the official Lordicon CDN through `IconController.network`, recorded in `asset-manifest.json`, so icons stay current without pretending that an unverified binary export was checked into the repository. The reusable player still accepts local assets through `IconController.assets`. Buytiva onboarding combines these animated icons with original Flutter vector artwork.

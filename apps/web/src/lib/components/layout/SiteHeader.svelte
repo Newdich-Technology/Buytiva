@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	import ThemeToggle from '../design/ThemeToggle.svelte';
 	import { ROLE_HOME } from '../../constants/auth.js';
 	import '../../styles/site-header.css';
@@ -36,7 +37,7 @@
 		<button class="menu-toggle" type="button" aria-label={menuOpen ? 'Close navigation' : 'Open navigation'} aria-expanded={menuOpen} onclick={() => menuOpen = !menuOpen}><span></span><span></span></button>
 		<nav class:open={menuOpen} aria-label="Main navigation">
 			<div class="nav-links">{#each links as link (link.href)}<a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined} onclick={closeMenu}>{link.label}</a>{/each}</div>
-			<div class="actions"><ThemeToggle />{#if user}<span class="identity">{user.displayName ?? user.email}</span><form method="POST" action="/login?/logout"><button class="logout" type="submit">Log out</button></form>{:else}<a class="login-link" href="/login" onclick={closeMenu}>Log in</a><a class="join-link" href="/register" onclick={closeMenu}>Get started <span aria-hidden="true">↗</span></a>{/if}</div>
+			<div class="actions"><ThemeToggle />{#if user}<span class="identity">{user.displayName ?? user.email}</span><form method="POST" action="/login?/logout"><button class="logout" type="submit">Log out</button></form>{:else}<a class="login-link" href="/login" onclick={closeMenu}>Log in</a><a class="join-link" href="/register" onclick={closeMenu}>Get started <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a>{/if}</div>
 		</nav>
 	</div>
 </header>

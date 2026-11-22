@@ -1,9 +1,10 @@
 <script lang="ts">
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	import '../../styles/questionsanddownload.css';
 </script>
 
 <section class="questions" aria-labelledby="faq-title">
-	<div class="faq-heading"><p class="section-eyebrow">The things you might be wondering</p><h2 id="faq-title">Good questions. <span>Straight answers.</span></h2><p>Buytiva is being built around visible choices, reviewed access and honest availability.</p><a class="faq-help" href="/faq">Browse all questions <span aria-hidden="true">↗</span></a></div>
+	<div class="faq-heading"><p class="section-eyebrow"><BuytivaLordicon name="search" width={20} height={20} animationState="in-reveal" /> The things you might be wondering</p><h2 id="faq-title">Good questions. <span>Straight answers.</span></h2><p>Buytiva is being built around visible choices, reviewed access and honest availability.</p><a class="faq-help" href="/faq">Browse all questions <BuytivaLordicon name="directions" width={21} height={21} animationState="hover-slide" /></a></div>
 	<div class="faq-list">
 		<details><summary>How is Buytiva designed to work?</summary><p>Start with a delivery destination and shopping list, choose a verified procurer serving that area, then review the quote before a supported order moves to payment.</p></details>
 		<details><summary>How are procurers reviewed?</summary><p>Applicants verify their email and receive an application reference. Applications are reviewed before access is granted through a private invitation.</p></details>

@@ -1,12 +1,13 @@
 <script lang="ts">
+	import BuytivaLordicon from '../../lib/components/design/BuytivaLordicon.svelte';
 	import PublicPageFrame from '../../lib/components/marketing/PublicPageFrame.svelte';
 </script>
 
 <svelte:head><title>Become a procurer | Buytiva</title><meta name="description" content="Learn how Buytiva procurer applications, email verification, review and invitation onboarding work." /></svelte:head>
 <PublicPageFrame eyebrow="For independent procurers" title="Local knowledge deserves a bigger role." description="Bring your understanding of the places you serve. Every procurer begins with an application, email verification and review before account access is granted.">
 	<section class="procurer-hero" aria-labelledby="procurer-hero-title">
-		<div class="hero-art"><img src="/illustrations/procurer/application-journey.svg" alt="An application moves through email verification and review before a procurer receives an invitation." /><span class="art-caption"><i aria-hidden="true"></i> APPLICATION → REVIEW → INVITATION</span></div>
-		<div class="hero-copy"><p class="section-label">A thoughtful start</p><h2 id="procurer-hero-title">Your neighborhood knowledge is the difference.</h2><p>People know their local markets, products and delivery areas. Buytiva is being built to connect that knowledge with customer shopping requests through a clear, reviewed onboarding process.</p><a class="text-link" href="/how-it-works">See the customer journey <span aria-hidden="true">↗</span></a></div>
+		<div class="hero-art"><img src="/illustrations/procurer/application-journey.svg" alt="An application moves through email verification and review before a procurer receives an invitation." /><span class="art-caption"><i aria-hidden="true"></i> APPLICATION · REVIEW · INVITATION</span></div>
+		<div class="hero-copy"><p class="section-label">A thoughtful start</p><h2 id="procurer-hero-title">Your neighborhood knowledge is the difference.</h2><p>People know their local markets, products and delivery areas. Buytiva is being built to connect that knowledge with customer shopping requests through a clear, reviewed onboarding process.</p><a class="text-link" href="/how-it-works">See the customer journey <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a></div>
 	</section>
 
 	<section class="application-process" aria-labelledby="process-title">
@@ -30,7 +31,7 @@
 		<details><summary>When can I accept shopping requests?</summary><p>Only after approval and completing the invitation flow. The application form alone does not provide access to procurer features.</p></details>
 	</div></section>
 
-	<section class="apply-callout"><div><p class="section-label">Ready when you are</p><h2>Start with your local knowledge.</h2><p>Applications are reviewed individually. You can return later to check a verified application’s status.</p></div><div class="callout-actions"><a class="primary-action" href="/apply/procurer">Begin an application <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/application/status">Already applied? Check status</a></div></section>
+	<section class="apply-callout"><div><p class="section-label">Ready when you are</p><h2>Start with your local knowledge.</h2><p>Applications are reviewed individually. You can return later to check a verified application’s status.</p></div><div class="callout-actions"><a class="primary-action" href="/apply/procurer">Begin an application <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a><a class="secondary-action" href="/application/status">Already applied? Check status</a></div></section>
 </PublicPageFrame>
 
 <style>

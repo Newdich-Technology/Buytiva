@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../core/design_system/design_tokens.g.dart';
+import '../../core/design_system/lordicon_sources.dart';
 import '../../core/design_system/motion_preferences.dart';
+import '../../core/widgets/buytiva_lordicon.dart';
 import '../auth/login_screen.dart';
 import 'onboarding_illustration.dart';
 
@@ -66,6 +68,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
     _sceneMotion.forward(from: 0);
     _pages.animateToPage(value, duration: const Duration(milliseconds: BuytivaDesignTokens.normalMs), curve: Curves.easeOutCubic);
   }
+
+  String _iconForScene(int index) => switch (index) {
+        0 => lordiconCart,
+        1 => lordiconLocation,
+        _ => lordiconCheck,
+      };
+
+  String _iconLabelForScene(int index) => switch (index) {
+        0 => 'Animated shopping cart icon',
+        1 => 'Animated delivery location icon',
+        _ => 'Animated completed order icon',
+      };
 
   void _continue() {
     if (_index == _slides.length - 1) {
@@ -143,15 +157,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                   SizedBox(
                     height: (constraints.maxHeight * .53).clamp(210.0, 360.0),
                     width: double.infinity,
-                    child: AnimatedBuilder(
-                      animation: _sceneMotion,
-                      builder: (context, child) => Transform.translate(
-                        offset: Offset(0, reduceMotion ? 0 : 12 * (1 - _sceneMotion.value)),
-                        child: Opacity(
-                          opacity: reduceMotion ? 1 : _sceneMotion.value,
-                          child: OnboardingIllustration(scene: index, progress: reduceMotion ? 1 : _sceneMotion.value),
+                    child: Stack(
+                      children: [
+                        AnimatedBuilder(
+                          animation: _sceneMotion,
+                          builder: (context, child) => Transform.translate(
+                            offset: Offset(0, reduceMotion ? 0 : 12 * (1 - _sceneMotion.value)),
+                            child: Opacity(
+                              opacity: reduceMotion ? 1 : _sceneMotion.value,
+                              child: OnboardingIllustration(scene: index, progress: reduceMotion ? 1 : _sceneMotion.value),
+                            ),
+                          ),
                         ),
-                      ),
+                        Positioned(
+                          top: 12,
+                          right: 18,
+                          child: BuytivaLordicon(
+                            assetPath: _iconForScene(index),
+                            label: _iconLabelForScene(index),
+                            width: 52,
+                            height: 52,
+                            playOnLoad: true,
+                            playKey: index == _index ? _index + 1 : 0,
+                            staticFallback: const SizedBox.shrink(),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20),

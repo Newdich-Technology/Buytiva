@@ -1,4 +1,6 @@
 <script lang="ts">
+  import BuytivaLordicon from '../../../lib/components/design/BuytivaLordicon.svelte';
+
   let { form } = $props();
   const applicationStatusTitles: Record<string, string> = {
     SUBMITTED: 'Application received',
@@ -23,10 +25,10 @@
   {#if form?.statusResult}
     <section class="result" class:approved={status === 'APPROVED'} class:rejected={status === 'REJECTED'} aria-labelledby="result-title" aria-live="polite">
       <div class="status-art" class:approved={status === 'APPROVED'} class:rejected={status === 'REJECTED'} aria-hidden="true">
-        {#if status === 'APPROVED'}<span class="seal">✓</span>
-        {:else if status === 'REJECTED' || status === 'SUSPENDED'}<span class="paused">!</span>
-        {:else if status === 'MORE_INFO_REQUIRED'}<span class="page">?</span>
-        {:else}<span class="envelope"><i></i></span>{/if}
+        {#if status === 'APPROVED'}<span class="seal"><BuytivaLordicon name="check" width={38} height={38} animationState="in-reveal" label="Approved" /></span>
+        {:else if status === 'REJECTED' || status === 'SUSPENDED'}<span class="paused"><BuytivaLordicon name="warning" width={38} height={38} animationState="in-reveal" label="Attention" /></span>
+        {:else if status === 'MORE_INFO_REQUIRED'}<span class="page"><BuytivaLordicon name="search" width={38} height={38} animationState="hover-pinch" label="More information" /></span>
+        {:else}<span class="pending-icon"><BuytivaLordicon name="spinner" width={58} height={58} trigger="loop" loading="lazy" animationState="loop-cycle" label="Pending" /></span>{/if}
         <span class="orbit"></span>
       </div>
       <div class="result-copy">
@@ -42,7 +44,7 @@
       {/each}
     </section>
   {:else if form?.requested}
-    <section class="verify-note"><div class="status-art"><span class="envelope"><i></i></span></div><h2>Check your inbox</h2><p>Enter the verification code sent to the application email. Challenge ID: <strong>{form.challengeId}</strong></p></section>
+    <section class="verify-note"><div class="status-art"><span class="pending-icon"><BuytivaLordicon name="spinner" width={58} height={58} trigger="loop" loading="lazy" animationState="loop-cycle" label="Verification pending" /></span></div><h2>Check your inbox</h2><p>Enter the verification code sent to the application email. Challenge ID: <strong>{form.challengeId}</strong></p></section>
     <form method="POST">
       <input type="hidden" name="step" value="verify" />
       <input type="hidden" name="email" value={form.email} />
@@ -66,9 +68,6 @@
   .result { display: grid; grid-template-columns: 240px 1fr; align-items: center; gap: 28px; padding: 26px; border: 1px solid var(--border-default); border-radius: 24px; background: var(--background-surface); }
   .status-art { position: relative; display: grid; width: 220px; height: 180px; place-items: center; overflow: hidden; border-radius: 22px; background: color-mix(in srgb, var(--accent-lilac) 34%, var(--background-surface)); }
   .orbit { position: absolute; width: 170px; height: 120px; border: 2px dashed var(--action-primary); border-radius: 50%; rotate: -18deg; opacity: .5; }
-  .envelope { position: relative; z-index: 1; width: 94px; height: 66px; border: 5px solid var(--action-secondary); border-radius: 10px; background: var(--background-surface); box-shadow: 0 12px 24px #0d142922; }
-  .envelope i { position: absolute; inset: 0; overflow: hidden; }
-  .envelope i::before { position: absolute; top: -34px; left: 8px; width: 67px; height: 67px; border-right: 5px solid var(--action-primary); border-bottom: 5px solid var(--action-primary); content: ''; rotate: 45deg; }
   .seal, .paused, .page { z-index: 1; display: grid; width: 60px; height: 60px; place-items: center; border: 4px solid var(--action-secondary); border-radius: 50%; color: var(--action-secondary); background: var(--accent-lime); font-size: 32px; font-weight: 900; }
   .paused { color: var(--status-error-foreground); background: var(--status-error-surface); }.page { border-radius: 10px; background: var(--accent-orange); }
   .approved .status-art { background: color-mix(in srgb, var(--accent-lime) 35%, var(--background-surface)); }.rejected .status-art { background: var(--status-error-surface); }

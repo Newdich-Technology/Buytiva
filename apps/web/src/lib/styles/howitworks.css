@@ -19,7 +19,8 @@
 .story-step:nth-child(2)::before { background: var(--accent-orange); box-shadow: 0 0 0 1px var(--accent-orange); }
 .story-step:nth-child(3)::before { background: var(--accent-coral); box-shadow: 0 0 0 1px var(--accent-coral); }
 .story-step:nth-child(4)::before { background: var(--accent-lime); box-shadow: 0 0 0 1px var(--accent-lime); }
-.story-step b { color: var(--text-muted); font-size: 10px; letter-spacing: .1em; }
+.story-step lord-icon, .story-step .fallback { margin-bottom: 17px; color: var(--action-primary); }
+.story-step b { display: block; color: var(--text-muted); font-size: 10px; letter-spacing: .1em; }
 .story-step h3 { margin: 15px 0 7px; font: 750 20px/1.1 'Space Grotesk', sans-serif; letter-spacing: -.03em; }
 .story-step p { max-width: 230px; margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
 @keyframes detail-float { 50% { transform: translateY(-7px) rotate(-2deg); } }

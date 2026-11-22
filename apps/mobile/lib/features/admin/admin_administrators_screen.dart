@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../core/auth/secure_session_store.dart';
+import '../../core/design_system/lordicon_sources.dart';
 import '../../core/network/api_error.dart';
+import '../../core/widgets/buytiva_lordicon.dart';
 import '../../constants/auth_constants.dart';
 import '../auth/auth_repository.dart';
 
@@ -74,7 +76,7 @@ class _AdminAdministratorsScreenState extends State<AdminAdministratorsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Staff management'), actions: [IconButton(onPressed: _busy ? null : _load, icon: const Icon(Icons.refresh))]), body: ListView(padding: const EdgeInsets.all(20), children: [
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('Staff management'), actions: [IconButton(onPressed: _busy ? null : _load, icon: const BuytivaLordicon(assetPath: lordiconSpinner, label: 'Refresh staff', width: 24, height: 24, playOnLoad: true))]), body: ListView(padding: const EdgeInsets.all(20), children: [
     if (_error != null) Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
     TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'Staff email')),
     TextField(controller: _name, decoration: const InputDecoration(labelText: 'Display name')),

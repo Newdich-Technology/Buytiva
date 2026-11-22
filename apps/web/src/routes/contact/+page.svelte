@@ -1,11 +1,12 @@
 <script lang="ts">
+	import BuytivaLordicon from '../../lib/components/design/BuytivaLordicon.svelte';
 	import PublicPageFrame from '../../lib/components/marketing/PublicPageFrame.svelte';
 </script>
 
 <svelte:head><title>Contact Buytiva</title></svelte:head>
 <PublicPageFrame eyebrow="Contact" title="We’re preparing the right way to reach us." description="A public support email address and contact form have not been verified for this release, so we will not publish a guessed contact channel.">
-	<section class="contact-options"><article><span>01</span><h2>Questions about the product?</h2><p>Read the current answers and availability notes.</p><a href="/faq">Visit the FAQ</a></article><article><span>02</span><h2>Already applied?</h2><p>Use the secure email verification flow to check your procurer application.</p><a href="/application/status">Track an application</a></article><article><span>03</span><h2>Account access?</h2><p>Use the supported sign-in and password recovery flows.</p><a href="/login">Go to sign in</a></article></section>
-	<section class="contact-guide"><div><p class="eyebrow">Choose a safe next step</p><h2>Keep private account details private.</h2><p>There is no verified public support email or contact form in this release. Use the product’s available sign-in and application flows. Never send a password, one-time code or invitation link through an unverified channel.</p></div><a href="/support">See all current help options <span aria-hidden="true">↗</span></a></section>
+	<section class="contact-options"><article><span>01</span><h2>Questions about the product?</h2><p>Read the current answers and availability notes.</p><a href="/faq">Visit the FAQ <BuytivaLordicon name="search" width={20} height={20} animationState="hover-pinch" /></a></article><article><span>02</span><h2>Already applied?</h2><p>Use the secure email verification flow to check your procurer application.</p><a href="/application/status">Track an application <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a></article><article><span>03</span><h2>Account access?</h2><p>Use the supported sign-in and password recovery flows.</p><a href="/login">Go to sign in <BuytivaLordicon name="home" width={20} height={20} animationState="hover-pinch" /></a></article></section>
+	<section class="contact-guide"><div><p class="eyebrow">Choose a safe next step</p><h2>Keep private account details private.</h2><p>There is no verified public support email or contact form in this release. Use the product’s available sign-in and application flows. Never send a password, one-time code or invitation link through an unverified channel.</p></div><a href="/support">See all current help options <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a></section>
 </PublicPageFrame>
 
 <style>

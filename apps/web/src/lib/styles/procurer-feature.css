@@ -6,7 +6,7 @@
 .art-index { top: 21px; left: 25px; color: var(--text-primary); }
 .art-note { right: 22px; bottom: 19px; color: var(--text-secondary); }
 .procurer-copy { max-width: 540px; }
-.section-eyebrow { margin: 0 0 14px; color: var(--action-primary); font-size: 11px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.section-eyebrow { display: flex; align-items: center; gap: 7px; margin: 0 0 14px; color: var(--action-primary); font-size: 11px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
 .procurer-copy h2 { margin: 0; font: 800 clamp(39px, 5vw, 68px)/.93 'Space Grotesk', 'Arial Black', sans-serif; letter-spacing: -.075em; }
 .procurer-copy > p:not(.section-eyebrow) { margin: 23px 0 0; color: var(--text-secondary); font-size: 16px; line-height: 1.7; }
 .procurer-links { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 28px; }

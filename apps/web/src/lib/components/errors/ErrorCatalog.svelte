@@ -2,6 +2,7 @@
 	import { ERROR_ACTION_LABELS, ERROR_CATALOG } from '../../constants/errorCatalog.js';
 	import type { ErrorState } from '../../constants/errorCatalog.js';
 	import { resolveErrorIllustration } from '../../constants/errorIllustrations.js';
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	import '../../styles/error-catalog.css';
 
 	let { stateId, detail }: { stateId: string; detail?: string } = $props();
@@ -31,7 +32,7 @@
 
 {#if isInline}
 	<section class="error-inline" role="alert" aria-labelledby="inline-error-title">
-		<span class="inline-mark" aria-hidden="true">!</span>
+		<span class="inline-mark"><BuytivaLordicon name="warning" width={24} height={24} animationState="in-reveal" label="Error" /></span>
 		<div><p class="error-status">{errorState.statusLabel}</p><h2 id="inline-error-title">{errorState.title}</h2><p>{detail ?? errorState.body}</p>
 			{#if isInlineButton(errorState.primaryAction)}<button class="error-action" onclick={runRecoveryAction}>{recoveryLabel}</button>{:else}<a class="error-action" href={recoveryHref ?? '/'}>{recoveryLabel}</a>{/if}
 		</div>
@@ -40,7 +41,7 @@
 	<section class="error-stage" class:critical={errorState.severity === 'critical'} role="alert" aria-labelledby="error-title">
 		<div class="error-art"><svg viewBox="0 0 360 250" role="img" aria-label="Original Buytiva illustration for this error"><use href={`/illustrations/errors/error_scenes.svg#${artworkKey}`} /></svg><span class="error-art-label">Buytiva / recovery route</span></div>
 		<div class="error-copy"><p class="error-status">{errorState.statusLabel}</p><h1 id="error-title">{errorState.title}</h1><p>{detail ?? errorState.body}</p>
-			{#if isRouteButton(errorState.primaryAction)}<button class="error-action" onclick={runRecoveryAction}>{recoveryLabel} <span aria-hidden="true">↗</span></button>{:else}<a class="error-action" href={recoveryHref ?? '/'}>{recoveryLabel} <span aria-hidden="true">↗</span></a>{/if}
+			{#if isRouteButton(errorState.primaryAction)}<button class="error-action" onclick={runRecoveryAction}>{recoveryLabel} <BuytivaLordicon name="directions" width={21} height={21} animationState="hover-slide" /></button>{:else}<a class="error-action" href={recoveryHref ?? '/'}>{recoveryLabel} <BuytivaLordicon name="directions" width={21} height={21} animationState="hover-slide" /></a>{/if}
 		</div>
 	</section>
 {/if}

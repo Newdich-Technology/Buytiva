@@ -28,19 +28,29 @@ class BuytivaLordicon extends StatefulWidget {
 }
 
 class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingObserver {
-  late final IconController _controller = IconController.assets(widget.assetPath);
+  late IconController _controller;
   bool _ready = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _controller = _createController(widget.assetPath);
     _controller.addStatusListener(_handleControllerStatus);
   }
+
+  IconController _createController(String path) => path.startsWith('http') ? IconController.network(path) : IconController.assets(path);
 
   @override
   void didUpdateWidget(covariant BuytivaLordicon oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.assetPath != widget.assetPath) {
+      _controller.removeStatusListener(_handleControllerStatus);
+      _controller.clearStatusListeners();
+      _controller = _createController(widget.assetPath);
+      _controller.addStatusListener(_handleControllerStatus);
+      setState(() => _ready = false);
+    }
     if (oldWidget.playKey != widget.playKey && widget.playKey > 0 && _ready && !_reducedMotion) {
       _controller.playFromBeginning();
     }

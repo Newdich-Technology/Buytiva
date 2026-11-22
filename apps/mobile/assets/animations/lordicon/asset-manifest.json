@@ -1,4 +1,16 @@
 {
   "creator": "Oluwayemi Oyinlola",
-  "icons": []
+  "delivery": "official Lordicon CDN via IconController.network; local exports may replace these after licensed download",
+  "attribution": "Animated icons by Lordicon.com",
+  "icons": [
+    { "name": "cart", "source": "https://lordicon.com/icons/system/solid/146-cart", "cdn": "https://cdn.lordicon.com/system-solid-146-cart.json", "license": "free", "screens": ["onboarding.list", "home"], "state": "hover-pinch" },
+    { "name": "check", "source": "https://lordicon.com/icons/system/outline/37-check", "cdn": "https://cdn.lordicon.com/system-outline-37-check.json", "license": "free", "screens": ["onboarding.complete", "home"], "state": "in-reveal" },
+    { "name": "directions", "source": "https://lordicon.com/icons/system/solid/220-arrows-right-left", "cdn": "https://cdn.lordicon.com/system-solid-220-arrows-right-left.json", "license": "free", "screens": ["shared.actions"], "state": "hover-slide" },
+    { "name": "home", "source": "https://lordicon.com/icons/system/solid/63-home", "cdn": "https://cdn.lordicon.com/system-solid-63-home.json", "license": "free", "screens": ["shared.account"], "state": "hover-pinch" },
+    { "name": "location",  "source": "https://lordicon.com/icons/system/solid/18-location-pin", "cdn": "https://cdn.lordicon.com/system-solid-18-location-pin.json", "license": "free", "screens": ["onboarding.match"], "state": "hover-pinch" },
+    { "name": "spinner", "source": "https://lordicon.com/icons/system/outline/4029-spinner-dashes", "cdn": "https://cdn.lordicon.com/laducuyh.json", "license": "free", "screens": ["admin.staff.refresh"], "state": "loop-cycle" },
+    { "name": "theme", "source": "https://lordicon.com/icons/system/solid/237-star", "cdn": "https://cdn.lordicon.com/system-solid-237-star.json", "license": "free", "screens": ["home.theme"], "state": "hover-pinch" },
+    { "name": "person-exit", "source": "https://lordicon.com/icons/system/solid/1725-person-exit", "cdn": "https://cdn.lordicon.com/system-solid-1725-person-exit.json", "license": "free", "screens": ["home.sign-out"], "state": "hover-pinch" },
+    { "name": "warning",  "source": "https://lordicon.com/icons/system/outline/260-warning-circle", "cdn": "https://cdn.lordicon.com/system-outline-260-warning-circle.json", "license": "free", "screens": ["security.revoke"], "state": "hover-pinch" }
+  ]
 }

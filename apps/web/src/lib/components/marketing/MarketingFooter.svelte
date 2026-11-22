@@ -1,6 +1,10 @@
+<script lang="ts">
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
+</script>
+
 <footer class="buytiva-footer">
 	<section class="footer-callout" aria-labelledby="footer-title">
-		<div class="footer-copy"><p class="eyebrow">Keep the journey moving</p><h2 id="footer-title">The everyday, handled with care.</h2><p>Buytiva is a Newdich product connecting customer lists with reviewed local procurers.</p><a class="footer-cta" href="/register">Start on the web <span aria-hidden="true">↗</span></a><small class="footer-note">Official app-store links will be added when the mobile releases are published.</small></div>
+		<div class="footer-copy"><p class="eyebrow"><BuytivaLordicon name="directions" width={21} height={21} animationState="in-reveal" /> Keep the journey moving</p><h2 id="footer-title">The everyday, handled with care.</h2><p>Buytiva is a Newdich product connecting customer lists with reviewed local procurers.</p><a class="footer-cta" href="/register">Start on the web <BuytivaLordicon name="directions" width={22} height={22} animationState="hover-slide" /></a><small class="footer-note">Official app-store links will be added when the mobile releases are published.</small></div>
 		<img class="footer-scene" src="/illustrations/marketing/footer-journey.svg" alt="A local procurer carries a prepared parcel along a route." loading="lazy" />
 	</section>
 	<div class="footer-base">
@@ -10,5 +14,5 @@
 		<nav class="link-column" aria-label="Company and legal"><strong>Company & legal</strong><a href="/about">About Newdich</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refund-policy">Refund policy</a><a href="/accessibility">Accessibility</a></nav>
 	</div>
 	<div class="word-band" aria-hidden="true">BUYTIVA</div>
-	<div class="footer-meta"><span>© {new Date().getFullYear()} Buytiva, a Newdich product.</span><a href="#top">Back to top ↑</a></div>
+	<div class="footer-meta"><span>© {new Date().getFullYear()} Buytiva, a Newdich product. <a href="https://lordicon.com" rel="noreferrer">Animated icons by Lordicon.com</a></span><a href="#top">Back to top <BuytivaLordicon name="vertical" width={18} height={18} animationState="hover-slide" /></a></div>
 </footer>

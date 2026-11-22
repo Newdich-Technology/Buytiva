@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	import '../../styles/editorial-hero.css';
 </script>
 
@@ -9,10 +10,10 @@
 			<h1 id="hero-title"><span>You list it.</span><em>They get it.</em></h1>
 			<p class="hero-summary">Create your shopping list, choose a verified procurer near your delivery location, and get your shopping handled.</p>
 			<div class="hero-actions">
-				<a class="primary" href="/register">Start shopping <span aria-hidden="true">↗</span></a>
-				<a class="secondary" href="/how-it-works">See how it works <span aria-hidden="true">↓</span></a>
+				<a class="primary" href="/register">Start shopping <BuytivaLordicon name="directions" width={22} height={22} animationState="hover-slide" /></a>
+				<a class="secondary" href="/how-it-works">See how it works <BuytivaLordicon name="directions" width={22} height={22} animationState="hover-slide" /></a>
 			</div>
-			<p class="hero-proof"><span class="proof-mark" aria-hidden="true">✓</span> The list, quote and next step stay clear.</p>
+			<p class="hero-proof"><BuytivaLordicon name="check" width={23} height={23} trigger="in" loading="lazy" label="" /> The list, quote and next step stay clear.</p>
 		</div>
 		<div class="hero-visual" aria-label="Buytiva shopping journey illustration">
 			<div class="visual-frame">
@@ -21,7 +22,7 @@
 					<img src="/illustrations/marketing/customer-procurer-scene.svg" alt="A shopping list travels along a route from a customer to a verified local procurer with a parcel ready for delivery." fetchpriority="high" />
 					<span class="scene-tag list-tag">Your list</span><span class="scene-tag match-tag">Verified match</span><span class="scene-tag handoff-tag">Ready to deliver</span>
 				</div>
-				<div class="visual-foot"><span>Local hands · your list</span><span>Scroll to explore ↓</span></div>
+				<div class="visual-foot"><span>Local hands · your list</span><span>Scroll to explore <BuytivaLordicon name="vertical" width={18} height={18} animationState="hover-slide" /></span></div>
 			</div>
 		</div>
 	</div>

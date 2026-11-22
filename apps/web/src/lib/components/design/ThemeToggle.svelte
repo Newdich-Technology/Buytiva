@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { THEME_PREFERENCE_STORAGE_KEY } from '../../constants/cookieConsent.js';
   import { hasFunctionalStorageConsent } from '../../utils/cookiePreferences.js';
+  import BuytivaLordicon from './BuytivaLordicon.svelte';
   let { lightOnDark = false }: { lightOnDark?: boolean } = $props();
   let mode = $state<'system' | 'light' | 'dark'>('system');
   let dark = $state(false);
@@ -40,7 +41,7 @@
 </script>
 
 <button class:light-on-dark={lightOnDark} class="theme-toggle" type="button" aria-label={`Theme ${mode}; activate to change`} onclick={toggleTheme}>
-  <span aria-hidden="true">{mode === 'system' ? '◐' : dark ? '☼' : '☾'}</span>
+  <BuytivaLordicon name="theme" width={22} height={22} animationState="hover-pinch" label="" />
 </button>
 
 <style>

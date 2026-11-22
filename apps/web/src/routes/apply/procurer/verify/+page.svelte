@@ -1,12 +1,13 @@
 <script lang="ts">
+	import BuytivaLordicon from '../../../../lib/components/design/BuytivaLordicon.svelte';
 	import PublicPageFrame from '../../../../lib/components/marketing/PublicPageFrame.svelte';
 	let { form, data } = $props();
 </script>
 
 <svelte:head><title>Verify procurer application | Buytiva</title></svelte:head>
 <PublicPageFrame eyebrow="Procurer application" title="Confirm the person behind the application." description="Use the verification code sent to the application email. Review starts after the email address is confirmed.">
-	{#if form?.verified}<section class="verified-state" role="status"><img src="/illustrations/errors/lost_list.light.svg" alt="A verified shopping list." /><div><p class="label">EMAIL VERIFIED</p><h2>Application email confirmed.</h2><p>Keep your application reference and use the status page to follow the next recorded update.</p><a href="/application/status">Track application status <span aria-hidden="true">↗</span></a></div></section>
-	{:else}<form method="POST" class="verify-card"><p class="label">ONE-TIME CODE</p><h2>Verify your application</h2><p>Codes expire for your security. Request a fresh code from the application flow if this one no longer works.</p>{#if form?.error}<p class="error" role="alert">{form.error}</p>{/if}<label>Email address<input name="email" type="email" value={data.email} autocomplete="email" required /></label><label>Challenge reference<input name="challengeId" value={data.challengeId} required /></label><label>Verification code<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required /></label><button>Verify application email <span aria-hidden="true">↗</span></button></form>{/if}
+	{#if form?.verified}<section class="verified-state" role="status"><img src="/illustrations/errors/lost_list.light.svg" alt="A verified shopping list." /><div><p class="label">EMAIL VERIFIED</p><h2>Application email confirmed.</h2><p>Keep your application reference and use the status page to follow the next recorded update.</p><a href="/application/status">Track application status <BuytivaLordicon name="directions" width={20} height={20} animationState="hover-slide" /></a></div></section>
+	{:else}<form method="POST" class="verify-card"><p class="label">ONE-TIME CODE</p><h2>Verify your application</h2><p>Codes expire for your security. Request a fresh code from the application flow if this one no longer works.</p>{#if form?.error}<p class="error" role="alert">{form.error}</p>{/if}<label>Email address<input name="email" type="email" value={data.email} autocomplete="email" required /></label><label>Challenge reference<input name="challengeId" value={data.challengeId} required /></label><label>Verification code<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required /></label><button>Verify application email <BuytivaLordicon name="check" width={20} height={20} animationState="hover-pinch" /></button></form>{/if}
 </PublicPageFrame>
 
 <style>

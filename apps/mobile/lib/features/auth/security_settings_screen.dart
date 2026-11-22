@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/auth/secure_session_store.dart';
+import '../../core/design_system/lordicon_sources.dart';
+import '../../core/widgets/buytiva_lordicon.dart';
 import 'auth_repository.dart';
 
 class SecuritySettingsScreen extends StatefulWidget {
@@ -83,7 +85,7 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
         const SizedBox(height: 18), const Text('Active sessions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         if (_sessions.isEmpty) const ListTile(title: Text('No active sessions returned.')),
         for (final value in _sessions)
-          ListTile(title: Text(value['deviceLabel'] as String? ?? 'Unnamed device'), subtitle: Text('Expires ${value['expiresAt']}'), trailing: IconButton(tooltip: 'Revoke session', onPressed: _busy ? null : () => _revoke(value['id'] as String), icon: const Icon(Icons.close))),
+          ListTile(title: Text(value['deviceLabel'] as String? ?? 'Unnamed device'), subtitle: Text('Expires ${value['expiresAt']}'), trailing: IconButton(tooltip: 'Revoke session', onPressed: _busy ? null : () => _revoke(value['id'] as String), icon: const BuytivaLordicon(assetPath: lordiconWarning, label: 'Revoke session', width: 24, height: 24, playOnLoad: true))),
         OutlinedButton(onPressed: _busy ? null : _load, child: const Text('Refresh sessions')),
         const SizedBox(height: 12), FilledButton.tonal(onPressed: _busy ? null : _logoutAll, child: const Text('Sign out on all devices')),
       ],

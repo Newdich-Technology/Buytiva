@@ -3,6 +3,7 @@
 	import { COOKIE_PREFERENCE_CATEGORIES, COOKIE_PREFERENCES_UPDATED_EVENT, OPEN_COOKIE_PREFERENCES_EVENT, THEME_PREFERENCE_STORAGE_KEY } from '../../constants/cookieConsent.js';
 	import type { CookiePreferenceRecord, CookiePreferenceSelection } from '../../constants/cookieConsent.js';
 	import { readCookiePreferences, saveCookiePreferences } from '../../utils/cookiePreferences.js';
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	let bannerVisible = $state(false);
 	let dialog: HTMLDialogElement | undefined = $state();
 	let message = $state('');
@@ -68,7 +69,7 @@
 </aside>{/if}
 {#if message}<p class="consent-message" role="status">{message}</p>{/if}
 <dialog bind:this={dialog} class="consent-dialog" aria-labelledby="consent-title">
-	<div class="dialog-heading"><div><p class="eyebrow">Your privacy choices</p><h2 id="consent-title">Cookie preferences</h2></div><button class="close" type="button" aria-label="Close preferences" onclick={() => dialog?.close()}>×</button></div>
+	<div class="dialog-heading"><div><p class="eyebrow">Your privacy choices</p><h2 id="consent-title">Cookie preferences</h2></div><button class="close" type="button" aria-label="Close preferences" onclick={() => dialog?.close()}><BuytivaLordicon name="warning" width={22} height={22} animationState="morph-select" label="" /></button></div>
 	<p class="dialog-intro">Required sign-in and security storage is always on. Choose whether Buytiva may remember functional settings or use optional trackers. No analytics or marketing trackers are currently enabled.</p>
 	<div class="preference-row"><div><strong>Strictly necessary</strong><p>Sign-in, session security, and saving your consent choice.</p></div><span class="always-on">Always on</span></div>
 	{#each COOKIE_PREFERENCE_CATEGORIES as category (category.key)}<label class="preference-row"><div><strong>{category.label}</strong><p>{category.detail}</p></div><input type="checkbox" bind:checked={selection[category.key]} aria-label={category.label} /></label>{/each}

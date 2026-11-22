@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
 	import '../../styles/howitworks.css';
 </script>
 
@@ -13,9 +14,9 @@
 		<div class="board-caption"><span>One connected journey · not five disconnected steps</span><strong>Designed around clarity</strong></div>
 	</div>
 	<div class="step-rail" aria-label="Buytiva journey steps">
-		<article class="story-step"><b>01 / LIST</b><h3>Make the request</h3><p>Start with the items, quantities and destination that matter to you.</p></article>
-		<article class="story-step"><b>02 / MATCH</b><h3>Find local know-how</h3><p>See a verified procurer whose approved area covers the delivery.</p></article>
-		<article class="story-step"><b>03 / REVIEW</b><h3>Know the quote</h3><p>Review the complete breakdown before deciding on the next step.</p></article>
-		<article class="story-step"><b>04 / HANDOFF</b><h3>Stay in the loop</h3><p>Keep communication and order progress connected through delivery.</p></article>
+		<article class="story-step"><BuytivaLordicon name="cart" width={30} height={30} animationState="hover-pinch" /><b>01 / LIST</b><h3>Make the request</h3><p>Start with the items, quantities and destination that matter to you.</p></article>
+		<article class="story-step"><BuytivaLordicon name="location" width={30} height={30} animationState="hover-pinch" /><b>02 / MATCH</b><h3>Find local know-how</h3><p>See a verified procurer whose approved area covers the delivery.</p></article>
+		<article class="story-step"><BuytivaLordicon name="check" width={30} height={30} animationState="hover-pinch" /><b>03 / REVIEW</b><h3>Know the quote</h3><p>Review the complete breakdown before deciding on the next step.</p></article>
+		<article class="story-step"><BuytivaLordicon name="directions" width={30} height={30} animationState="hover-slide" /><b>04 / HANDOFF</b><h3>Stay in the loop</h3><p>Keep communication and order progress connected through delivery.</p></article>
 	</div>
 </section>

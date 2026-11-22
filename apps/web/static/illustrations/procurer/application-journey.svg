@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" fill="none">
-  <path d="M76 329c70-103 154-132 252-99 91 30 168 17 245-82" stroke="#2457E7" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 16"/>
+  <style>.route{animation:route-flow 8s linear infinite}.paper{animation:paper-float 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.person{animation:person-breathe 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}.badge{animation:badge-pulse 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes route-flow{to{stroke-dashoffset:-150}}@keyframes paper-float{50%{transform:translateY(-7px) rotate(-1deg)}}@keyframes person-breathe{50%{transform:translateY(-4px)}}@keyframes badge-pulse{50%{transform:scale(1.06)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}</style>
+  <path class="route" d="M76 329c70-103 154-132 252-99 91 30 168 17 245-82" stroke="#2457E7" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 16"/>
   <path d="M93 90c34-43 82-56 123-34m349 11c32 16 53 41 63 73" stroke="#FF675B" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="583" cy="259" r="56" fill="#B5EB5A"/>
+  <circle class="badge" cx="583" cy="259" r="56" fill="#B5EB5A"/>
   <path d="m558 259 19 19 36-43" stroke="#17213B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
   <ellipse cx="349" cy="361" rx="205" ry="24" fill="#17213B" fill-opacity=".1"/>
-  <path d="M216 128c0-33 26-59 59-59h118c33 0 59 26 59 59v192H216V128Z" fill="#FFFCF6" stroke="#17213B" stroke-width="7"/>
+  <path class="paper" d="M216 128c0-33 26-59 59-59h118c33 0 59 26 59 59v192H216V128Z" fill="#FFFCF6" stroke="#17213B" stroke-width="7"/>
   <path d="M246 142h176M246 179h143M246 216h155" stroke="#A8B7CF" stroke-width="11" stroke-linecap="round"/>
   <circle cx="264" cy="267" r="9" fill="#FF9E42"/><path d="m286 267 92 0" stroke="#2457E7" stroke-width="10" stroke-linecap="round"/>
   <path d="M313 81V60c0-13 10-23 23-23s23 10 23 23v21" stroke="#2457E7" stroke-width="8"/>
