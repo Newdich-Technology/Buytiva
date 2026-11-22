@@ -40,7 +40,13 @@ jobs:
       # This is an isolated, disposable database; no migrations exist yet.
       - run: pnpm db:sync
       # Integration suites clear shared tables, so run files sequentially.
-      - run: pnpm test --no-file-parallelism
+      - name: Test backend
+        run: |
+          set -o pipefail
+          pnpm test --no-file-parallelism 2>&1 | tee /tmp/backend-test.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/backend-test.log').read_text()[-16000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm --filter @buytiva/web build
@@ -61,6 +67,12 @@ jobs:
           channel: stable
           flutter-version: '3.32.8'
           cache: true
-      - run: flutter pub get
+      - name: Resolve Flutter dependencies
+        run: |
+          set -o pipefail
+          flutter pub get 2>&1 | tee /tmp/flutter-pub.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-pub.log').read_text()[-8000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
       - run: flutter analyze
       - run: flutter test
