@@ -24,3 +24,8 @@
 @media(max-width:900px){.buytiva-footer .footer-callout{grid-template-columns:1fr;gap:12px;padding:50px 28px}.buytiva-footer .footer-scene{width:min(90%,620px);justify-self:center}.buytiva-footer .footer-base{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 22px;padding:40px 28px}}
 @media(max-width:520px){.buytiva-footer .footer-callout{min-height:0;padding:46px 22px 28px}.buytiva-footer .footer-callout h2{font-size:clamp(45px,13vw,62px)}.buytiva-footer .footer-scene{width:100%}.buytiva-footer .footer-base{gap:30px 18px;padding:34px 22px}.buytiva-footer .footer-brand-group{grid-column:1/-1}.buytiva-footer .word-band{padding-left:16px;font-size:22vw}.buytiva-footer .copyright{flex-direction:column;padding:18px 22px}}
 @media(prefers-reduced-motion:reduce){.buytiva-footer .footer-copy,.buytiva-footer .footer-scene{animation:none}.buytiva-footer .footer-callout a{transition:none}}
+@media (min-width: 1100px) {
+  .buytiva-footer .footer-callout { min-height: 510px; padding-top: 80px; padding-bottom: 80px; }
+  .buytiva-footer .footer-scene { width: min(100%, 760px); }
+  .buytiva-footer .footer-base { padding-top: 70px; padding-bottom: 70px; }
+}

@@ -1,0 +1,634 @@
+{
+  "version": "1.0",
+  "brand": "Buytiva",
+  "artFamily": "Buytiva Buddy, original expressive drawn ribbon shape with parcels, lists and support motifs",
+  "sourceOfTruth": "Stable backend error codes override generic HTTP status; verify actual names",
+  "actionDefinitions": {
+    "fix_fields": "Focus first invalid field and preserve valid input",
+    "login": "Navigate to login retaining safe return intent",
+    "role_home": "Navigate to backend-authorized role home",
+    "go_home": "Navigate to public or role-appropriate home",
+    "go_back": "Navigate to last safe screen",
+    "retry_safe": "Retry only idempotent requests; verify payment/order status first",
+    "review_quote": "Fetch and display latest versioned quote",
+    "request_invitation": "Use actual backend-supported invite recovery or support",
+    "choose_file": "Open validated native file chooser",
+    "contact_support": "Open authorized support conversation or approved contact method",
+    "wait": "Show real retry-after or safe countdown",
+    "check_status": "Query canonical order/service status, no duplicate payment",
+    "reconnect": "Re-check connectivity and revalidate session",
+    "change_area": "Open delivery area picker",
+    "add_item": "Focus shopping item creation",
+    "track_application": "Open real tracked application status",
+    "view_application": "Open application decision details",
+    "check_payment": "Fetch server/provider-verified payment status",
+    "view_fund_status": "Show available vs pending vs restricted funds separately",
+    "view_upload_status": "Query upload moderation job status"
+  },
+  "states": [
+    {
+      "id": "bad_request",
+      "httpStatus": 400,
+      "presentation": "form",
+      "title": "Check your details",
+      "body": "A few details need another look.",
+      "primaryAction": "fix_fields",
+      "illustration": "paper_scraps",
+      "lightThemeAsset": "errors/paper_scraps.light.svg",
+      "darkThemeAsset": "errors/paper_scraps.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "unauthenticated",
+      "httpStatus": 401,
+      "presentation": "route",
+      "title": "Let’s get you signed in.",
+      "body": "Your session ended. Sign in to continue.",
+      "primaryAction": "login",
+      "illustration": "sleepy_key",
+      "lightThemeAsset": "errors/sleepy_key.light.svg",
+      "darkThemeAsset": "errors/sleepy_key.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "forbidden",
+      "httpStatus": 403,
+      "presentation": "route",
+      "title": "This part isn’t on your list.",
+      "body": "You don’t have permission to open this area.",
+      "primaryAction": "role_home",
+      "illustration": "closed_ribbon_door",
+      "lightThemeAsset": "errors/closed_ribbon_door.light.svg",
+      "darkThemeAsset": "errors/closed_ribbon_door.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "not_found",
+      "httpStatus": 404,
+      "presentation": "route",
+      "title": "This page isn't on our list.",
+      "body": "The page you're looking for may have moved or doesn't exist.",
+      "primaryAction": "go_home",
+      "illustration": "lost_list",
+      "lightThemeAsset": "errors/lost_list.light.svg",
+      "darkThemeAsset": "errors/lost_list.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "method_not_allowed",
+      "httpStatus": 405,
+      "presentation": "inline",
+      "title": "That action isn’t available.",
+      "body": "Try an available option instead.",
+      "primaryAction": "go_back",
+      "illustration": "puzzled_arrow",
+      "lightThemeAsset": "errors/puzzled_arrow.light.svg",
+      "darkThemeAsset": "errors/puzzled_arrow.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "request_timeout",
+      "httpStatus": 408,
+      "presentation": "context",
+      "title": "That took a little too long.",
+      "body": "Your request timed out. We can try again safely.",
+      "primaryAction": "retry_safe",
+      "illustration": "tired_clock",
+      "lightThemeAsset": "errors/tired_clock.light.svg",
+      "darkThemeAsset": "errors/tired_clock.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "stale_quote",
+      "httpStatus": 409,
+      "presentation": "context",
+      "title": "Your quote has changed.",
+      "body": "Review the updated amount before continuing.",
+      "primaryAction": "review_quote",
+      "illustration": "two_list_sheets",
+      "lightThemeAsset": "errors/two_list_sheets.light.svg",
+      "darkThemeAsset": "errors/two_list_sheets.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "invitation_expired",
+      "httpStatus": 410,
+      "presentation": "route",
+      "title": "This invitation has expired.",
+      "body": "For your security, the invitation can no longer be used.",
+      "primaryAction": "request_invitation",
+      "illustration": "unraveled_ribbon",
+      "lightThemeAsset": "errors/unraveled_ribbon.light.svg",
+      "darkThemeAsset": "errors/unraveled_ribbon.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "upload_too_large",
+      "httpStatus": 413,
+      "presentation": "field",
+      "title": "That file is too large.",
+      "body": "Choose a smaller file that meets the upload limit.",
+      "primaryAction": "choose_file",
+      "illustration": "oversized_folder",
+      "lightThemeAsset": "errors/oversized_folder.light.svg",
+      "darkThemeAsset": "errors/oversized_folder.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "unsupported_media",
+      "httpStatus": 415,
+      "presentation": "field",
+      "title": "We can’t use that file type.",
+      "body": "Choose one of the supported file formats.",
+      "primaryAction": "choose_file",
+      "illustration": "mixed_file_shapes",
+      "lightThemeAsset": "errors/mixed_file_shapes.light.svg",
+      "darkThemeAsset": "errors/mixed_file_shapes.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "validation_failed",
+      "httpStatus": 422,
+      "presentation": "field",
+      "title": "There are a few things to fix.",
+      "body": "Check the highlighted fields to continue.",
+      "primaryAction": "fix_fields",
+      "illustration": "pencil_list",
+      "lightThemeAsset": "errors/pencil_list.light.svg",
+      "darkThemeAsset": "errors/pencil_list.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "account_locked",
+      "httpStatus": 423,
+      "presentation": "context",
+      "title": "Your account needs attention.",
+      "body": "Please follow the recovery instructions or contact support.",
+      "primaryAction": "contact_support",
+      "illustration": "ribbon_lock",
+      "lightThemeAsset": "errors/ribbon_lock.light.svg",
+      "darkThemeAsset": "errors/ribbon_lock.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "rate_limited",
+      "httpStatus": 429,
+      "presentation": "context",
+      "title": "A little pause, please.",
+      "body": "Too many attempts. Try again when the timer allows.",
+      "primaryAction": "wait",
+      "illustration": "patient_clock",
+      "lightThemeAsset": "errors/patient_clock.light.svg",
+      "darkThemeAsset": "errors/patient_clock.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "server_error",
+      "httpStatus": 500,
+      "presentation": "route",
+      "title": "Well, that wasn’t on the list.",
+      "body": "Something unexpected happened. Your order status has not been changed by this screen.",
+      "primaryAction": "retry_safe",
+      "illustration": "tangled_ribbon",
+      "lightThemeAsset": "errors/tangled_ribbon.light.svg",
+      "darkThemeAsset": "errors/tangled_ribbon.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "bad_gateway",
+      "httpStatus": 502,
+      "presentation": "route",
+      "title": "Our connection hit a bump.",
+      "body": "A service is not responding properly right now.",
+      "primaryAction": "retry_safe",
+      "illustration": "parcel_bridge",
+      "lightThemeAsset": "errors/parcel_bridge.light.svg",
+      "darkThemeAsset": "errors/parcel_bridge.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "service_unavailable",
+      "httpStatus": 503,
+      "presentation": "route",
+      "title": "We’ll be right back.",
+      "body": "Buytiva is temporarily unavailable. Please try again.",
+      "primaryAction": "retry_safe",
+      "illustration": "resting_buddy",
+      "lightThemeAsset": "errors/resting_buddy.light.svg",
+      "darkThemeAsset": "errors/resting_buddy.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "gateway_timeout",
+      "httpStatus": 504,
+      "presentation": "route",
+      "title": "That’s taking longer than expected.",
+      "body": "The service did not respond in time. Check status before retrying.",
+      "primaryAction": "check_status",
+      "illustration": "stalled_delivery_route",
+      "lightThemeAsset": "errors/stalled_delivery_route.light.svg",
+      "darkThemeAsset": "errors/stalled_delivery_route.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "offline",
+      "httpStatus": 0,
+      "presentation": "route",
+      "title": "Looks like you took a detour.",
+      "body": "Connect to the internet to pick up where you left off.",
+      "primaryAction": "reconnect",
+      "illustration": "offline_speech_bubble",
+      "lightThemeAsset": "errors/offline_speech_bubble.light.svg",
+      "darkThemeAsset": "errors/offline_speech_bubble.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "no_coverage",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "Not in your area just yet.",
+      "body": "Try a different delivery destination or check back later.",
+      "primaryAction": "change_area",
+      "illustration": "quiet_map",
+      "lightThemeAsset": "errors/quiet_map.light.svg",
+      "darkThemeAsset": "errors/quiet_map.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "no_procurers",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "No procurers here yet.",
+      "body": "No verified procurer currently serves this delivery address.",
+      "primaryAction": "change_area",
+      "illustration": "empty_meeting_spot",
+      "lightThemeAsset": "errors/empty_meeting_spot.light.svg",
+      "darkThemeAsset": "errors/empty_meeting_spot.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "empty_shopping_list",
+      "httpStatus": null,
+      "presentation": "empty",
+      "title": "Your list has room for something.",
+      "body": "Add the first item to get started.",
+      "primaryAction": "add_item",
+      "illustration": "blank_floating_list",
+      "lightThemeAsset": "errors/blank_floating_list.light.svg",
+      "darkThemeAsset": "errors/blank_floating_list.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "application_pending",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "Your application is in review.",
+      "body": "We’ll email you when there is an update.",
+      "primaryAction": "track_application",
+      "illustration": "waiting_mail",
+      "lightThemeAsset": "errors/waiting_mail.light.svg",
+      "darkThemeAsset": "errors/waiting_mail.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "application_rejected",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "Your application needs a new direction.",
+      "body": "See the review outcome and the next permitted action.",
+      "primaryAction": "view_application",
+      "illustration": "returned_form",
+      "lightThemeAsset": "errors/returned_form.light.svg",
+      "darkThemeAsset": "errors/returned_form.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "payment_pending",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "Your payment is being checked.",
+      "body": "We’re confirming the status. Please don’t pay again yet.",
+      "primaryAction": "check_payment",
+      "illustration": "floating_receipt",
+      "lightThemeAsset": "errors/floating_receipt.light.svg",
+      "darkThemeAsset": "errors/floating_receipt.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "payment_failed",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "That payment didn’t go through.",
+      "body": "Check the verified status before choosing another payment method.",
+      "primaryAction": "check_payment",
+      "illustration": "slipped_receipt",
+      "lightThemeAsset": "errors/slipped_receipt.light.svg",
+      "darkThemeAsset": "errors/slipped_receipt.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "payout_not_eligible",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "These funds aren’t ready yet.",
+      "body": "See what must happen before a withdrawal is available.",
+      "primaryAction": "view_fund_status",
+      "illustration": "separate_jars",
+      "lightThemeAsset": "errors/separate_jars.light.svg",
+      "darkThemeAsset": "errors/separate_jars.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "file_moderation_pending",
+      "httpStatus": null,
+      "presentation": "context",
+      "title": "We’re checking that upload.",
+      "body": "Your file is being reviewed and isn’t available yet.",
+      "primaryAction": "view_upload_status",
+      "illustration": "magnifying_file",
+      "lightThemeAsset": "errors/magnifying_file.light.svg",
+      "darkThemeAsset": "errors/magnifying_file.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "file_moderation_rejected",
+      "httpStatus": null,
+      "presentation": "field",
+      "title": "We can’t accept that upload.",
+      "body": "Choose a permitted file or follow the review process.",
+      "primaryAction": "choose_file",
+      "illustration": "file_with_stop",
+      "lightThemeAsset": "errors/file_with_stop.light.svg",
+      "darkThemeAsset": "errors/file_with_stop.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "unsupported_deep_link",
+      "httpStatus": null,
+      "presentation": "route",
+      "title": "That link can’t take you there.",
+      "body": "Open Buytiva and navigate to the right place.",
+      "primaryAction": "role_home",
+      "illustration": "split_signpost",
+      "lightThemeAsset": "errors/split_signpost.light.svg",
+      "darkThemeAsset": "errors/split_signpost.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "email_verification_required",
+      "httpStatus": 403,
+      "presentation": "context",
+      "title": "Check your email to continue.",
+      "body": "Verify the address on your Buytiva account, then try again.",
+      "primaryAction": "verify_email",
+      "illustration": "pencil_list",
+      "lightThemeAsset": "errors/email_verification.light.svg",
+      "darkThemeAsset": "errors/email_verification.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "mfa_required",
+      "httpStatus": 401,
+      "presentation": "route",
+      "title": "One more sign-in check.",
+      "body": "Complete the verification step required for this account.",
+      "primaryAction": "login",
+      "illustration": "sleepy_key",
+      "lightThemeAsset": "errors/mfa_required.light.svg",
+      "darkThemeAsset": "errors/mfa_required.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "password_change_required",
+      "httpStatus": 403,
+      "presentation": "route",
+      "title": "Choose a new password first.",
+      "body": "Your account must update its password before continuing.",
+      "primaryAction": "change_password",
+      "illustration": "pencil_list",
+      "lightThemeAsset": "errors/password_change.light.svg",
+      "darkThemeAsset": "errors/password_change.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "request_conflict",
+      "httpStatus": 409,
+      "presentation": "context",
+      "title": "This has changed since you opened it.",
+      "body": "Reload the latest information before you try again.",
+      "primaryAction": "retry_safe",
+      "illustration": "two_list_sheets",
+      "lightThemeAsset": "errors/request_conflict.light.svg",
+      "darkThemeAsset": "errors/request_conflict.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "application_unavailable",
+      "httpStatus": 503,
+      "presentation": "context",
+      "title": "Applications are temporarily unavailable.",
+      "body": "Your application has not been changed by this message. Try again later.",
+      "primaryAction": "retry_safe",
+      "illustration": "waiting_mail",
+      "lightThemeAsset": "errors/application_unavailable.light.svg",
+      "darkThemeAsset": "errors/application_unavailable.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    },
+    {
+      "id": "invitation_invalid",
+      "httpStatus": 410,
+      "presentation": "route",
+      "title": "This invitation can’t be used.",
+      "body": "It may have expired, been revoked, or already been used.",
+      "primaryAction": "contact_support",
+      "illustration": "unraveled_ribbon",
+      "lightThemeAsset": "errors/invitation_invalid.light.svg",
+      "darkThemeAsset": "errors/invitation_invalid.dark.svg",
+      "motion": "play once only; static when reduced motion",
+      "mustMapToBackendStableCode": true,
+      "sharedAcross": [
+        "Flutter",
+        "SvelteKit"
+      ]
+    }
+  ],
+  "rules": [
+    "Not every HTTP failure receives a full-screen illustration",
+    "Contextual error render must preserve editable data",
+    "Do not reveal sensitive security/account status when the backend masks it",
+    "Use exact stable error codes from implementation, do not infer solely HTTP class",
+    "User actions and illustrations must align on Flutter and web",
+    "Financial recoveries query existing state before any duplicate charge or transfer",
+    "Report missing error codes or endpoint gaps rather than faking behavior"
+  ]
+}

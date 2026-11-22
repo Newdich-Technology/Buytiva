@@ -44,7 +44,7 @@ class _AdminAdministratorsScreenState extends State<AdminAdministratorsScreen> {
       final values = await Future.wait([_repository.listStaff(token), _repository.getStaffPermissions(token)]);
       _staff = (values[0] as List<dynamic>).map((value) => value as Map<String, dynamic>).toList();
       _profiles = (values[1] as Map<String, dynamic>)['profiles'] as Map<String, dynamic>;
-      _profile ??= _profiles.isEmpty ? null : _profiles.keys.first as String;
+      _profile ??= _profiles.isEmpty ? null : _profiles.keys.first;
     } on ApiError catch (error) { _error = error.message; } catch (_) { _error = authClientErrorMessages['staffLoadFailed']; }
     setState(() => _busy = false);
   }
@@ -78,8 +78,8 @@ class _AdminAdministratorsScreenState extends State<AdminAdministratorsScreen> {
     if (_error != null) Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
     TextField(controller: _email, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'Staff email')),
     TextField(controller: _name, decoration: const InputDecoration(labelText: 'Display name')),
-    DropdownButtonFormField<String>(value: _role, items: const [DropdownMenuItem(value: 'ADMIN', child: Text('Administrator')), DropdownMenuItem(value: 'SUPER_ADMIN', child: Text('Super Administrator'))], onChanged: (value) => setState(() => _role = value ?? 'ADMIN'), decoration: const InputDecoration(labelText: 'Role')),
-    if (_role == 'ADMIN' && _profiles.isNotEmpty) DropdownButtonFormField<String>(value: _profile, items: _profiles.keys.map((key) => DropdownMenuItem(value: key as String, child: Text(key))).toList(), onChanged: (value) => setState(() => _profile = value), decoration: const InputDecoration(labelText: 'Permission profile')),
+    DropdownButtonFormField<String>(initialValue: _role, items: const [DropdownMenuItem(value: 'ADMIN', child: Text('Administrator')), DropdownMenuItem(value: 'SUPER_ADMIN', child: Text('Super Administrator'))], onChanged: (value) => setState(() => _role = value ?? 'ADMIN'), decoration: const InputDecoration(labelText: 'Role')),
+    if (_role == 'ADMIN' && _profiles.isNotEmpty) DropdownButtonFormField<String>(initialValue: _profile, items: _profiles.keys.map((key) => DropdownMenuItem(value: key, child: Text(key))).toList(), onChanged: (value) => setState(() => _profile = value), decoration: const InputDecoration(labelText: 'Permission profile')),
     TextField(controller: _reason, minLines: 1, maxLines: 3, decoration: const InputDecoration(labelText: 'Reason for access change')),
     FilledButton(onPressed: _busy ? null : _invite, child: const Text('Send staff invitation')),
     const Divider(),

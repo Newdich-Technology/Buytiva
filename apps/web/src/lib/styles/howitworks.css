@@ -221,3 +221,14 @@
     color: #2a562e;
     font-size: 21px;
   }
+
+/* Small, purposeful motion complements the original illustrations without looping. */
+.scene-icon { position: absolute; z-index: 3; right: 18px; top: 18px; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fffefa; box-shadow: 0 8px 24px #1834671c; }
+.scene-icon img { width: 100%; height: 100%; }
+.step .paper, .step .receipt, .step .person, .step .handoff-box, .step .bubble { transition: transform 450ms var(--motion-easing-standard); }
+.step:hover .paper { transform: rotate(-2deg) translateY(-5px); }
+.step:hover .receipt { transform: rotate(0deg) translateY(-5px); }
+.step:hover .person-a { transform: translate(5px, -3px); }
+.step:hover .person-b { transform: translate(-5px, 3px); }
+.step:hover .handoff-box { transform: rotate(-3deg) translateY(-5px); }
+@media (prefers-reduced-motion: reduce) { .step .paper, .step .receipt, .step .person, .step .handoff-box, .step .bubble { transition: none; } .step:hover .paper { transform: rotate(-5deg); } .step:hover .receipt { transform: rotate(3deg); } .step:hover .person { transform: none; } .step:hover .handoff-box { transform: rotate(-7deg); } }

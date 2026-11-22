@@ -11,6 +11,21 @@ permissions:
 jobs:
   backend-and-web:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: buytiva_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d buytiva_test"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva_test
+      AUTH_TEST_DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva_test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -21,11 +36,56 @@ jobs:
           node-version: 22.17.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
+      - run: pnpm --filter @buytiva/web check
+      - run: pnpm db:generate
+      # This is an isolated, disposable database; no migrations exist yet.
+      - run: pnpm db:sync
+      # Integration suites clear shared tables, so run files sequentially.
+      - name: Test backend
+        run: |
+          set -o pipefail
+          pnpm test --no-file-parallelism --reporter=default --reporter=json --outputFile.json=/tmp/vitest-results.json || {
+            python3 scripts/ci/report-test-failures.py
+            exit 1
+          }
       - run: pnpm typecheck
       - run: pnpm build
-      - run: pnpm --filter @buytiva/web check
+      - run: pnpm --filter @buytiva/web build
+      - run: cmp apps/web/src/lib/constants/errorCatalog.data.json apps/mobile/assets/config/error_catalog.json
       - run: pnpm check:file-length
       - run: pnpm db:validate
-        env:
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva
+      - run: pnpm audit --audit-level high
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.38.9'
+          cache: true
+      - name: Resolve Flutter dependencies
+        run: |
+          set -o pipefail
+          flutter pub get 2>&1 | tee /tmp/flutter-pub.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-pub.log').read_text()[-8000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
+      - name: Analyze Flutter
+        run: |
+          set -o pipefail
+          flutter analyze --no-pub 2>&1 | tee /tmp/flutter-analyze.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-analyze.log').read_text()[-7000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }
+      - name: Test Flutter
+        run: |
+          set -o pipefail
+          flutter test --no-pub 2>&1 | tee /tmp/flutter-test.log || {
+            python3 -c "import pathlib; s=pathlib.Path('/tmp/flutter-test.log').read_text()[-7000:]; print('::error::'+s.replace('%','%25').replace('\r','%0D').replace('\n','%0A'))"
+            exit 1
+          }

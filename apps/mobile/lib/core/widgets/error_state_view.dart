@@ -87,7 +87,6 @@ class _ErrorArtPainter extends CustomPainter {
     if (group == 'ribbon') _drawRibbon(canvas);
   }
 
-  @override
   String _illustrationGroup() {
     if (illustration.contains('key') || illustration.contains('lock') || illustration.contains('door')) return 'access';
     if (illustration.contains('clock') || illustration.contains('mail')) return 'clock';
@@ -133,7 +132,9 @@ class _ErrorArtPainter extends CustomPainter {
     final bubble = RRect.fromRectAndRadius(const Rect.fromLTWH(36, 44, 137, 90), const Radius.circular(25));
     canvas.drawRRect(bubble, Paint()..color = paper);
     canvas.drawRRect(bubble, Paint()..color = ink..style = PaintingStyle.stroke..strokeWidth = 4);
-    for (var dot = 0; dot < 3; dot++) canvas.drawCircle(Offset(77 + dot * 27, 88), 6, Paint()..color = [blue, coral, accent][dot]);
+    for (var dot = 0; dot < 3; dot++) {
+      canvas.drawCircle(Offset(77 + dot * 27, 88), 6, Paint()..color = [blue, coral, accent][dot]);
+    }
   }
 
   void _drawPayment(Canvas canvas) {

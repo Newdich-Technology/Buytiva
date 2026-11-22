@@ -1,5 +1,5 @@
-# Local Lordicon assets
+# Lordicon assets
 
-Approved animation JSON files and matching static SVG fallbacks belong in this directory. Record each icon name, download source, license type, required attribution, intended screen, and playback state in `apps/mobile/assets/animations/lordicon/asset-manifest.json` before shipping it.
+These unmodified System Outline icons are from the official [Lordicon UI Components repository](https://github.com/lordicondev/ui-components/tree/main/shared/public/icons): file-text, magnifier, folder and pencil. Animated icons by [Lordicon](https://lordicon.com/). These icons are identified as free in the source distribution used for this implementation; confirm the current Lordicon free license and attribution/redistribution terms before production release. The matching SVGs provide static fallbacks.
 
-No third-party animation files are bundled yet. The reusable player widget remains available for licensed local files; Buytiva onboarding currently uses original Flutter vector artwork.
+Use interaction-triggered or one-shot motion, not continuous loops; retain text labels and respect reduced-motion preferences. See https://lordicon.com/docs/best-practices.

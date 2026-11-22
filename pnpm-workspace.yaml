@@ -6,3 +6,5 @@ allowBuilds:
   argon2: true
   esbuild: true
   prisma: true
+overrides:
+  effect: ^3.22.1

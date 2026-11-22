@@ -29,7 +29,7 @@ class BuytivaErrorCatalog {
 
   static Future<void> load() async {
     if (_states != null) return;
-    final raw = await rootBundle.loadString('assets/config/BUYTIVA_ERROR_CATALOG.json');
+    final raw = await rootBundle.loadString('assets/config/error_catalog.json');
     final decoded = jsonDecode(raw) as Map<String, dynamic>;
     final values = decoded['states'] as List<dynamic>;
     _states = {

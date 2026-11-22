@@ -66,10 +66,15 @@ class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingOb
 
   @override
   void dispose() {
-    _controller.removeStatusListener(_handleControllerStatus);
-    _controller.clearStatusListeners();
+    _disposeController();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _disposeController() {
+    _controller.removeStatusListener(_handleControllerStatus);
+    _controller.clearStatusListeners();
+    _controller.dispose();
   }
 
   @override
@@ -88,7 +93,17 @@ class _BuytivaLordiconState extends State<BuytivaLordicon> with WidgetsBindingOb
         child: SizedBox(
           width: widget.width,
           height: widget.height,
-          child: Center(child: widget.staticFallback ?? const SizedBox.shrink()),
+          child: Center(child: widget.staticFallback ?? _fallbackIcon),
         ),
       );
+
+  Widget get _fallbackIcon {
+    final icon = switch (widget.assetPath.split('/').last) {
+      'system-outline-56-file-text.json' => Icons.description_outlined,
+      'system-outline-19-magnifier.json' => Icons.search,
+      'system-outline-120-folder.json' => Icons.folder_outlined,
+      _ => Icons.auto_awesome_outlined,
+    };
+    return Icon(icon, size: 28);
+  }
 }
