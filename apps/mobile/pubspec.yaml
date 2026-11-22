@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_secure_storage: ^11.2.0
+  lordicon: ^1.0.3
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +20,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/config/BUYTIVA_ERROR_CATALOG.json
+    - assets/illustrations/errors/
+    - assets/brand/
+    - assets/animations/lordicon/
