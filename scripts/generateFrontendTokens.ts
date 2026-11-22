@@ -1,0 +1,57 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+
+type TokenManifest = {
+  themes: Record<string, Record<string, string>>;
+  primitives: Record<string, Record<string, string> | string>;
+  spacing: Record<string, number>;
+  radius: Record<string, number>;
+  motion: Record<string, number | string>;
+};
+
+const manifest = JSON.parse(readFileSync('BUYTIVA_DESIGN_TOKENS.json', 'utf8')) as TokenManifest;
+const css = buildCssTokens(manifest);
+const dart = buildDartTokens(manifest);
+writeFileSync('apps/web/src/lib/styles/design-tokens.generated.css', css);
+writeFileSync('apps/mobile/lib/core/design_system/design_tokens.g.dart', dart);
+
+function buildCssTokens(tokens: TokenManifest): string {
+  const blocks = Object.entries(tokens.themes).map(([theme, values]) => {
+    const selector = theme === 'light' ? ':root, [data-theme="light"]' : '[data-theme="dark"]';
+    const declarations = Object.entries(values).map(([key, value]) => `  --${toCssTokenName(key)}: ${value};`);
+    return `${selector} {\n${declarations.join('\n')}\n}`;
+  });
+  const primitiveValues = Object.entries(tokens.primitives).flatMap(([family, values]) => {
+    if (typeof values === 'string') return [[`--primitive-${family}`, values]];
+    return Object.entries(values).map(([shade, value]) => [`--primitive-${family}-${shade}`, value]);
+  });
+  const primitives = primitiveValues.map(([name, value]) => `  ${name}: ${value};`).join('\n');
+  const spacing = Object.entries(tokens.spacing).map(([key, value]) => `  --space-${key}: ${value}px;`).join('\n');
+  const radius = Object.entries(tokens.radius).map(([key, value]) => `  --radius-${key}: ${value}px;`).join('\n');
+  const motion = Object.entries(tokens.motion).filter(([key]) => key !== 'reducedMotion').map(([key, value]) => {
+    const name = key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/-ms$/, '');
+    return `  --motion-${name}: ${typeof value === 'number' ? `${value}ms` : value};`;
+  }).join('\n');
+  return `${blocks.join('\n\n')}\n\n:root {\n${primitives}\n${spacing}\n${radius}\n${motion}\n}\n`;
+}
+
+function toCssTokenName(tokenName: string): string {
+  return tokenName.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replaceAll('.', '-');
+}
+
+function buildDartTokens(tokens: TokenManifest): string {
+  const colors = Object.entries(tokens.themes).flatMap(([theme, values]) =>
+    Object.entries(values).map(([key, value]) => `  static const ${toDartName(theme + '.' + key)} = Color(${toDartColor(value)});`)
+  );
+  const motion = Object.entries(tokens.motion).filter(([key, value]) => key.endsWith('Ms') && typeof value === 'number').map(([key, value]) => `  static const ${key.replace(/Ms$/, '')}Ms = ${value};`);
+  return `import 'package:flutter/material.dart';\n\nclass BuytivaDesignTokens {\n${colors.join('\n')}\n${motion.join('\n')}\n}\n`;
+}
+
+function toDartColor(value: string): string {
+  const hex = value.slice(1);
+  return hex.length === 8 ? `0x${hex.slice(6)}${hex.slice(0, 6)}` : `0xFF${hex}`;
+}
+
+function toDartName(value: string): string {
+  const [theme, ...tokens] = value.split('.');
+  return theme + tokens.map((token) => token[0].toUpperCase() + token.slice(1)).join('');
+}
