@@ -44,8 +44,10 @@ class AuthProvider extends ChangeNotifier {
         await _save({'session': response['session'] ?? response});
       });
 
-  Future<void> register(String email, String displayName, String password) =>
-      _run(() => _repository.register(email, displayName, password));
+  Future<void> register(String email, String displayName, String password, bool termsAccepted) =>
+      _run(() => _repository.register(email, displayName, password, termsAccepted));
+
+  Future<void> resendEmailOtp(String email) => _run(() => _repository.resendEmailOtp(email));
 
   Future<void> verifyEmail(String email, String challengeId, String code) =>
       _run(() => _repository.verifyEmail(email, challengeId, code));

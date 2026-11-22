@@ -26,6 +26,9 @@ class ApiClient {
     return await _send(path, 'PATCH', body, token) as Map<String, dynamic>;
   }
 
+  Future<Map<String, dynamic>> delete(String path, {String? token}) async =>
+      await _send(path, 'DELETE', null, token) as Map<String, dynamic>;
+
   Future<dynamic> _send(String path, String method, Map<String, dynamic>? body, String? token) async {
     if (apiBaseUrl.isEmpty) throw const ApiError(authClientErrorMessages['apiBaseRequired']!);
     final uri = Uri.parse('$apiBaseUrl$apiVersionPrefix$path');

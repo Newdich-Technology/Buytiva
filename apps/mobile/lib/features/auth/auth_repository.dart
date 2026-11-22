@@ -20,9 +20,11 @@ class AuthRepository {
   Future<Map<String, dynamic>> verifyTotpEnrollment(String challengeToken, String code) =>
       _api.post(authApiPaths['verifyTotp']!, {'challengeToken': challengeToken, 'code': code, 'deviceLabel': mobileDeviceLabel});
 
-  Future<void> register(String email, String displayName, String password) async {
-    await _api.post(authApiPaths['register']!, {'email': email, 'displayName': displayName, 'password': password, 'termsAccepted': true});
+  Future<void> register(String email, String displayName, String password, bool termsAccepted) async {
+    await _api.post(authApiPaths['register']!, {'email': email, 'displayName': displayName, 'password': password, 'termsAccepted': termsAccepted});
   }
+
+  Future<void> resendEmailOtp(String email) async => _api.post(authApiPaths['resendEmailOtp']!, {'email': email});
 
   Future<void> verifyEmail(String email, String challengeId, String code) async {
     await _api.post(authApiPaths['emailVerify']!, {'email': email, 'challengeId': challengeId, 'code': code});
@@ -43,6 +45,17 @@ class AuthRepository {
   }
 
   Future<List<dynamic>> listStaff(String accessToken) => _api.getList(staffApiPaths['staff']!, token: accessToken);
+
+  Future<Map<String, dynamic>> getMfaStatus(String token) => _api.get(authApiPaths['mfaStatus']!, token: token);
+
+  Future<List<dynamic>> listSessions(String token) => _api.getList(authApiPaths['sessions']!, token: token);
+
+  Future<void> revokeSession(String token, String id) async => _api.delete(sessionPath(id), token: token);
+
+  Future<void> logoutAll(String token) async => _api.post(authApiPaths['logoutAll']!, const {}, token: token);
+
+  Future<void> disableTotp(String token, String password, String code) async =>
+      _api.post(authApiPaths['disableTotp']!, {'password': password, 'code': code}, token: token);
 
   Future<Map<String, dynamic>> getStaffPermissions(String accessToken) => _api.get(staffApiPaths['permissions']!, token: accessToken);
 

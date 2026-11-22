@@ -8,6 +8,7 @@ import '../features/auth/password_recovery_screen.dart';
 import '../features/auth/change_password_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/auth/auth_landing_screen.dart';
+import '../features/auth/security_settings_screen.dart';
 import '../features/admin/admin_administrators_screen.dart';
 
 class BuytivaAppRouter {
@@ -23,5 +24,6 @@ class BuytivaAppRouter {
     '/password-recovery': (_) => const PasswordRecoveryScreen(),
     '/change-password': (_) => const ChangePasswordScreen(),
     '/admin/staff': (_) => const AdminAdministratorsScreen(),
+    '/security': (_) => const SecuritySettingsScreen(),
   };
 }

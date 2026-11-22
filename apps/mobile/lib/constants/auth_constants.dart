@@ -11,9 +11,11 @@ const authClientErrorMessages = {
   'staffLoadFailed': 'Staff information could not be loaded.',
   'staffInviteFailed': 'The staff invitation could not be sent.',
   'staffActionFailed': 'The staff action could not be completed.',
+  'verificationResent': 'If verification is pending, a new email has been sent.',
 };
 const authApiPaths = {
   'register': '$authApiPath/register',
+  'resendEmailOtp': '$authApiPath/email-otp/resend',
   'login': '$authApiPath/login',
   'completeLogin': '$authApiPath/login/complete',
   'emailVerify': '$authApiPath/email-otp/verify',
@@ -23,9 +25,14 @@ const authApiPaths = {
   'enrollTotp': '$authApiPath/mfa/totp/enroll',
   'verifyTotp': '$authApiPath/mfa/totp/verify',
   'logout': '$authApiPath/logout',
+  'logoutAll': '$authApiPath/logout-all',
+  'sessions': '$authApiPath/sessions',
+  'mfaStatus': '$authApiPath/mfa/status',
+  'disableTotp': '$authApiPath/mfa/totp/disable',
   'refresh': '$authApiPath/refresh',
   'currentUser': '/me',
 };
+String sessionPath(String id) => '$authApiPath/sessions/${Uri.encodeComponent(id)}';
 const identityApiPaths = {
   'submitApplication': identityApiPath,
   'verifyApplicationEmail': '$identityApiPath/email/verify',
