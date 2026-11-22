@@ -1,0 +1,9 @@
+{
+  "creator": "Oluwayemi Oyinlola",
+  "artStyle": "Buytiva original editorial geometry with ribbon, list, route, document and parcel motifs",
+  "assets": [
+    { "file": "errors/error_scenes.svg", "purpose": "shared error illustration symbols", "license": "original artwork", "themes": "light and dark via currentColor" },
+    { "file": "errors/lost_list.light.svg", "purpose": "legacy static list error artwork", "license": "original artwork", "themes": "light" },
+    { "file": "errors/lost_list.dark.svg", "purpose": "legacy static list error artwork", "license": "original artwork", "themes": "dark" }
+  ]
+}

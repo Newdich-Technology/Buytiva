@@ -1,0 +1,24 @@
+{
+  "creator": "Oluwayemi Oyinlola",
+  "mark": "Ribbon Pulse, original Buytiva geometry",
+  "license": "Original vector artwork created for Buytiva",
+  "trademarkStatus": "No trademark clearance has been performed",
+  "assets": [
+    { "file": "buytiva-mark.svg", "purpose": "standalone ribbon mark" },
+    { "file": "buytiva-logo-light.svg", "purpose": "light surface full color lockup" },
+    { "file": "buytiva-logo-dark.svg", "purpose": "dark surface full color lockup" },
+    { "file": "buytiva-logo-mono-dark.svg", "purpose": "single ink dark lockup" },
+    { "file": "buytiva-logo-mono-light.svg", "purpose": "single ink light lockup" },
+    { "file": "buytiva-logo-horizontal.svg", "purpose": "horizontal brand lockup" },
+    { "file": "buytiva-logo-stacked.svg", "purpose": "stacked brand lockup" },
+    { "file": "buytiva-app-icon.svg", "purpose": "light app icon source" },
+    { "file": "buytiva-app-icon-dark.svg", "purpose": "dark app icon source" },
+    { "file": "buytiva-maskable.svg", "purpose": "maskable PWA icon source" },
+    { "file": "export/buytiva-app-icon-512.png", "purpose": "web icon 512px" },
+    { "file": "export/buytiva-pwa-icon-192.png", "purpose": "PWA icon 192px" },
+    { "file": "export/buytiva-pwa-icon-512.png", "purpose": "PWA icon 512px" },
+    { "file": "export/buytiva-favicon-32.png", "purpose": "PNG favicon 32px" },
+    { "file": "../../../mobile/assets/brand/export/buytiva-ios-app-icon-1024.png", "purpose": "iOS app icon 1024px" },
+    { "file": "../../../mobile/assets/brand/export/buytiva-android-adaptive-foreground-432.png", "purpose": "Android adaptive foreground" }
+  ]
+}

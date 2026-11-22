@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 450" fill="none">
+  <style>.path{stroke-dasharray:6 15;animation:travel 8s linear infinite}.parcel{animation:lift 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center bottom}.spark{animation:spark 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes travel{to{stroke-dashoffset:-168}}@keyframes lift{50%{transform:translateY(-7px)}}@keyframes spark{50%{transform:scale(1.08) rotate(8deg)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}</style>
+  <path d="M55 355c115-136 206-158 319-88 116 72 219 41 384-151" class="path" stroke="#B5EB5A" stroke-width="8" stroke-linecap="round"/>
+  <circle class="spark" cx="678" cy="92" r="54" fill="#FF9E42"/><path d="m659 92 14 14 27-31" stroke="#111D38" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="423" cy="408" rx="279" ry="25" fill="#111D38" fill-opacity=".16"/>
+  <path d="M106 272c30-54 82-86 145-86s115 32 145 86v104H106V272Z" fill="#F7F9FF" stroke="#111D38" stroke-width="9" stroke-linejoin="round"/><path d="M132 285h239M132 321h181" stroke="#A8B7CF" stroke-width="12" stroke-linecap="round"/><circle cx="151" cy="352" r="9" fill="#FF675B"/><path d="M174 352h88" stroke="#2457E7" stroke-width="12" stroke-linecap="round"/>
+  <path d="M480 263c0-46 32-78 73-78s73 32 73 78c0 33-18 60-47 73l-10 44h-33l-10-44c-29-13-46-40-46-73Z" fill="#D98B63" stroke="#111D38" stroke-width="8"/><path d="M477 256c3-51 32-82 77-82 38 0 68 22 75 65-20-9-35-15-49-20-18 22-52 34-103 37Z" fill="#111D38" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M514 270h4m42 0h4m-43 34c9 9 19 9 28 0" stroke="#111D38" stroke-width="7" stroke-linecap="round"/><path d="M464 391c10-38 35-62 76-75l24 19 22-19c36 14 58 39 65 75H464Z" fill="#B399FF" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/>
+  <g class="parcel"><path d="m631 344 36-29 38 29v57h-74v-57Z" fill="#FF9E42" stroke="#111D38" stroke-width="8" stroke-linejoin="round"/><path d="m631 345 36 24 38-24m-38 24v31" stroke="#FFFCF6" stroke-width="7" stroke-linejoin="round"/></g>
+  <circle cx="95" cy="126" r="13" fill="#FF675B"/><path d="M163 91c34-30 82-39 124-22" stroke="#FF675B" stroke-width="9" stroke-linecap="round"/>
+</svg>
