@@ -1,10 +1,11 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
+import { databaseConfigurationError } from '../errors/database.error.js';
 
 const databaseConnectionString = process.env.DATABASE_URL;
 
 if (!databaseConnectionString) {
-  throw new Error('DATABASE_URL must be set before creating the Prisma client.');
+  throw databaseConfigurationError();
 }
 
 const postgresAdapter = new PrismaPg({

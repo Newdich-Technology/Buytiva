@@ -15,18 +15,27 @@
     "check:file-length": "tsx scripts/checkFileLength.ts",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate",
-    "db:sync": "prisma db push"
+    "db:sync": "prisma db push",
+    "db:seed:super-admin": "tsx prisma/seeds/bootstrapSuperAdmin.ts"
   },
   "dependencies": {
+    "@fastify/rate-limit": "^11.3.0",
+    "@fastify/swagger": "^9.9.5",
+    "@fastify/swagger-ui": "^6.1.5",
     "@fastify/type-provider-typebox": "^6.3.0",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "argon2": "^0.45.2",
     "fastify": "^5.12.8",
+    "nodemailer": "^10.6.1",
+    "otpauth": "^9.6.0",
     "pg": "^8.23.1",
+    "pino": "^10.4.0",
     "typebox": "^1.4.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.23.1",
     "dotenv": "^18.0.10",
     "prisma": "^7.10.1",
