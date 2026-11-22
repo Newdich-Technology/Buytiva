@@ -8,7 +8,7 @@ type TokenManifest = {
   motion: Record<string, number | string>;
 };
 
-const manifest = JSON.parse(readFileSync('BUYTIVA_DESIGN_TOKENS.json', 'utf8')) as TokenManifest;
+const manifest = JSON.parse(readFileSync('design/buytivaDesignTokens.json', 'utf8')) as TokenManifest;
 const css = buildCssTokens(manifest);
 const dart = buildDartTokens(manifest);
 writeFileSync('apps/web/src/lib/styles/design-tokens.generated.css', css);
@@ -53,5 +53,5 @@ function toDartColor(value: string): string {
 
 function toDartName(value: string): string {
   const [theme, ...tokens] = value.split('.');
-  return theme + tokens.map((token) => token[0].toUpperCase() + token.slice(1)).join('');
+  return theme + tokens.map((token) => token.split(/[^a-zA-Z0-9]/).map((part) => part[0].toUpperCase() + part.slice(1)).join('')).join('');
 }
