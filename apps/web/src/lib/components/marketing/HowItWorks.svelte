@@ -1,4 +1,5 @@
 <script>
+  import BuytivaLordicon from '../design/BuytivaLordicon.svelte';
   import '../../styles/howitworks.css';
   import '../../styles/howitworks-responsive.css';
 </script>
@@ -13,7 +14,7 @@
   <div class="steps">
     <article class="step list">
     <div class="art">
-    <span class="art-spark">✳</span>
+    <span class="scene-icon"><BuytivaLordicon src="/icons/lordicon/system-outline-35-pencil.json" width={54} height={54} trigger="in"><img src="/icons/lordicon/system-outline-35-pencil.svg" alt="" /></BuytivaLordicon></span>
     <div class="paper">
     <b>Weekend staples</b>
     <i>
@@ -39,7 +40,7 @@
     <div class="person person-b">
     <b>M</b>
     </div>
-    <span class="mini-pin">⌖</span>
+    <span class="scene-icon"><BuytivaLordicon src="/icons/lordicon/system-outline-19-magnifier.json" width={54} height={54} trigger="in"><img src="/icons/lordicon/system-outline-19-magnifier.svg" alt="" /></BuytivaLordicon></span>
     </div>
     <span class="number">02</span>
     <h3>Find your local match</h3>
@@ -56,7 +57,7 @@
     <hr />
     <strong>Clear before checkout</strong>
     </div>
-    <span class="price-star">✳</span>
+    <span class="scene-icon"><BuytivaLordicon src="/icons/lordicon/system-outline-56-file-text.json" width={54} height={54} trigger="in"><img src="/icons/lordicon/system-outline-56-file-text.svg" alt="" /></BuytivaLordicon></span>
     </div>
     <span class="number">03</span>
     <h3>Know the price first</h3>
@@ -69,9 +70,7 @@
     <div class="handoff-box">
     <span>↗</span>
     </div>
-    <div class="hand-person">
-    <b>✓</b>
-    </div>
+    <span class="scene-icon"><BuytivaLordicon src="/icons/lordicon/system-outline-120-folder.json" width={54} height={54} trigger="in"><img src="/icons/lordicon/system-outline-120-folder.svg" alt="" /></BuytivaLordicon></span>
     </div>
     <span class="number">04</span>
     <h3>Stay in the loop</h3>

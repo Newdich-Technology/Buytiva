@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../core/design_system/design_tokens.g.dart';
 import '../../core/design_system/motion_preferences.dart';
+import '../../core/widgets/buytiva_lordicon.dart';
 import '../auth/login_screen.dart';
 import 'onboarding_illustration.dart';
 
@@ -63,8 +64,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
   void _setPage(int value) {
     if (value < 0 || value >= _slides.length) return;
     setState(() => _index = value);
-    _sceneMotion.forward(from: 0);
-    _pages.animateToPage(value, duration: const Duration(milliseconds: BuytivaDesignTokens.normalMs), curve: Curves.easeOutCubic);
+    if (prefersReducedMotion(context)) {
+      _sceneMotion.value = 1;
+      _pages.jumpToPage(value);
+    } else {
+      _sceneMotion.forward(from: 0);
+      _pages.animateToPage(value, duration: const Duration(milliseconds: BuytivaDesignTokens.normalMs), curve: Curves.easeOutCubic);
+    }
   }
 
   void _continue() {
@@ -95,6 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
               itemBuilder: (context, index) => _buildSlide(context, index, reduceMotion),
             ),
           ),
+          Text('Animated icons by Lordicon · lordicon.com', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
             child: Row(children: [
@@ -115,6 +122,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
       ),
     );
   }
+
+  Color themeForScene(BuildContext context) => Theme.of(context).colorScheme.surface;
 
   Widget _progressDot(int index, ThemeData theme) => Semantics(
         label: 'Step ${index + 1} of ${_slides.length}',
@@ -149,7 +158,30 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                         offset: Offset(0, reduceMotion ? 0 : 12 * (1 - _sceneMotion.value)),
                         child: Opacity(
                           opacity: reduceMotion ? 1 : _sceneMotion.value,
-                          child: OnboardingIllustration(scene: index, progress: reduceMotion ? 1 : _sceneMotion.value),
+                          child: Stack(children: [
+                            Positioned.fill(child: OnboardingIllustration(scene: index, progress: reduceMotion ? 1 : _sceneMotion.value)),
+                            Positioned(
+                              right: 18, top: 18,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(color: themeForScene(context), shape: BoxShape.circle),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: BuytivaLordicon(
+                                    key: ValueKey('onboarding-icon-$index-${_index == index}'),
+                                    assetPath: 'assets/animations/lordicon/${[
+                                      'system-outline-56-file-text',
+                                      'system-outline-19-magnifier',
+                                      'system-outline-120-folder',
+                                    ][index]}.json',
+                                    label: ['Shopping list', 'Find a procurer', 'Your order'][index],
+                                    width: 52, height: 52,
+                                    playOnLoad: _index == index,
+                                    staticFallback: Icon([Icons.list_alt, Icons.search, Icons.folder_outlined][index], color: Theme.of(context).colorScheme.primary),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]),
                         ),
                       ),
                     ),
