@@ -22,12 +22,16 @@ export const BACKEND_ERROR_STATE_MAP: Record<string, string> = {
 	APPLICATION_UNAVAILABLE: 'application_unavailable', INVITATION_INVALID: 'invitation_invalid'
 };
 
+const ERROR_STATE_ALIASES: Record<string, string> = {
+	SESSION_EXPIRED: 'unauthenticated', OTP_EXPIRED: 'request_timeout', UNSUPPORTED_DELIVERY_DESTINATION: 'no_coverage', NO_ELIGIBLE_PROCURERS: 'no_procurers', PAYMENT_FAILED: 'payment_failed'
+};
+
 export const ERROR_ACTION_LABELS: Record<string, string> = {
 	fix_fields: 'Review this form', login: 'Sign in', role_home: 'Go to your overview',
-	go_home: 'Back to Buytiva', go_back: 'Go back', retry_safe: 'Try again',
+	go_home: 'Back to Buytiva', go_back: 'Go back', retry_safe: 'Try again', reconnect: 'Check again',
 	review_quote: 'Get help with this quote', request_invitation: 'Get help with this invitation',
 	choose_file: 'Choose another file', contact_support: 'View help options', wait: 'Return to Buytiva',
-	check_status: 'View your account', reconnect: 'Check again', change_area: 'View delivery coverage',
+	check_status: 'View your account', change_area: 'View delivery coverage',
 	add_item: 'Create an account', track_application: 'Track your application', view_application: 'View application status',
 	check_payment: 'View help options', view_fund_status: 'View help options', view_upload_status: 'View help options',
 	verify_email: 'Verify your email', change_password: 'Change your password'
@@ -48,7 +52,8 @@ export const ERROR_CATALOG = Object.fromEntries(
 ) as Record<string, ErrorState>;
 
 export function resolveBuytivaError(code: string, status: number): ErrorState {
-	const stateId = BACKEND_ERROR_STATE_MAP[code.toUpperCase()] ?? code.toLowerCase();
+	const normalizedCode = code.toUpperCase();
+	const stateId = ERROR_STATE_ALIASES[normalizedCode] ?? BACKEND_ERROR_STATE_MAP[normalizedCode] ?? code.toLowerCase();
 	const matchingCode = ERROR_CATALOG[stateId];
   if (matchingCode) return matchingCode;
   return Object.values(ERROR_CATALOG).find((state) => state.httpStatus === status) ??

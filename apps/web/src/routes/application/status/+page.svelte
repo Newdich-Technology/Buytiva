@@ -32,12 +32,12 @@
       <div class="result-copy">
         <p class="status-label">{status.replaceAll('_', ' ')}</p>
         <h2 id="result-title">{heading}</h2>
-        <p>Your application reference: <strong>{form.statusResult.publicReference}</strong></p>
+        <p>Your application reference: <strong>{form.statusResult.reference}</strong></p>
       </div>
     </section>
     <section class="history" aria-label="Application status history">
       <h2>Status history</h2>
-      {#each form.statusResult.statusHistory as item}
+      {#each form.statusResult.history as item}
         <article><span class="history-dot"></span><div><strong>{item.status.replaceAll('_', ' ')}</strong><p>{item.reason ?? 'Status updated'}</p></div></article>
       {/each}
     </section>

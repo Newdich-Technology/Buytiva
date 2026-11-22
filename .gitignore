@@ -4,6 +4,8 @@ src/generated/prisma/
 .svelte-kit/
 build/
 coverage/
+!apps/web/src/routes/coverage/
+!apps/web/src/routes/coverage/+page.svelte
 .env
 .env.*
 !.env.example

@@ -1,4 +1,16 @@
-<script lang="ts">let { form, data } = $props();</script>
-<svelte:head><title>Verify procurer application | BUYTIVA</title></svelte:head>
-<main><h1>Verify your procurer application</h1>{#if form?.error}<p role="alert">{form.error}</p>{/if}
-{#if form?.verified}<p role="status">Application email verified. <a href="/application/status">Track progress with your reference.</a></p>{:else}<form method="POST"><label>Email <input name="email" type="email" value={data.email} required /></label><label>Challenge reference <input name="challengeId" value={data.challengeId} required /></label><label>Email code <input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required /></label><button>Verify application email</button></form>{/if}</main>
+<script lang="ts">
+	import PublicPageFrame from '../../../../lib/components/marketing/PublicPageFrame.svelte';
+	let { form, data } = $props();
+</script>
+
+<svelte:head><title>Verify procurer application | Buytiva</title></svelte:head>
+<PublicPageFrame eyebrow="Procurer application" title="Confirm the person behind the application." description="Use the verification code sent to the application email. Review starts after the email address is confirmed.">
+	{#if form?.verified}<section class="verified-state" role="status"><img src="/illustrations/errors/lost_list.light.svg" alt="A verified shopping list." /><div><p class="label">EMAIL VERIFIED</p><h2>Application email confirmed.</h2><p>Keep your application reference and use the status page to follow the next recorded update.</p><a href="/application/status">Track application status <span aria-hidden="true">↗</span></a></div></section>
+	{:else}<form method="POST" class="verify-card"><p class="label">ONE-TIME CODE</p><h2>Verify your application</h2><p>Codes expire for your security. Request a fresh code from the application flow if this one no longer works.</p>{#if form?.error}<p class="error" role="alert">{form.error}</p>{/if}<label>Email address<input name="email" type="email" value={data.email} autocomplete="email" required /></label><label>Challenge reference<input name="challengeId" value={data.challengeId} required /></label><label>Verification code<input name="code" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required /></label><button>Verify application email <span aria-hidden="true">↗</span></button></form>{/if}
+</PublicPageFrame>
+
+<style>
+	.verify-card, .verified-state { max-width: 620px; padding: clamp(23px, 4vw, 40px); border: 1px solid var(--border-default); border-radius: 24px; background: var(--background-surface); box-shadow: var(--shadow-card); }
+	.verified-state { display: grid; grid-template-columns: 160px 1fr; align-items: center; gap: 28px; max-width: 800px; }.verified-state img { width: 100%; padding: 12px; border-radius: 18px; background: var(--status-success-surface); }.label { margin: 0 0 10px; color: var(--action-primary); font-size: 11px; font-weight: 850; letter-spacing: .13em; }.verify-card h2, .verified-state h2 { margin: 0; font: 800 clamp(28px, 4vw, 45px)/.96 'Space Grotesk', sans-serif; letter-spacing: -.06em; }.verify-card>p:not(.label), .verified-state p:not(.label) { color: var(--text-secondary); line-height: 1.6; }.verify-card label { display: grid; gap: 7px; margin-top: 17px; font-size: 13px; font-weight: 750; }.verify-card input { width: 100%; min-height: 49px; padding: 0 13px; border: 1px solid var(--border-strong); border-radius: 10px; color: var(--text-primary); background: var(--background-canvas); }.verify-card button { display: inline-flex; min-height: 49px; align-items: center; gap: 20px; margin-top: 23px; padding: 0 17px; border: 0; border-radius: var(--radius-pill); color: var(--action-on-primary); background: var(--action-primary); font-weight: 800; }.error { color: var(--status-error-foreground)!important; }.verified-state a { display: inline-flex; gap: 12px; color: var(--action-primary); font-weight: 800; }
+	@media(max-width:620px){.verified-state{grid-template-columns:1fr;gap:17px}.verified-state img{max-width:190px}.verify-card,.verified-state{border-radius:19px}}
+</style>

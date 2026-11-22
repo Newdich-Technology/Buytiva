@@ -36,6 +36,12 @@
   --skeleton-shimmer: #F8FAFE;
   --footer-top: #111D38;
   --footer-bottom: #FFF0E6;
+  --surface-hero: #FFF4E8;
+  --surface-hero-deep: #F6E5D3;
+  --text-on-hero: #111D38;
+  --shadow-card: 0 24px 70px #17244018;
+  --shadow-overlay: 0 24px 80px #0D142944;
+  --text-on-footer: #FFFFFF;
 }
 
 [data-theme="dark"] {
@@ -76,6 +82,12 @@
   --skeleton-shimmer: #334964;
   --footer-top: #0A1020;
   --footer-bottom: #152440;
+  --surface-hero: #16243E;
+  --surface-hero-deep: #213252;
+  --text-on-hero: #F7F9FF;
+  --shadow-card: 0 24px 70px #050A1838;
+  --shadow-overlay: 0 24px 80px #050A185A;
+  --text-on-footer: #F7F9FF;
 }
 
 :root {

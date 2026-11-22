@@ -38,6 +38,9 @@ class BuytivaDesignTokens {
   static const lightSkeletonShimmer = Color(0xFFF8FAFE);
   static const lightFooterTop = Color(0xFF111D38);
   static const lightFooterBottom = Color(0xFFFFF0E6);
+  static const lightSurfaceHero = Color(0xFFFFF4E8);
+  static const lightSurfaceHeroDeep = Color(0xFFF6E5D3);
+  static const lightTextOnFooter = Color(0xFFFFFFFF);
   static const darkBackgroundCanvas = Color(0xFF0D1429);
   static const darkBackgroundSurface = Color(0xFF172440);
   static const darkBackgroundSubtle = Color(0xFF202F4C);
@@ -75,6 +78,9 @@ class BuytivaDesignTokens {
   static const darkSkeletonShimmer = Color(0xFF334964);
   static const darkFooterTop = Color(0xFF0A1020);
   static const darkFooterBottom = Color(0xFF152440);
+  static const darkSurfaceHero = Color(0xFF16243E);
+  static const darkSurfaceHeroDeep = Color(0xFF213252);
+  static const darkTextOnFooter = Color(0xFFF7F9FF);
   static const instantMs = 100;
   static const tapMs = 160;
   static const fastMs = 220;
