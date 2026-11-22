@@ -11,6 +11,21 @@ permissions:
 jobs:
   backend-and-web:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: buytiva_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci -d buytiva_test"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva_test
+      AUTH_TEST_DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva_test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -21,11 +36,31 @@ jobs:
           node-version: 22.17.0
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
+      - run: pnpm db:generate
+      # This is an isolated, disposable database; no migrations exist yet.
+      - run: pnpm db:sync
+      # Integration suites clear shared tables, so run files sequentially.
+      - run: pnpm test --no-file-parallelism
       - run: pnpm typecheck
       - run: pnpm build
+      - run: pnpm --filter @buytiva/web build
       - run: pnpm --filter @buytiva/web check
       - run: pnpm check:file-length
       - run: pnpm db:validate
-        env:
-          DATABASE_URL: postgresql://ci:ci@localhost:5432/buytiva
+      - run: pnpm audit --audit-level high
+
+  mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.32.8'
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
