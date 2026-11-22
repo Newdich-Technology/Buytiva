@@ -1,0 +1,1 @@
+export { createBuytivaFastifyApplication } from './app.js';
