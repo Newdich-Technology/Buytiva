@@ -3,7 +3,10 @@ dist/
 src/generated/prisma/
 .svelte-kit/
 build/
+.agents*
+artifacts*
 coverage/
+!/apps/web/src/routes/coverage/
 .env
 .env.*
 !.env.example
