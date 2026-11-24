@@ -62,7 +62,7 @@
 <style>
   .application-status { width: min(850px, calc(100% - 40px)); margin: clamp(35px, 8vw, 90px) auto; color: var(--text-primary); }
   .eyebrow, .status-label { color: var(--action-primary); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-  h1 { margin: 8px 0 28px; font: 800 clamp(34px, 7vw, 60px)/.98 'Space Grotesk', sans-serif; letter-spacing: -.06em; }
+  h1 { margin: 8px 0 28px; font: 800 clamp(34px, 7vw, 60px)/.98 var(--font-display), serif; letter-spacing: -.06em; }
   .result { display: grid; grid-template-columns: 240px 1fr; align-items: center; gap: 28px; padding: 26px; border: 1px solid var(--border-default); border-radius: 24px; background: var(--background-surface); }
   .status-art { position: relative; display: grid; width: 220px; height: 180px; place-items: center; overflow: hidden; border-radius: 22px; background: color-mix(in srgb, var(--accent-lilac) 34%, var(--background-surface)); }
   .orbit { position: absolute; width: 170px; height: 120px; border: 2px dashed var(--action-primary); border-radius: 50%; rotate: -18deg; opacity: .5; }
@@ -72,10 +72,10 @@
   .seal, .paused, .page { z-index: 1; display: grid; width: 60px; height: 60px; place-items: center; border: 4px solid var(--action-secondary); border-radius: 50%; color: var(--action-secondary); background: var(--accent-lime); font-size: 32px; font-weight: 900; }
   .paused { color: var(--status-error-foreground); background: var(--status-error-surface); }.page { border-radius: 10px; background: var(--accent-orange); }
   .approved .status-art { background: color-mix(in srgb, var(--accent-lime) 35%, var(--background-surface)); }.rejected .status-art { background: var(--status-error-surface); }
-  .result-copy h2, .verify-note h2 { margin: 8px 0; font: 750 clamp(24px, 3vw, 36px)/1.08 'Space Grotesk', sans-serif; }
+  .result-copy h2, .verify-note h2 { margin: 8px 0; font: 750 clamp(24px, 3vw, 36px)/1.08 var(--font-display), serif; }
   .result-copy p:not(.status-label), .verify-note p { color: var(--text-secondary); line-height: 1.6; }
   .history { margin-top: 30px; padding: 24px; border: 1px solid var(--border-default); border-radius: 20px; background: var(--background-surface); }
-  .history h2 { margin: 0 0 18px; font: 700 22px 'Space Grotesk', sans-serif; }
+  .history h2 { margin: 0 0 18px; font: 700 22px var(--font-display), serif; }
   .history article { display: flex; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border-default); }
   .history-dot { flex: 0 0 11px; width: 11px; height: 11px; margin-top: 5px; border-radius: 50%; background: var(--action-primary); }
   .history article p { margin: 4px 0 0; color: var(--text-secondary); }
