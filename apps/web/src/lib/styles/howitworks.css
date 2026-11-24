@@ -13,7 +13,7 @@
   }
   .section-heading h2 {
     margin: 14px 0;
-    font: 700 clamp(38px, 5.8vw, 70px)/.98 'Space Grotesk', sans-serif;
+    font: 700 clamp(38px, 5.8vw, 70px)/.98 var(--font-display), serif;
     letter-spacing: -.065em;
   }
   .section-heading h2 span {
@@ -60,11 +60,11 @@
     display: inline-block;
     margin-top: 20px;
     color: var(--action-primary);
-    font: 700 13px 'Space Grotesk', sans-serif;
+    font: 700 13px var(--font-display), serif;
   }
   .step h3 {
     margin: 8px 0;
-    font: 700 21px/1.15 'Space Grotesk', sans-serif;
+    font: 700 21px/1.15 var(--font-display), serif;
     letter-spacing: -.03em;
   }
   .step p {
@@ -84,7 +84,7 @@
   .paper b, .receipt b {
     display: block;
     margin-bottom: 13px;
-    font: 700 13px 'Space Grotesk', sans-serif;
+    font: 700 13px var(--font-display), serif;
   }
   .paper i {
     display: block;
@@ -125,7 +125,7 @@
     border: 7px solid var(--text-inverse);
     border-radius: 50%;
     box-shadow: 0 10px 18px #18346720;
-    font: 700 18px 'Space Grotesk', sans-serif;
+    font: 700 18px var(--font-display), serif;
   }
   .person-a {
     left: 20%;

@@ -16,7 +16,7 @@
   }
   .heading h2 {
     margin: 0;
-    font: 700 clamp(38px, 5vw, 60px)/.98 'Space Grotesk', sans-serif;
+    font: 700 clamp(38px, 5vw, 60px)/.98 var(--font-display), serif;
     letter-spacing: -.06em;
   }
   .faq-list details {
@@ -33,7 +33,7 @@
     gap: 16px;
     cursor: pointer;
     list-style: none;
-    font: 700 17px 'Space Grotesk', sans-serif;
+    font: 700 17px var(--font-display), serif;
   }
   .faq-list summary::-webkit-details-marker {
     display: none;

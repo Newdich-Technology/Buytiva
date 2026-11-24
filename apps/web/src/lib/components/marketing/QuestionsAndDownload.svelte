@@ -1,9 +1,10 @@
 <script>
+  import { revealOnScroll } from '../../actions/revealOnScroll.js';
   import '../../styles/questionsanddownload.css';
 </script>
 <section class="questions" id="faqs" aria-labelledby="faq-title">
-  <div class="heading"><p class="eyebrow">The things you might be wondering</p><h2 id="faq-title">Good questions.<br />Straight answers.</h2></div>
-  <div class="faq-list">
+  <div class="heading" data-scroll-reveal="copy" use:revealOnScroll><p class="eyebrow">The things you might be wondering</p><h2 id="faq-title">Good questions.<br />Straight answers.</h2></div>
+  <div class="faq-list" data-scroll-reveal="copy" use:revealOnScroll>
     <details>
     <summary>How is Buytiva designed to work?</summary>
     <p>The intended journey starts with a delivery destination, matches it to an approved service area, then puts the request and quote in front of the customer before any order is confirmed. Shopping and checkout are not enabled in this web release.</p>
@@ -25,6 +26,6 @@
     <details><summary>Are the Buytiva mobile apps available?</summary><p>Official Google Play and App Store listings have not been verified for release. We will publish download links when the listings are live.</p></details>
     <details><summary>Where can I ask for help?</summary><p>Start with the support page for current account, application and product help paths. A public support email or live chat endpoint is not configured for this release.</p></details>
   </div>
-  <a class="faq-help" href="/support">More help options <span aria-hidden="true">↗</span></a>
+  <a class="faq-help" href="/support" data-scroll-reveal="copy" use:revealOnScroll>More help options <span aria-hidden="true">↗</span></a>
 </section>
 

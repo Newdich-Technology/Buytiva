@@ -1,0 +1,2 @@
+export const SCROLL_REVEAL_THRESHOLD = 0.16;
+export const SCROLL_REVEAL_ROOT_MARGIN = '0px';

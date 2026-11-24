@@ -31,7 +31,7 @@
   .phone-top { display: flex; justify-content: space-between; padding: 10px 16px 6px; font-size: 9px; font-weight: 700; }
   .phone-content { padding: 7px 14px; }
   .hello small, .match-card small { display: block; font-size: 7px; letter-spacing: .1em; color: var(--primitive-navy-700); }
-  .hello strong { display: block; margin: 7px 0 13px; color: var(--primitive-navy-900); font: 700 19px/1.05 'Space Grotesk', sans-serif; }
+  .hello strong { display: block; margin: 7px 0 13px; color: var(--primitive-navy-900); font: 700 19px/1.05 var(--font-display), serif; }
   .hello strong span { color: var(--accent-coral); }
   .list-card { padding: 12px 10px 8px; border: 1px solid var(--border-default); border-radius: 13px; background: white; }
   .list-head, .list-item { display: flex; align-items: center; justify-content: space-between; }

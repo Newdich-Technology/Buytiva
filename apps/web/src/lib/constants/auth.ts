@@ -21,7 +21,8 @@ export const IDENTITY_API_PATHS = {
 export const AUTH_FORM_MESSAGES = {
 	serviceUnavailable: 'Authentication service is unavailable.',
 	requestFailed: 'The request could not be completed.',
-	invalidResponse: 'The authentication service returned an invalid response.'
+	invalidResponse: 'The authentication service returned an invalid response.',
+	passwordMismatch: 'Passwords do not match.'
 } as const;
 export const AUTH_WEB_PATHS = {
 	login: '/login', dashboardOverview: '/overview', changePassword: '/changePassword'

@@ -34,8 +34,6 @@
       "body": "A few details need another look.",
       "primaryAction": "fix_fields",
       "illustration": "paper_scraps",
-      "lightThemeAsset": "errors/paper_scraps.light.svg",
-      "darkThemeAsset": "errors/paper_scraps.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -51,8 +49,6 @@
       "body": "Your session ended. Sign in to continue.",
       "primaryAction": "login",
       "illustration": "sleepy_key",
-      "lightThemeAsset": "errors/sleepy_key.light.svg",
-      "darkThemeAsset": "errors/sleepy_key.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -68,8 +64,6 @@
       "body": "You don’t have permission to open this area.",
       "primaryAction": "role_home",
       "illustration": "closed_ribbon_door",
-      "lightThemeAsset": "errors/closed_ribbon_door.light.svg",
-      "darkThemeAsset": "errors/closed_ribbon_door.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -85,8 +79,6 @@
       "body": "The page you're looking for may have moved or doesn't exist.",
       "primaryAction": "go_home",
       "illustration": "lost_list",
-      "lightThemeAsset": "errors/lost_list.light.svg",
-      "darkThemeAsset": "errors/lost_list.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -102,8 +94,6 @@
       "body": "Try an available option instead.",
       "primaryAction": "go_back",
       "illustration": "puzzled_arrow",
-      "lightThemeAsset": "errors/puzzled_arrow.light.svg",
-      "darkThemeAsset": "errors/puzzled_arrow.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -119,8 +109,6 @@
       "body": "Your request timed out. We can try again safely.",
       "primaryAction": "retry_safe",
       "illustration": "tired_clock",
-      "lightThemeAsset": "errors/tired_clock.light.svg",
-      "darkThemeAsset": "errors/tired_clock.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -136,8 +124,6 @@
       "body": "Review the updated amount before continuing.",
       "primaryAction": "review_quote",
       "illustration": "two_list_sheets",
-      "lightThemeAsset": "errors/two_list_sheets.light.svg",
-      "darkThemeAsset": "errors/two_list_sheets.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -153,8 +139,6 @@
       "body": "For your security, the invitation can no longer be used.",
       "primaryAction": "request_invitation",
       "illustration": "unraveled_ribbon",
-      "lightThemeAsset": "errors/unraveled_ribbon.light.svg",
-      "darkThemeAsset": "errors/unraveled_ribbon.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -170,8 +154,6 @@
       "body": "Choose a smaller file that meets the upload limit.",
       "primaryAction": "choose_file",
       "illustration": "oversized_folder",
-      "lightThemeAsset": "errors/oversized_folder.light.svg",
-      "darkThemeAsset": "errors/oversized_folder.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -187,8 +169,6 @@
       "body": "Choose one of the supported file formats.",
       "primaryAction": "choose_file",
       "illustration": "mixed_file_shapes",
-      "lightThemeAsset": "errors/mixed_file_shapes.light.svg",
-      "darkThemeAsset": "errors/mixed_file_shapes.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -204,8 +184,6 @@
       "body": "Check the highlighted fields to continue.",
       "primaryAction": "fix_fields",
       "illustration": "pencil_list",
-      "lightThemeAsset": "errors/pencil_list.light.svg",
-      "darkThemeAsset": "errors/pencil_list.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -221,8 +199,6 @@
       "body": "Please follow the recovery instructions or contact support.",
       "primaryAction": "contact_support",
       "illustration": "ribbon_lock",
-      "lightThemeAsset": "errors/ribbon_lock.light.svg",
-      "darkThemeAsset": "errors/ribbon_lock.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -238,8 +214,6 @@
       "body": "Too many attempts. Try again when the timer allows.",
       "primaryAction": "wait",
       "illustration": "patient_clock",
-      "lightThemeAsset": "errors/patient_clock.light.svg",
-      "darkThemeAsset": "errors/patient_clock.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -255,8 +229,6 @@
       "body": "Something unexpected happened. Your order status has not been changed by this screen.",
       "primaryAction": "retry_safe",
       "illustration": "tangled_ribbon",
-      "lightThemeAsset": "errors/tangled_ribbon.light.svg",
-      "darkThemeAsset": "errors/tangled_ribbon.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -272,8 +244,6 @@
       "body": "A service is not responding properly right now.",
       "primaryAction": "retry_safe",
       "illustration": "parcel_bridge",
-      "lightThemeAsset": "errors/parcel_bridge.light.svg",
-      "darkThemeAsset": "errors/parcel_bridge.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -289,8 +259,6 @@
       "body": "Buytiva is temporarily unavailable. Please try again.",
       "primaryAction": "retry_safe",
       "illustration": "resting_buddy",
-      "lightThemeAsset": "errors/resting_buddy.light.svg",
-      "darkThemeAsset": "errors/resting_buddy.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -306,8 +274,6 @@
       "body": "The service did not respond in time. Check status before retrying.",
       "primaryAction": "check_status",
       "illustration": "stalled_delivery_route",
-      "lightThemeAsset": "errors/stalled_delivery_route.light.svg",
-      "darkThemeAsset": "errors/stalled_delivery_route.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -323,8 +289,6 @@
       "body": "Connect to the internet to pick up where you left off.",
       "primaryAction": "reconnect",
       "illustration": "offline_speech_bubble",
-      "lightThemeAsset": "errors/offline_speech_bubble.light.svg",
-      "darkThemeAsset": "errors/offline_speech_bubble.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -340,8 +304,6 @@
       "body": "Try a different delivery destination or check back later.",
       "primaryAction": "change_area",
       "illustration": "quiet_map",
-      "lightThemeAsset": "errors/quiet_map.light.svg",
-      "darkThemeAsset": "errors/quiet_map.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -357,8 +319,6 @@
       "body": "No verified procurer currently serves this delivery address.",
       "primaryAction": "change_area",
       "illustration": "empty_meeting_spot",
-      "lightThemeAsset": "errors/empty_meeting_spot.light.svg",
-      "darkThemeAsset": "errors/empty_meeting_spot.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -374,8 +334,6 @@
       "body": "Add the first item to get started.",
       "primaryAction": "add_item",
       "illustration": "blank_floating_list",
-      "lightThemeAsset": "errors/blank_floating_list.light.svg",
-      "darkThemeAsset": "errors/blank_floating_list.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -391,8 +349,6 @@
       "body": "We’ll email you when there is an update.",
       "primaryAction": "track_application",
       "illustration": "waiting_mail",
-      "lightThemeAsset": "errors/waiting_mail.light.svg",
-      "darkThemeAsset": "errors/waiting_mail.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -408,8 +364,6 @@
       "body": "See the review outcome and the next permitted action.",
       "primaryAction": "view_application",
       "illustration": "returned_form",
-      "lightThemeAsset": "errors/returned_form.light.svg",
-      "darkThemeAsset": "errors/returned_form.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -425,8 +379,6 @@
       "body": "We’re confirming the status. Please don’t pay again yet.",
       "primaryAction": "check_payment",
       "illustration": "floating_receipt",
-      "lightThemeAsset": "errors/floating_receipt.light.svg",
-      "darkThemeAsset": "errors/floating_receipt.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -442,8 +394,6 @@
       "body": "Check the verified status before choosing another payment method.",
       "primaryAction": "check_payment",
       "illustration": "slipped_receipt",
-      "lightThemeAsset": "errors/slipped_receipt.light.svg",
-      "darkThemeAsset": "errors/slipped_receipt.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -459,8 +409,6 @@
       "body": "See what must happen before a withdrawal is available.",
       "primaryAction": "view_fund_status",
       "illustration": "separate_jars",
-      "lightThemeAsset": "errors/separate_jars.light.svg",
-      "darkThemeAsset": "errors/separate_jars.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -476,8 +424,6 @@
       "body": "Your file is being reviewed and isn’t available yet.",
       "primaryAction": "view_upload_status",
       "illustration": "magnifying_file",
-      "lightThemeAsset": "errors/magnifying_file.light.svg",
-      "darkThemeAsset": "errors/magnifying_file.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -493,8 +439,6 @@
       "body": "Choose a permitted file or follow the review process.",
       "primaryAction": "choose_file",
       "illustration": "file_with_stop",
-      "lightThemeAsset": "errors/file_with_stop.light.svg",
-      "darkThemeAsset": "errors/file_with_stop.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -510,8 +454,6 @@
       "body": "Open Buytiva and navigate to the right place.",
       "primaryAction": "role_home",
       "illustration": "split_signpost",
-      "lightThemeAsset": "errors/split_signpost.light.svg",
-      "darkThemeAsset": "errors/split_signpost.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -527,8 +469,6 @@
       "body": "Verify the address on your Buytiva account, then try again.",
       "primaryAction": "verify_email",
       "illustration": "pencil_list",
-      "lightThemeAsset": "errors/email_verification.light.svg",
-      "darkThemeAsset": "errors/email_verification.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -544,8 +484,6 @@
       "body": "Complete the verification step required for this account.",
       "primaryAction": "login",
       "illustration": "sleepy_key",
-      "lightThemeAsset": "errors/mfa_required.light.svg",
-      "darkThemeAsset": "errors/mfa_required.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -561,8 +499,6 @@
       "body": "Your account must update its password before continuing.",
       "primaryAction": "change_password",
       "illustration": "pencil_list",
-      "lightThemeAsset": "errors/password_change.light.svg",
-      "darkThemeAsset": "errors/password_change.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -578,8 +514,6 @@
       "body": "Reload the latest information before you try again.",
       "primaryAction": "retry_safe",
       "illustration": "two_list_sheets",
-      "lightThemeAsset": "errors/request_conflict.light.svg",
-      "darkThemeAsset": "errors/request_conflict.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -595,8 +529,6 @@
       "body": "Your application has not been changed by this message. Try again later.",
       "primaryAction": "retry_safe",
       "illustration": "waiting_mail",
-      "lightThemeAsset": "errors/application_unavailable.light.svg",
-      "darkThemeAsset": "errors/application_unavailable.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [
@@ -612,8 +544,6 @@
       "body": "It may have expired, been revoked, or already been used.",
       "primaryAction": "contact_support",
       "illustration": "unraveled_ribbon",
-      "lightThemeAsset": "errors/invitation_invalid.light.svg",
-      "darkThemeAsset": "errors/invitation_invalid.dark.svg",
       "motion": "play once only; static when reduced motion",
       "mustMapToBackendStableCode": true,
       "sharedAcross": [

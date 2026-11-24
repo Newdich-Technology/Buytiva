@@ -1,9 +1,14 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/manrope/700.css';
 @import './design-tokens.generated.css';
 @import './motion.css';
 @import './marketing-footer.css';
 
 :root {
-  font-family: Inter, 'Aptos', Arial, sans-serif;
+  font-family: var(--font-body), Arial, sans-serif;
   color: var(--text-primary);
   background: var(--background-canvas);
   font-synthesis: none;

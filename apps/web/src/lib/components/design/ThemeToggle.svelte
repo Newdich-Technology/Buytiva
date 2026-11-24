@@ -1,35 +1,37 @@
 <script lang="ts">
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
-  import { THEME_PREFERENCE_STORAGE_KEY } from '../../constants/cookieConsent.js';
-  import { hasFunctionalStorageConsent } from '../../utils/cookiePreferences.js';
+  import { readThemePreference, resolveThemePreference, saveThemePreference } from '../../utils/themePreference.js';
   let { lightOnDark = false }: { lightOnDark?: boolean } = $props();
   let mode = $state<'system' | 'light' | 'dark'>('system');
   let dark = $state(false);
+  let ready = $state(false);
 
   onMount(() => {
-    const savedTheme = getSavedTheme();
-    mode = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : 'system';
-    dark = mode === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : mode === 'dark';
-    applyTheme();
-  });
-
-  function applyTheme() {
-    const resolved = mode === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
-    dark = resolved === 'dark';
-    document.documentElement.dataset.theme = resolved;
     try {
-      if (mode === 'system' || !hasFunctionalStorageConsent(localStorage)) localStorage.removeItem(THEME_PREFERENCE_STORAGE_KEY);
-      else localStorage.setItem(THEME_PREFERENCE_STORAGE_KEY, mode);
+      mode = readThemePreference(localStorage) ?? 'system';
     } catch {
       mode = 'system';
     }
-  }
+    applyTheme();
+    ready = true;
+    const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleSystemThemeChange = () => {
+      if (mode === 'system') applyTheme();
+    };
+    colorPreference.addEventListener('change', handleSystemThemeChange);
+    return () => colorPreference.removeEventListener('change', handleSystemThemeChange);
+  });
 
-  function getSavedTheme(): string | null {
+  function applyTheme() {
+    const resolved = resolveThemePreference(mode, window.matchMedia('(prefers-color-scheme: dark)').matches);
+    dark = resolved === 'dark';
+    document.documentElement.dataset.theme = resolved;
+    updateThemeColor();
     try {
-      return hasFunctionalStorageConsent(localStorage) ? localStorage.getItem(THEME_PREFERENCE_STORAGE_KEY) : null;
+      saveThemePreference(localStorage, mode);
     } catch {
-      return null;
+      mode = 'system';
     }
   }
 
@@ -37,9 +39,19 @@
     mode = mode === 'system' ? 'dark' : mode === 'dark' ? 'light' : 'system';
     applyTheme();
   }
+
+  function updateThemeColor() {
+    const darkMode = document.documentElement.dataset.theme === 'dark';
+    const color = page.url.pathname === '/' ? (darkMode ? '#172721' : '#F2E8D8') : (darkMode ? '#101827' : '#FBF8F1');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
+  }
+
+  $effect(() => {
+    if (ready) updateThemeColor();
+  });
 </script>
 
-<button class:light-on-dark={lightOnDark} class="theme-toggle" type="button" aria-label={`Theme ${mode}; activate to change`} onclick={toggleTheme}>
+<button class:light-on-dark={lightOnDark} class="theme-toggle" type="button" aria-label={`Theme ${mode}; activate to change`} data-theme-ready={ready} onclick={toggleTheme}>
   <span aria-hidden="true">{mode === 'system' ? '◐' : dark ? '☼' : '☾'}</span>
 </button>
 
