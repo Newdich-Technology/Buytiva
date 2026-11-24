@@ -12,6 +12,7 @@ const authClientErrorMessages = {
   'staffInviteFailed': 'The staff invitation could not be sent.',
   'staffActionFailed': 'The staff action could not be completed.',
   'verificationResent': 'If verification is pending, a new email has been sent.',
+  'passwordMismatch': 'Passwords do not match.',
 };
 const authApiPaths = {
   'register': '$authApiPath/register',

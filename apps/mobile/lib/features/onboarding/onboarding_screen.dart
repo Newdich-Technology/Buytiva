@@ -3,7 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../core/design_system/design_tokens.g.dart';
 import '../../core/design_system/motion_preferences.dart';
-import '../../core/widgets/buytiva_lordicon.dart';
 import '../auth/login_screen.dart';
 import 'onboarding_illustration.dart';
 
@@ -101,7 +100,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
               itemBuilder: (context, index) => _buildSlide(context, index, reduceMotion),
             ),
           ),
-          Text('Animated icons by Lordicon · lordicon.com', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
             child: Row(children: [
@@ -166,17 +164,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> with SingleTickerPr
                                 decoration: BoxDecoration(color: themeForScene(context), shape: BoxShape.circle),
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
-                                  child: BuytivaLordicon(
-                                    key: ValueKey('onboarding-icon-$index-${_index == index}'),
-                                    assetPath: 'assets/animations/lordicon/${[
-                                      'system-outline-56-file-text',
-                                      'system-outline-19-magnifier',
-                                      'system-outline-120-folder',
-                                    ][index]}.json',
-                                    label: ['Shopping list', 'Find a procurer', 'Your order'][index],
-                                    width: 52, height: 52,
-                                    playOnLoad: _index == index,
-                                    staticFallback: Icon([Icons.list_alt, Icons.search, Icons.folder_outlined][index], color: Theme.of(context).colorScheme.primary),
+                                  child: ExcludeSemantics(
+                                    child: Icon([Icons.list_alt, Icons.search, Icons.folder_outlined][index], size: 28, color: Theme.of(context).colorScheme.primary),
                                   ),
                                 ),
                               ),
