@@ -39,11 +39,11 @@ export class PrismaShoppingRequestRepository implements ShoppingRequestRepositor
     }
   }
   async get(actorId: string, role: 'CUSTOMER' | 'PROCURER', id: string) {
-    const row = await this.prisma.shoppingRequest.findFirst({ where: { id, ...(role === 'CUSTOMER' ? { customerId: actorId } : { procurerId: actorId }) } });
+    const row = await this.prisma.shoppingRequest.findFirst({ where: { id, ...(role === 'CUSTOMER' ? { customerId: actorId } : { procurerId: actorId, procurer: eligibleOwner(actorId) }) } });
     return row ? view(row) : null;
   }
   async list(actorId: string, role: 'CUSTOMER' | 'PROCURER', offset: number, limit: number) {
-    const rows = await this.prisma.shoppingRequest.findMany({ where: role === 'CUSTOMER' ? { customerId: actorId } : { procurerId: actorId },
+    const rows = await this.prisma.shoppingRequest.findMany({ where: role === 'CUSTOMER' ? { customerId: actorId } : { procurerId: actorId, procurer: eligibleOwner(actorId) },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], skip: offset, take: limit });
     return rows.map(view);
   }
