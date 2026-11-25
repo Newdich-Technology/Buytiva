@@ -14,4 +14,4 @@ CI 45666580444 at `41bb5be` passed additional PostgreSQL review rejection cases 
 
 CI 45667707752 at `41136c9` passed disposable PostgreSQL preferred-address ownership, composite foreign-key rejection, concurrent selection and cascade-delete regressions. The customer profile update and authorization tests passed on disposable PostgreSQL in CI 45668238690.
 
-CI 45668579947 at `c70b9d9` passed mobile mock-contract tests and PostgreSQL customer profile/address tests. Discovery invitation-owner pagination now filters before applying offsets; its new PostgreSQL regression awaits CI. Offset scans remain potentially expensive, and no load benchmark has been performed.
+CI 45668579947 at `c70b9d9` passed mobile mock-contract tests and PostgreSQL customer profile/address tests. Discovery invitation-owner pagination now filters before applying offsets; its PostgreSQL regression passed CI 45669122196. Offset scans remain potentially expensive, and no load benchmark has been performed.

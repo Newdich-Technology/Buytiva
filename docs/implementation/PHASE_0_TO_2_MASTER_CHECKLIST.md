@@ -371,8 +371,8 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Test:** `tests/integration/shoppingLists/shoppingListApi.test.ts`
 - **Result/evidence:** CI 45641130413 passed
 - **Security:** Ownership, immutable submitted state
-- **Frontend:** Mobile shopping list repository is empty
-- **Remaining/limitations:** Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification
+- **Frontend:** Flutter shopping-list repository added, mock contract tests awaiting CI; screens and web integration missing
+- **Remaining/limitations:** Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification; client repository exists but UI screens and live frontend-backend tests remain missing
 
 ## [ ] Phase 2A: Shopping item operations work
 
@@ -384,8 +384,8 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Test:** `tests/integration/shoppingLists/shoppingListApi.test.ts`
 - **Result/evidence:** CI 45641130413 passed
 - **Security:** Ownership, immutable submitted state
-- **Frontend:** Mobile shopping list repository is empty
-- **Remaining/limitations:** Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification
+- **Frontend:** Flutter shopping-list repository added, mock contract tests awaiting CI; screens and web integration missing
+- **Remaining/limitations:** Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification; client repository exists but UI screens and live frontend-backend tests remain missing
 
 ## [ ] Phase 2A: Procurer discovery works
 
@@ -395,7 +395,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** GET /api/v1/procurers/discovery
 - **Prisma model:** `prisma/models/deliveryZone.prisma`
 - **Test:** `tests/integration/procurerServices/discoveryPagination.test.ts`
-- **Result/evidence:** Unit regression passed; PostgreSQL pagination regression pending CI; earlier discovery tests passed CI
+- **Result/evidence:** CI 45669122196 passed PostgreSQL eligibility-filtered pagination, and unit batch boundary regression
 - **Security:** Do not expose private evidence; eligibility checks
 - **Frontend:** No verified frontend integration
 - **Remaining/limitations:** No rating/ranking, authoritative location registry or full filtering; offset scanning can be expensive; frontend integration incomplete

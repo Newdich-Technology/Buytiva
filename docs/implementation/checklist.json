@@ -389,8 +389,8 @@
       "tests": "tests/integration/shoppingLists/shoppingListApi.test.ts",
       "result": "CI 45641130413 passed",
       "security": "Ownership, immutable submitted state",
-      "frontend": "Mobile shopping list repository is empty",
-      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification",
+      "frontend": "Flutter shopping-list repository added, mock contract tests awaiting CI; screens and web integration missing",
+      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification; client repository exists but UI screens and live frontend-backend tests remain missing",
       "requirement": "Shopping lists work"
     },
     {
@@ -403,8 +403,8 @@
       "tests": "tests/integration/shoppingLists/shoppingListApi.test.ts",
       "result": "CI 45641130413 passed",
       "security": "Ownership, immutable submitted state",
-      "frontend": "Mobile shopping list repository is empty",
-      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification",
+      "frontend": "Flutter shopping-list repository added, mock contract tests awaiting CI; screens and web integration missing",
+      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification; client repository exists but UI screens and live frontend-backend tests remain missing",
       "requirement": "Shopping item operations work"
     },
     {
@@ -415,7 +415,7 @@
       "api": "GET /api/v1/procurers/discovery",
       "model": "prisma/models/deliveryZone.prisma",
       "tests": "tests/integration/procurerServices/discoveryPagination.test.ts",
-      "result": "Unit regression passed; PostgreSQL pagination regression pending CI; earlier discovery tests passed CI",
+      "result": "CI 45669122196 passed PostgreSQL eligibility-filtered pagination, and unit batch boundary regression",
       "security": "Do not expose private evidence; eligibility checks",
       "frontend": "No verified frontend integration",
       "remaining": "No rating/ranking, authoritative location registry or full filtering; offset scanning can be expensive; frontend integration incomplete",

@@ -9,7 +9,7 @@ Audit is partial. No UI existence claim constitutes integration. The authoritati
 | Admin review | `/admin/procurer-applications/*`, identity DTOs | procurerApplications server actions | auth repository partially supports administration | bearer, staff permission, MFA; partial |
 | Customer profile, addresses | `GET/PATCH /me`, `/addresses` and `/addresses/preferred`, auth/address DTOs | no verified procurement consumer | address repository implemented and contract-tested with a mock; mobile CI 45668579947 passed; screens empty | bearer/customer owner; missing procurement integration |
 | Procurer profile, zones, pricing | `/procurer-services/me/*`, procurer-services DTOs | no verified consumer | no verified consumer | bearer/active procurer/MFA; missing |
-| Lists, items, discovery | `/shopping-lists/*`, `/procurers/discovery`, list and discovery DTOs | no verified consumer | shopping-list repository and screens empty | bearer/customer; missing |
+| Lists, items, discovery | `/shopping-lists/*`, `/procurers/discovery`, list and discovery DTOs | no verified consumer | shopping-list repository implemented, mock test pending CI; screens empty | bearer/customer; missing |
 | Requests, quotes, orders, delivery confirmation | `/shopping-requests/*`, `/quotations/*`, `/orders/*`, corresponding DTOs | no verified consumer | quotation/order providers empty | bearer/owner or assigned procurer; missing |
 | Reviews, ratings, notifications | private `/orders/:orderId/review`; no public ratings/notification API | not integrated | placeholders/empty | private review partial; other features missing |
 
