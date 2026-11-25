@@ -49,7 +49,7 @@ export class PrismaProcurerServicesRepository implements ProcurerServicesReposit
     } catch (error) { return handleConflict(error); }
   }
   async findPricingForLocation(userId: string, location: Pick<DiscoveryInput, 'country' | 'region' | 'city' | 'area'>) {
-    const zone = await this.prisma.procurerServiceZone.findFirst({ where: { ...location, active: true,
+    const zone = await this.prisma.procurerServiceZone.findFirst({ where: { country: location.country, region: location.region, city: location.city, area: location.area, active: true,
       profile: { userId, ...eligibleOwner(userId), acceptingRequests: true, publicName: { not: null }, pricingPolicies: { some: {} } } },
       include: { profile: { include: { pricingPolicies: { orderBy: { version: 'desc' }, take: 1 } } } } });
     if (!zone || !zone.profile.pricingPolicies[0]) return null;
