@@ -301,13 +301,13 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Requirement:** Customer addresses work
 - **Status:** partial
 - **Source:** `src/routes/addresses/address.route.ts`
-- **API:** /api/v1/addresses
+- **API:** /api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred
 - **Prisma model:** `prisma/models/address.prisma`
-- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed
-- **Security:** Owner-only access
+- **Test:** `tests/integration/addresses/preferredAddress.test.ts`
+- **Result/evidence:** Preferred-address PostgreSQL integration added; CI pending. Other address cases passed earlier CI.
+- **Security:** Owner-scoped access and composite foreign key for preference ownership
 - **Frontend:** Mobile address repository is empty
-- **Remaining/limitations:** Preferred address selection and geographic registry missing; release requirement needs independent verification
+- **Remaining/limitations:** Frontend address repository empty; new PostgreSQL preference regression pending; full address security coverage incomplete
 
 ## [ ] Phase 2A: Procurer profiles work
 

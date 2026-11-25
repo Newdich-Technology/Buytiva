@@ -1,5 +1,6 @@
-import type { PrismaClient } from '../../generated/prisma/client.js';
+import { Prisma, type PrismaClient } from '../../generated/prisma/client.js';
 import type { AddressRepository } from '../../interfaces/addresses/addressRepository.interface.js';
+import { conflictError } from '../../errors/auths/auth.error.js';
 import type { AddressInput, AddressView } from '../../models/addresses/address.model.js';
 
 type Row = AddressInput & { id: string; createdAt: Date; updatedAt: Date };
@@ -9,6 +10,24 @@ function view(row: Row): AddressView {
 }
 export class PrismaAddressRepository implements AddressRepository {
   constructor(private readonly prisma: PrismaClient) {}
+  async getPreferred(ownerId: string) {
+    const preferred = await this.prisma.customerPreferredAddress.findUnique({ where: { customerId: ownerId }, include: { address: true } });
+    return preferred ? view(preferred.address) : null;
+  }
+  async setPreferred(ownerId: string, id: string) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const address = await tx.customerAddress.findFirst({ where: { id, customerId: ownerId } });
+        if (!address) return null;
+        await tx.customerPreferredAddress.upsert({ where: { customerId: ownerId },
+          create: { customerId: ownerId, addressId: id }, update: { addressId: id } });
+        return view(address);
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && ['P2002', 'P2003', 'P2034'].includes(error.code)) throw conflictError('Address selection changed; retry.');
+      throw error;
+    }
+  }
   async create(ownerId: string, input: AddressInput) { return view(await this.prisma.customerAddress.create({ data: { ...input, customerId: ownerId } })); }
   async get(ownerId: string, id: string) {
     const row = await this.prisma.customerAddress.findFirst({ where: { customerId: ownerId, id } });

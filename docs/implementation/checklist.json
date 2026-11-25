@@ -314,13 +314,13 @@
       "feature": "Customer addresses work",
       "status": "partial",
       "source": "src/routes/addresses/address.route.ts",
-      "api": "/api/v1/addresses",
+      "api": "/api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred",
       "model": "prisma/models/address.prisma",
-      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "CI 45641130413 passed",
-      "security": "Owner-only access",
+      "tests": "tests/integration/addresses/preferredAddress.test.ts",
+      "result": "Preferred-address PostgreSQL integration added; CI pending. Other address cases passed earlier CI.",
+      "security": "Owner-scoped access and composite foreign key for preference ownership",
       "frontend": "Mobile address repository is empty",
-      "remaining": "Preferred address selection and geographic registry missing; release requirement needs independent verification",
+      "remaining": "Frontend address repository empty; new PostgreSQL preference regression pending; full address security coverage incomplete",
       "requirement": "Customer addresses work"
     },
     {
