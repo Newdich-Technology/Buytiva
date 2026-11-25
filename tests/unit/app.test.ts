@@ -27,7 +27,7 @@ describe('versioned health endpoint', () => {
 describe('request safety', () => {
   it('rejects unknown request properties instead of silently discarding them', async () => {
     const app = createBuytivaFastifyApplication();
-    app.post('/validation-test', { schema: { body: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'], additionalProperties: false } } }, async (request) => request.body);
+    app.post('/validation-test', { schema: { body: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'], additionalProperties: false } } }, async () => ({ ok: true }));
     const response = await app.inject({ method: 'POST', url: '/validation-test', payload: { name: 'test', unexpected: true } });
     expect(response.statusCode).toBe(400);
     expect(response.json()).toMatchObject({ error: { code: 'VALIDATION_ERROR' } });
