@@ -8,4 +8,9 @@ export const zoneResponse = Type.Object({ ...zoneInput.properties, id: Type.Stri
 export const profileResponse = Type.Object({ userId: Type.String({ format: 'uuid' }), status: Type.String(), publicName: Type.Union([Type.String(), Type.Null()]), biography: Type.Union([Type.String(), Type.Null()]), acceptingRequests: Type.Boolean(), zones: Type.Array(zoneResponse) });
 export const zoneParams = Type.Object({ zoneId: Type.String({ format: 'uuid' }) });
 export const discoveryQuery = Type.Object({ country: Type.String({ minLength: 2, maxLength: 2 }), region: location, city: location, area: location, offset: Type.Optional(Type.Integer({ minimum: 0, maximum: 10000 })), limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })) });
-export const publicProfileResponse = Type.Object({ userId: Type.String({ format: 'uuid' }), publicName: Type.String(), biography: Type.Union([Type.String(), Type.Null()]), zone: zoneResponse });
+const money = Type.String({ pattern: '^(0|[1-9][0-9]{0,17})$' });
+export const pricingInput = Type.Object({ currency, fixedFeeMinor: money, thresholdMinor: money,
+  percentageBasisPoints: Type.Integer({ minimum: 0, maximum: 10000 }), expectedVersion: Type.Integer({ minimum: 0, maximum: 2147483646 }) }, { additionalProperties: false });
+export const pricingResponse = Type.Object({ id: Type.String({ format: 'uuid' }), version: Type.Integer({ minimum: 1 }), currency,
+  fixedFeeMinor: money, thresholdMinor: money, percentageBasisPoints: Type.Integer({ minimum: 0, maximum: 10000 }), createdAt: Type.String({ format: 'date-time' }) });
+export const publicProfileResponse = Type.Object({ userId: Type.String({ format: 'uuid' }), publicName: Type.String(), biography: Type.Union([Type.String(), Type.Null()]), zone: zoneResponse, pricing: pricingResponse });

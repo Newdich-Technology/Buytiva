@@ -4,6 +4,7 @@ import { healthRoute } from '../../routes/health/health.route.js';
 import { registerAuthenticationApi } from './auth.api.js';
 import type { AuthDependencies } from '../../types/authDependencies.type.js';
 import type { AddressRepository } from '../../interfaces/addresses/addressRepository.interface.js';
+import { pricingPreviewRoute } from '../../routes/pricing/pricingPreview.route.js';
 import { addressRoute } from '../../routes/addresses/address.route.js';
 import type { ShoppingListRepository } from '../../interfaces/shoppingLists/shoppingListRepository.interface.js';
 import type { ProcurerServicesRepository } from '../../interfaces/procurerServices/procurerServicesRepository.interface.js';
@@ -24,6 +25,7 @@ export const registerRoutes: FastifyPluginAsync<VersionedApiOptions> = async (ap
       prefix: API_VERSION_PREFIX,
       authDependencies: options.authDependencies
     });
+    if (options.addressRepository && options.procurerServicesRepository && options.shoppingListRepository) await app.register(pricingPreviewRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, addressRepository: options.addressRepository, procurerServicesRepository: options.procurerServicesRepository, shoppingListRepository: options.shoppingListRepository });
     if (options.addressRepository && options.procurerServicesRepository) await app.register(addressRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, addressRepository: options.addressRepository, procurerServicesRepository: options.procurerServicesRepository });
     if (options.procurerServicesRepository) await app.register(procurerServicesRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, procurerServicesRepository: options.procurerServicesRepository });
     if (options.shoppingListRepository) {

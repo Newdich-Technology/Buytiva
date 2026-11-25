@@ -17,3 +17,11 @@ export function validateZone(input: ZoneInput): ZoneInput {
   if (!/^[A-Z]{2}$/.test(country) || input.currency !== 'NGN' || !/^(0|[1-9]\d{0,17})$/.test(input.deliveryFeeMinor)) throw invalidInputError('Invalid delivery zone.');
   return { ...input, country, region: normalizeLocation(input.region), city: normalizeLocation(input.city), area: normalizeLocation(input.area) };
 }
+
+export function validatePricing(input: import('../../models/procurerServices/procurerServices.model.js').PricingPolicyInput) {
+  if (input.currency !== 'NGN' || !/^(0|[1-9]\d{0,17})$/.test(input.fixedFeeMinor) || !/^(0|[1-9]\d{0,17})$/.test(input.thresholdMinor) ||
+    !Number.isInteger(input.percentageBasisPoints) || input.percentageBasisPoints < 0 || input.percentageBasisPoints > 10000 ||
+    !Number.isInteger(input.expectedVersion) || input.expectedVersion < 0 || input.expectedVersion >= 2147483647) throw invalidInputError('Invalid pricing policy.');
+  return { currency: input.currency, fixedFeeMinor: input.fixedFeeMinor, thresholdMinor: input.thresholdMinor,
+    percentageBasisPoints: input.percentageBasisPoints, expectedVersion: input.expectedVersion };
+}

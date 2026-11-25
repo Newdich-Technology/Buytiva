@@ -59,6 +59,8 @@ model ProcurerProfile {
   biography     String?              @db.VarChar(2000)
   acceptingRequests Boolean          @default(false)
   serviceZones  ProcurerServiceZone[]
+  pricingVersion Int                 @default(0)
+  pricingPolicies ProcurerPricingPolicy[]
   createdAt     DateTime             @default(now())
   updatedAt     DateTime             @updatedAt
   user          User                 @relation(fields: [userId], references: [id], onDelete: Restrict)

@@ -15,3 +15,13 @@ describe('procurer services validation', () => {
     expect(() => validateZone({ ...zone, deliveryFeeMinor: '1.5' })).toThrow();
   });
 });
+
+it('validates versioned pricing without accepting negative values or invalid percentages', async () => {
+  const { validatePricing } = await import('../../../src/validators/procurerServices/procurerServices.validator.js');
+  const policy = { currency: 'NGN' as const, fixedFeeMinor: '300000', thresholdMinor: '4000000', percentageBasisPoints: 750, expectedVersion: 0 };
+  expect(validatePricing(policy)).toEqual(policy);
+  expect(() => validatePricing({ ...policy, percentageBasisPoints: 10001 })).toThrow();
+  expect(() => validatePricing({ ...policy, fixedFeeMinor: '-1' })).toThrow();
+  expect(() => validatePricing({ ...policy, thresholdMinor: '1.5' })).toThrow();
+  expect(() => validatePricing({ ...policy, expectedVersion: -1 })).toThrow();
+});
