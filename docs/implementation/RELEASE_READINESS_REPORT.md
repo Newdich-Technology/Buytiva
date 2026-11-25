@@ -7,7 +7,7 @@
 | Phase 0 | 8 | 1 | 7 | 0 | 0 |
 | Phase 1 | 14 | 0 | 14 | 0 | 0 |
 | Phase 2A | 13 | 0 | 13 | 0 | 0 |
-| Phase 2B | 11 | 0 | 4 | 0 | 7 |
+| Phase 2B | 11 | 0 | 5 | 0 | 6 |
 | Phase 2C | 9 | 0 | 7 | 0 | 2 |
 
 See [master checklist](PHASE_0_TO_2_MASTER_CHECKLIST.md) for the distinct missing and blocked totals and every evidence link. These are requirement statuses, not test counts. Code completeness: partial. Tested functionality: selected flows only. Staging readiness: not assessed. Production readiness: blocked.

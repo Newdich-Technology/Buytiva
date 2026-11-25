@@ -5,9 +5,11 @@ export const STAFF_PERMISSION_CODES = [
   'orders.read',
   'support.read',
   'uploads.moderate',
+  'reviews.moderate',
   'finance.read',
   'audit.read'
 ] as const;
+export const REVIEW_MODERATION_PERMISSION = 'reviews.moderate';
 export const APPLICATION_READ_PERMISSION = 'procurerApplication.read';
 export const APPLICATION_REVIEW_PERMISSION = 'procurerApplication.review';
 

@@ -7,7 +7,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 | 0 | 8 | 1 | 7 | 0 | 0 | 0 |
 | 1 | 14 | 0 | 14 | 0 | 0 | 0 |
 | 2A | 13 | 0 | 13 | 0 | 0 | 0 |
-| 2B | 11 | 0 | 4 | 7 | 0 | 0 |
+| 2B | 11 | 0 | 5 | 6 | 0 | 0 |
 | 2C | 9 | 0 | 7 | 0 | 2 | 0 |
 
 ## [ ] Phase 0: Ansofra architecture verified
@@ -585,15 +585,15 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 ## [ ] Phase 2B: Review moderation works
 
 - **Requirement:** Review moderation works
-- **Status:** missing
-- **Source:** `docs/architecture/procurementReputationHandoff.md`
-- **API:** none
-- **Prisma model:** `none`
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** GET /api/v1/admin/reviews; POST /api/v1/admin/reviews/:reviewId/moderate
+- **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Audit moderation; prevent abuse and XSS
-- **Frontend:** No verified integration
-- **Remaining/limitations:** No review/report/moderation implementation
+- **Result/evidence:** Moderation and PostgreSQL regression added; CI pending
+- **Security:** Granular reviews.moderate permission, recent MFA, exclude self and assigned procurer, audited optimistic transitions
+- **Frontend:** Not integrated
+- **Remaining/limitations:** Public visibility and dispute/refund policy absent; abuse reporting, reviewer identity policy and full adversarial tests incomplete
 
 ## [ ] Phase 2B: Review security tests pass
 
@@ -655,7 +655,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** registration through POST /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** Database-backed journey added; PostgreSQL CI pending
+- **Result/evidence:** CI 45669983152 passed registration to private review with isolated admin and payment fixtures; moderation extension pending CI
 - **Security:** Real roles; fixture-only verified test payment
 - **Frontend:** Not integrated
 - **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, moderation, aggregates, refund and provider verification absent; complete requested journey not yet implemented

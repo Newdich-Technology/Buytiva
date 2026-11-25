@@ -38,15 +38,23 @@ model ProcurementOrderHistory {
   @@map("procurement_order_history")
 }
 
+enum ReviewModerationStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+}
+
 // A review derives both participants from the immutable order request.
 model OrderReview {
   id        String           @id @default(uuid()) @db.Uuid
   orderId   String           @unique @db.Uuid
   order     ProcurementOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
   rating    Int
+  moderationStatus ReviewModerationStatus @default(PENDING)
   comment   String?          @db.VarChar(2000)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 
+  @@index([moderationStatus, createdAt, id])
   @@map("order_reviews")
 }
