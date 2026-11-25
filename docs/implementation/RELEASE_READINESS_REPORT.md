@@ -14,7 +14,7 @@ See [master checklist](PHASE_0_TO_2_MASTER_CHECKLIST.md) for the distinct missin
 
 ## Findings and next steps
 
-1. Confirm expanded reversal/currency review regressions in disposable PostgreSQL CI; private-review, order-eligibility and recent-MFA regressions passed earlier disposable CI; add a complete permission/ownership and transaction-race matrix.
+1. Expand the independent review, order and authentication security and transaction-race matrix; private-review, order-eligibility and recent-MFA regressions passed disposable CI 45666580444; add a complete permission/ownership and transaction-race matrix.
 2. Approve completion, disputes, refunds and moderation policy; complete private review security, implement moderation and eligible-only aggregates, then full API/PostgreSQL E2E and abuse tests.
 3. Implement and test web/mobile procurement API consumers without redesign.
 4. Resolve reviewed migrations, deployment configuration, SMTP, CSRF/ingress, monitoring, retention and incident operations before staging approval.

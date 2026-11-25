@@ -9,3 +9,5 @@ No public test-payment writer was added. Cross-customer, cross-procurer, privile
 CI 45665163104 at `9c10cb4` passed disposable PostgreSQL for recent MFA and order-eligibility regressions. The subsequent private-review changes require a fresh CI run. Local current run: 101 passed, 19 skipped, 16 TODO; an initial run failed five web suites because SvelteKit generated configuration was absent after dependency installation, then passed after `pnpm --filter @buytiva/web check`.
 
 CI 45666093815 at `3c73360` passed private-review PostgreSQL creation, duplicate concurrency and ownership tests using isolated payment data. Additional reversed-payment and currency-mismatch review cases were added afterwards and await CI.
+
+CI 45666580444 at `41bb5be` passed additional PostgreSQL review rejection cases for reversed payments and mismatched currency; all CodeQL checks passed. This is not a complete review security suite.
