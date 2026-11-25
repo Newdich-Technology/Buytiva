@@ -12,4 +12,4 @@ CI 45666093815 at `3c73360` passed private-review PostgreSQL creation, duplicate
 
 CI 45666580444 at `41bb5be` passed additional PostgreSQL review rejection cases for reversed payments and mismatched currency; all CodeQL checks passed. This is not a complete review security suite.
 
-CI 45667707752 at `41136c9` passed disposable PostgreSQL preferred-address ownership, composite foreign-key rejection, concurrent selection and cascade-delete regressions. The new customer profile update tests await CI.
+CI 45667707752 at `41136c9` passed disposable PostgreSQL preferred-address ownership, composite foreign-key rejection, concurrent selection and cascade-delete regressions. The customer profile update and authorization tests passed on disposable PostgreSQL in CI 45668238690.

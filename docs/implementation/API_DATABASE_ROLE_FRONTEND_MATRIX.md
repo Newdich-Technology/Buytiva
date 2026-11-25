@@ -8,7 +8,7 @@ Evidence scope is representative, not exhaustive: see `src/apis/v1/registerRoute
 | `/auth/*`, `/me` | user, credentials, sessions, challenges, outbox | public challenge endpoints; session-owned protected endpoints | auth integrations exist | partial; real SMTP not verified |
 | `/procurer-applications/*`, `/invitations/*` | applications, invitation, challenges | public verified application/activation; authorized staff review | forms/clients exist | partial |
 | `/super-admin/*`, `/admin/procurer-applications/*` | permissions, staff, audit, applications | server-side role and granular permissions; recent MFA for sensitive staff operations | some administration clients | partial; not all operations exist |
-| `/addresses[/:addressId]` | Address | active authenticated customer, owner scoped | mobile repository empty; web procurement not integrated | partial |
+| `/addresses[/:addressId]` | Address | active authenticated customer, owner scoped | mobile repository implemented; screens empty; web procurement not integrated | partial |
 | `/shopping-lists/*` | ShoppingList and items | customer owner | mobile repository empty | partial |
 | `/procurer-services/me`, `/me/zones`, `/me/pricing` | profile, zones, versioned policy | active eligible procurer with MFA | not verified integrated | partial |
 | `/procurers/discovery`, `/pricing/preview` | profile, zones, pricing, customer address/list | authenticated customer | not verified integrated | partial, preview nonbinding |

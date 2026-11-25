@@ -317,10 +317,10 @@
       "api": "/api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred",
       "model": "prisma/models/address.prisma",
       "tests": "tests/integration/addresses/preferredAddress.test.ts",
-      "result": "CI 45667707752 passed preferred-address ownership, composite FK, concurrent selection and deletion; profile update regression pending CI",
+      "result": "CI 45668238690 passed PostgreSQL preferred address and customer display-name update regressions; mobile address client added, mobile CI pending",
       "security": "Owner-scoped access and composite foreign key for preference ownership",
-      "frontend": "Mobile address repository is empty",
-      "remaining": "Frontend address repository empty; full address security and frontend coverage incomplete",
+      "frontend": "Flutter address repository implemented; screens remain empty; web integration absent",
+      "remaining": "Address screens and web client integration missing; broader security and client integration testing incomplete",
       "requirement": "Customer addresses work"
     },
     {

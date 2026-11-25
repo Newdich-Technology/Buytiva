@@ -18,6 +18,14 @@ class ApiClient {
     return await _send(path, 'GET', null, token) as Map<String, dynamic>;
   }
 
+  Future<Map<String, dynamic>?> getNullable(String path, {String? token}) async {
+    return await _send(path, 'GET', null, token) as Map<String, dynamic>?;
+  }
+
+  Future<Map<String, dynamic>> put(String path, Map<String, dynamic>? body, {String? token}) async {
+    return await _send(path, 'PUT', body, token) as Map<String, dynamic>;
+  }
+
   Future<List<dynamic>> getList(String path, {String? token}) async {
     return await _send(path, 'GET', null, token) as List<dynamic>;
   }

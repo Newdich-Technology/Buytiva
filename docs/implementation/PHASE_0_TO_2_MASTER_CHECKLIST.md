@@ -304,10 +304,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred
 - **Prisma model:** `prisma/models/address.prisma`
 - **Test:** `tests/integration/addresses/preferredAddress.test.ts`
-- **Result/evidence:** CI 45667707752 passed preferred-address ownership, composite FK, concurrent selection and deletion; profile update regression pending CI
+- **Result/evidence:** CI 45668238690 passed PostgreSQL preferred address and customer display-name update regressions; mobile address client added, mobile CI pending
 - **Security:** Owner-scoped access and composite foreign key for preference ownership
-- **Frontend:** Mobile address repository is empty
-- **Remaining/limitations:** Frontend address repository empty; full address security and frontend coverage incomplete
+- **Frontend:** Flutter address repository implemented; screens remain empty; web integration absent
+- **Remaining/limitations:** Address screens and web client integration missing; broader security and client integration testing incomplete
 
 ## [ ] Phase 2A: Procurer profiles work
 
