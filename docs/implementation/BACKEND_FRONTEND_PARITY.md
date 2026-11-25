@@ -11,6 +11,6 @@ Audit is partial. No UI existence claim constitutes integration. The authoritati
 | Procurer profile, zones, pricing | `/procurer-services/me/*`, procurer-services DTOs | no verified consumer | no verified consumer | bearer/active procurer/MFA; missing |
 | Lists, items, discovery | `/shopping-lists/*`, `/procurers/discovery`, list and discovery DTOs | no verified consumer | shopping-list repository and screens empty | bearer/customer; missing |
 | Requests, quotes, orders, delivery confirmation | `/shopping-requests/*`, `/quotations/*`, `/orders/*`, corresponding DTOs | no verified consumer | quotation/order providers empty | bearer/owner or assigned procurer; missing |
-| Reviews, ratings, notifications | no implemented API | not integrated | placeholders/empty | missing |
+| Reviews, ratings, notifications | private `/orders/:orderId/review`; no public ratings/notification API | not integrated | placeholders/empty | private review partial; other features missing |
 
 Request/response types above reference backend DTOs, not proven matching frontend-generated types. More precise per-method parity, reauthentication UX for recent MFA, client refresh/error handling, pagination and deployed cross-origin tests remain open. No interface redesign was undertaken.

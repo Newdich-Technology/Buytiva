@@ -4,6 +4,7 @@ import { DEFAULT_SERVER_HOST, DEFAULT_SERVER_PORT } from './constants/app.consta
 import { createBuytivaFastifyApplication } from './app.js';
 import { prismaClient } from './databases/prismaClient.js';
 import { PrismaProcurerServicesRepository } from './repositories/procurerServices/procurerServices.repository.js';
+import { PrismaReviewRepository } from './repositories/reviews/review.repository.js';
 import { PrismaOrderRepository } from './repositories/orders/order.repository.js';
 import { PrismaQuotationRepository } from './repositories/quotations/quotation.repository.js';
 import { PrismaShoppingRequestRepository } from './repositories/shoppingRequests/shoppingRequest.repository.js';
@@ -19,7 +20,7 @@ let app: ReturnType<typeof createBuytivaFastifyApplication> | undefined;
 try {
   await prismaClient.$connect();
   const runtime = createAuthRuntime(prismaClient, logger);
-  app = createBuytivaFastifyApplication({ authDependencies: runtime.dependencies, orderRepository: new PrismaOrderRepository(prismaClient), quotationRepository: new PrismaQuotationRepository(prismaClient), shoppingRequestRepository: new PrismaShoppingRequestRepository(prismaClient), addressRepository: new PrismaAddressRepository(prismaClient), shoppingListRepository: new PrismaShoppingListRepository(prismaClient), procurerServicesRepository: new PrismaProcurerServicesRepository(prismaClient) });
+  app = createBuytivaFastifyApplication({ authDependencies: runtime.dependencies, orderRepository: new PrismaOrderRepository(prismaClient), reviewRepository: new PrismaReviewRepository(prismaClient), quotationRepository: new PrismaQuotationRepository(prismaClient), shoppingRequestRepository: new PrismaShoppingRequestRepository(prismaClient), addressRepository: new PrismaAddressRepository(prismaClient), shoppingListRepository: new PrismaShoppingListRepository(prismaClient), procurerServicesRepository: new PrismaProcurerServicesRepository(prismaClient) });
   const emailPollingTimer = startAuthEmailOutboxPolling(runtime.emailOutboxJob, logger);
   app.addHook('onClose', async () => { clearInterval(emailPollingTimer); await prismaClient.$disconnect(); });
   const shutdown = () => { void app?.close().catch(() => { logger.error({ event: 'SERVER_SHUTDOWN_FAILURE' }); process.exitCode = 1; }); };

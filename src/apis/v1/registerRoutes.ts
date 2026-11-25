@@ -4,6 +4,8 @@ import { healthRoute } from '../../routes/health/health.route.js';
 import { registerAuthenticationApi } from './auth.api.js';
 import type { AuthDependencies } from '../../types/authDependencies.type.js';
 import type { OrderRepository } from '../../interfaces/orders/orderRepository.interface.js';
+import type { ReviewRepository } from '../../interfaces/reviews/reviewRepository.interface.js';
+import { reviewRoute } from '../../routes/reviews/review.route.js';
 import { orderRoute } from '../../routes/orders/order.route.js';
 import type { QuotationRepository } from '../../interfaces/quotations/quotationRepository.interface.js';
 import { quotationRoute } from '../../routes/quotations/quotation.route.js';
@@ -20,6 +22,7 @@ import { shoppingListRoute } from '../../routes/shoppingLists/shoppingList.route
 export interface VersionedApiOptions {
   readonly authDependencies?: AuthDependencies;
   readonly orderRepository?: OrderRepository;
+  readonly reviewRepository?: ReviewRepository;
   readonly quotationRepository?: QuotationRepository;
   readonly shoppingRequestRepository?: ShoppingRequestRepository;
   readonly addressRepository?: AddressRepository;
@@ -34,6 +37,7 @@ export const registerRoutes: FastifyPluginAsync<VersionedApiOptions> = async (ap
       prefix: API_VERSION_PREFIX,
       authDependencies: options.authDependencies
     });
+    if (options.reviewRepository) await app.register(reviewRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, reviewRepository: options.reviewRepository });
     if (options.orderRepository) await app.register(orderRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, orderRepository: options.orderRepository });
     if (options.quotationRepository) await app.register(quotationRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, quotationRepository: options.quotationRepository });
     if (options.shoppingRequestRepository) await app.register(shoppingRequestRoute, { prefix: API_VERSION_PREFIX, authDependencies: options.authDependencies, shoppingRequestRepository: options.shoppingRequestRepository });

@@ -10,6 +10,6 @@ Schema sources live under `prisma/models/`. This matrix summarizes model familie
 | `shoppingList.prisma`, `quotation.prisma` | lists/items, request snapshots, revisioned quotations | implemented; lifecycle/race tests incomplete |
 | `order.prisma`, `payment.prisma` | unique order per quote/request, history, one matching verified-payment record | initial implementation; no verified provider writer or refund model |
 | `admin.prisma`, `appSetting.prisma`, `attachment.prisma`, `authSession.prisma`, `backgroundJob.prisma`, `conversation.prisma`, `idempotencyKey.prisma`, `message.prisma`, `notification.prisma`, `refund.prisma` | empty files | scaffolds only; some related concepts live in other files, file names are not proof of feature coverage |
-| reviews / ratings | no model | missing |
+| reviews / ratings | `OrderReview`, unique order relation | private review admission implemented; moderation, public aggregates and refund rules missing |
 
 Prisma relation constraints and serializable transactions provide some integrity, not complete production performance, migration, refund or financial safety. Full model-by-model and query-plan review remains open.

@@ -7,7 +7,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 | 0 | 8 | 1 | 7 | 0 | 0 | 0 |
 | 1 | 14 | 0 | 14 | 0 | 0 | 0 |
 | 2A | 13 | 0 | 13 | 0 | 0 | 0 |
-| 2B | 11 | 0 | 0 | 11 | 0 | 0 |
+| 2B | 11 | 0 | 4 | 7 | 0 | 0 |
 | 2C | 9 | 0 | 6 | 1 | 2 | 0 |
 
 ## [ ] Phase 0: Ansofra architecture verified
@@ -226,10 +226,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/invitations/*
 - **Prisma model:** `prisma/models/identityAccess.prisma`
 - **Test:** `tests/integration/identity/procurerApplication.test.ts`
-- **Result/evidence:** CI 45641130413 passed; recent-MFA route unit test passed locally; new PostgreSQL regression not executed
+- **Result/evidence:** CI 45665163104 passed on 9c10cb4 including recent MFA PostgreSQL regression; complete lifecycle still unverified
 - **Security:** Approval, one-time invite and MFA
 - **Frontend:** Web/mobile invitation flows exist
-- **Remaining/limitations:** Expiry/revocation and concurrent lifecycle tests incomplete; release requirement needs independent verification; recent MFA was added to review actions; regression test not yet executed on PostgreSQL
+- **Remaining/limitations:** Expiry/revocation and concurrent lifecycle tests incomplete; release requirement needs independent verification
 
 ## [ ] Phase 1: Invitations work
 
@@ -421,10 +421,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/orders/*
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed
+- **Result/evidence:** CI 45665163104 passed on 9c10cb4 with isolated payment fixture, eligibility rechecks and concurrent completion; no provider payment
 - **Security:** Only customer completes after delivery and verified payment
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL
+- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification
 
 ## [ ] Phase 2A: Order transitions work
 
@@ -434,10 +434,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/orders/*
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed
+- **Result/evidence:** CI 45665163104 passed on 9c10cb4 with isolated payment fixture, eligibility rechecks and concurrent completion; no provider payment
 - **Security:** Only customer completes after delivery and verified payment
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL
+- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification
 
 ## [ ] Phase 2A: Verified completion works
 
@@ -447,10 +447,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/orders/*
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed
+- **Result/evidence:** CI 45665163104 passed on 9c10cb4 with isolated payment fixture, eligibility rechecks and concurrent completion; no provider payment
 - **Security:** Only customer completes after delivery and verified payment
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL
+- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification
 
 ## [ ] Phase 2A: Ownership checks pass
 
@@ -460,62 +460,62 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/orders/*
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed
+- **Result/evidence:** CI 45665163104 passed on 9c10cb4 with isolated payment fixture, eligibility rechecks and concurrent completion; no provider payment
 - **Security:** Only customer completes after delivery and verified payment
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL
+- **Remaining/limitations:** No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification
 
 ## [ ] Phase 2B: Review eligibility works
 
 - **Requirement:** Review eligibility works
-- **Status:** missing
-- **Source:** `prisma/models/order.prisma`
-- **API:** none
-- **Prisma model:** `none`
-- **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Persisted completion, payment, ownership and dispute gates
-- **Frontend:** No verified integration
-- **Remaining/limitations:** Review model and endpoints absent
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** POST/GET /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
+- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
+- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
+- **Frontend:** Not integrated
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
 
 ## [ ] Phase 2B: Rating submission works
 
 - **Requirement:** Rating submission works
-- **Status:** missing
-- **Source:** `prisma/models/order.prisma`
-- **API:** none
-- **Prisma model:** `none`
-- **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Persisted completion, payment, ownership and dispute gates
-- **Frontend:** No verified integration
-- **Remaining/limitations:** Review model and endpoints absent
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** POST/GET /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
+- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
+- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
+- **Frontend:** Not integrated
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
 
 ## [ ] Phase 2B: Written comments work
 
 - **Requirement:** Written comments work
-- **Status:** missing
-- **Source:** `prisma/models/order.prisma`
-- **API:** none
-- **Prisma model:** `none`
-- **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Persisted completion, payment, ownership and dispute gates
-- **Frontend:** No verified integration
-- **Remaining/limitations:** Review model and endpoints absent
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** POST/GET /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
+- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
+- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
+- **Frontend:** Not integrated
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
 
 ## [ ] Phase 2B: Duplicate prevention works
 
 - **Requirement:** Duplicate prevention works
-- **Status:** missing
-- **Source:** `prisma/models/order.prisma`
-- **API:** none
-- **Prisma model:** `none`
-- **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Persisted completion, payment, ownership and dispute gates
-- **Frontend:** No verified integration
-- **Remaining/limitations:** Review model and endpoints absent
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** POST/GET /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
+- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
+- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
+- **Frontend:** Not integrated
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
 
 ## [ ] Phase 2B: Review editing rules work
 

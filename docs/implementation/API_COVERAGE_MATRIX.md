@@ -14,6 +14,6 @@
 | `/shopping-requests/*` | `routes/shoppingRequests/`; `controllers/shoppingRequests/` | `services/shoppingRequests/`, `repositories/shoppingRequests/` | `dtos/shoppingRequests/`; services integration | partial |
 | `/quotations/*`, procurer quotation routes | `routes/quotations/`; `controllers/quotations/` | `services/quotations/`, `repositories/quotations/` | `dtos/quotations/`; services integration | partial |
 | `/orders/*`, procurer order routes | `routes/orders/`; `controllers/orders/` | `services/orders/`, `repositories/orders/` | `dtos/orders/`; services integration | partial |
-| reviews, ratings, notifications | none registered | none | none | missing |
+| `/orders/:orderId/review` POST/GET | `routes/reviews/review.route.ts`; `controllers/reviews/` | `services/reviews/`, `repositories/reviews/` | DTO, validator; unit + PostgreSQL regression | private review partial; public ratings, moderation and notifications missing |
 
 Detailed methods, success schemas, authentication and operation IDs are in the route files and runtime OpenAPI; a complete per-endpoint mapping of DTOs, authorization, errors and consumers is still required. Frontend usage is documented in `BACKEND_FRONTEND_PARITY.md`.

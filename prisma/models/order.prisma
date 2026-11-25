@@ -17,6 +17,7 @@ model ProcurementOrder {
   createdAt   DateTime               @default(now())
   updatedAt   DateTime               @updatedAt
   payment     VerifiedOrderPayment?
+  review      OrderReview?
   history     ProcurementOrderHistory[]
 
   @@index([status, createdAt])
@@ -35,4 +36,17 @@ model ProcurementOrderHistory {
 
   @@index([orderId, createdAt, id])
   @@map("procurement_order_history")
+}
+
+// A review derives both participants from the immutable order request.
+model OrderReview {
+  id        String           @id @default(uuid()) @db.Uuid
+  orderId   String           @unique @db.Uuid
+  order     ProcurementOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  rating    Int
+  comment   String?          @db.VarChar(2000)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@map("order_reviews")
 }
