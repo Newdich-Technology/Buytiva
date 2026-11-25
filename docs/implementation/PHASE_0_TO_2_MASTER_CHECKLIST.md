@@ -525,7 +525,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** PUT /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** Versioned editing and moderation concurrency regression added; PostgreSQL CI pending
+- **Result/evidence:** CI 45682937911 passed hidden/reversed edit denial, concurrent edits, version fencing and audit persistence on disposable PostgreSQL
 - **Security:** Owner only; rechecks payment and completion; hidden reviews cannot be edited; edits reset moderation; moderators bind decision to version
 - **Frontend:** Not integrated
 - **Remaining/limitations:** Product approval, public reporting/refund handling and additional adversarial tests remain
@@ -538,7 +538,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** GET /api/v1/admin/procurers/:procurerId/rating-summary
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** CI 45671161336 passed pending/approved/hidden/reversed cases on disposable PostgreSQL
+- **Result/evidence:** CI 45682937911 passed moderation/reversal/edit transitions and multi-bucket half-up rounding unit tests
 - **Security:** Internal permission-protected, approved and eligible completed verified-payment reviews only
 - **Frontend:** Not integrated
 - **Remaining/limitations:** Public availability, full refund policy, multi-rating/rounding cases and scaling need work
@@ -564,7 +564,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** GET /api/v1/admin/procurers/:procurerId/rating-summary
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** CI 45671161336 passed pending/approved/hidden/reversed cases on disposable PostgreSQL
+- **Result/evidence:** CI 45682937911 passed moderation/reversal/edit transitions and multi-bucket half-up rounding unit tests
 - **Security:** Internal permission-protected, approved and eligible completed verified-payment reviews only
 - **Frontend:** Not integrated
 - **Remaining/limitations:** Public availability, full refund policy, multi-rating/rounding cases and scaling need work
