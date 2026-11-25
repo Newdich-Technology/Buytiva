@@ -7,3 +7,5 @@ Private review creation and owner retrieval were added to the separate procureme
 CI 45671161336 also verified internal rating summary changes for pending, approved, hidden and reversed-payment states. Public presentation and real-provider verification remain absent.
 
 CI 45682937911 also passed owner review editing, hidden and reversed-payment denial, concurrent edit fencing, audit persistence and stale moderator-version denial.
+
+CI 45691632029 passed private report creation and concurrent decision tests on isolated PostgreSQL after the review journey; test payment and staff session are fixtures. CI 45693166479 passed Flutter address widget tests against a mock repository, not a live device-to-API flow.

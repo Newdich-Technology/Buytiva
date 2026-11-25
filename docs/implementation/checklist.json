@@ -317,10 +317,10 @@
       "api": "/api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred",
       "model": "prisma/models/address.prisma",
       "tests": "tests/integration/addresses/preferredAddress.test.ts",
-      "result": "CI 45668579947 passed PostgreSQL preference/profile regressions and Flutter address repository tests; UI screens and real client-server integration absent",
+      "result": "CI 45693166479 passed mobile widget empty/add/prefer/delete and permission-error tests with mock repository; CI 45667707752 passed database ownership/concurrency",
       "security": "Owner-scoped access and composite foreign key for preference ownership",
-      "frontend": "Flutter address repository implemented; screens remain empty; web integration absent",
-      "remaining": "Address screens and web client integration missing; broader security and client integration testing incomplete",
+      "frontend": "Flutter address CRUD UI uses real repository; mock widget/contract tests passed; SvelteKit not integrated",
+      "remaining": "Live device-to-API integration, web screens, pagination/edit widget tests and broader security testing incomplete",
       "requirement": "Customer addresses work"
     },
     {
@@ -348,7 +348,7 @@
       "result": "CI 45641130413 passed",
       "security": "Ownership, eligibility; exact matching",
       "frontend": "No verified frontend integration",
-      "remaining": "No official geography identifiers; stale discovery page gaps; release requirement needs independent verification",
+      "remaining": "No official geography identifiers; large dataset scalability and additional security tests remain; invitation-owner pagination regression passed CI 45669122196",
       "requirement": "Service zones work"
     },
     {
@@ -502,7 +502,7 @@
       "result": "CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete",
+      "remaining": "Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete",
       "requirement": "Review eligibility works"
     },
     {
@@ -516,7 +516,7 @@
       "result": "CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete",
+      "remaining": "Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete",
       "requirement": "Rating submission works"
     },
     {
@@ -530,7 +530,7 @@
       "result": "CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete",
+      "remaining": "Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete",
       "requirement": "Written comments work"
     },
     {
@@ -544,7 +544,7 @@
       "result": "CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete",
+      "remaining": "Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete",
       "requirement": "Duplicate prevention works"
     },
     {
@@ -606,15 +606,15 @@
     {
       "phase": "2B",
       "feature": "Public review queries work",
-      "status": "missing",
+      "status": "blocked",
       "source": "docs/architecture/procurementReputationHandoff.md",
       "api": "none",
       "model": "none",
       "tests": "tests/e2e/purchaseFlow.test.ts",
-      "result": "TODO; not executed",
+      "result": "No public endpoint enabled; private reports and moderation pass CI 45691632029",
       "security": "Audit moderation; prevent abuse and XSS",
       "frontend": "No verified integration",
-      "remaining": "No review/report/moderation implementation",
+      "remaining": "Public review visibility explicitly requires product approval; routes and aggregates remain disabled pending privacy, refund and abuse policies",
       "requirement": "Public review queries work"
     },
     {
@@ -625,24 +625,24 @@
       "api": "GET /api/v1/admin/reviews; POST /api/v1/admin/reviews/:reviewId/moderate",
       "model": "prisma/models/order.prisma",
       "tests": "tests/e2e/purchaseFlow.test.ts",
-      "result": "CI 45670541457 passed permission denial, recent MFA, self-moderation denial, concurrent decisions, reinstatement and audit persistence",
+      "result": "CI 45691632029 passed versioned private reporting and concurrent administrative decisions; earlier moderation and edit regressions pass",
       "security": "Granular reviews.moderate permission, recent MFA, exclude self and assigned procurer, audited optimistic transitions",
       "frontend": "Not integrated",
-      "remaining": "Public visibility and dispute/refund policy absent; abuse reporting, reviewer identity policy and full adversarial tests incomplete",
+      "remaining": "Public visibility and refund policy absent; customer-only reporting, report retention, reviewer identity policy and full adversarial tests incomplete",
       "requirement": "Review moderation works"
     },
     {
       "phase": "2B",
       "feature": "Review security tests pass",
-      "status": "missing",
-      "source": "docs/architecture/procurementReputationHandoff.md",
-      "api": "none",
-      "model": "none",
+      "status": "partial",
+      "source": "src/repositories/reviews/reviewReport.repository.ts",
+      "api": "POST /api/v1/orders/:orderId/review/reports; GET/POST /api/v1/admin/review-reports",
+      "model": "prisma/models/order.prisma",
       "tests": "tests/e2e/purchaseFlow.test.ts",
-      "result": "TODO; not executed",
-      "security": "Audit moderation; prevent abuse and XSS",
-      "frontend": "No verified integration",
-      "remaining": "No review/report/moderation implementation",
+      "result": "CI 45691632029 passed concurrent duplicate report and decision, stale version, MFA, self-review and cross-role denial, private snapshot and audit checks",
+      "security": "Owner-only reporting, explicit staff permission and recent MFA for decisions; no automatic suppression",
+      "frontend": "Not integrated",
+      "remaining": "Other-customer isolation, reporting broader than own review, audit history API, stored-XSS frontend and privacy-retention tests incomplete",
       "requirement": "Review security tests pass"
     },
     {
@@ -698,7 +698,7 @@
       "result": "CI 45670541457 passed registration through private review and audited moderation using isolated admin and payment fixtures",
       "security": "Real roles; fixture-only verified test payment",
       "frontend": "Not integrated",
-      "remaining": "Admin and payment are isolated fixtures; public reviews, reports, aggregates, refund and provider verification absent; full requested journey incomplete",
+      "remaining": "Admin and payment are isolated fixtures; public reviews, public aggregates, refund and provider verification absent; full requested journey incomplete",
       "requirement": "Complete procurement workflow passes"
     },
     {
@@ -768,7 +768,7 @@
       "result": "disposable db:sync only in CI",
       "security": "No production db push; backups and rollback",
       "frontend": "not applicable",
-      "remaining": "No reviewed migration process compatible with no handwritten SQL",
+      "remaining": "Migration and rollback proposal exists but requires independent review and a decision on generated SQL artifacts under the no-handwritten-SQL constraint",
       "requirement": "Release-readiness report is complete"
     }
   ]

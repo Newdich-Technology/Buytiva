@@ -7,7 +7,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 | 0 | 8 | 1 | 7 | 0 | 0 | 0 |
 | 1 | 14 | 0 | 14 | 0 | 0 | 0 |
 | 2A | 13 | 0 | 13 | 0 | 0 | 0 |
-| 2B | 11 | 0 | 9 | 2 | 0 | 0 |
+| 2B | 11 | 0 | 10 | 0 | 1 | 0 |
 | 2C | 9 | 0 | 7 | 0 | 2 | 0 |
 
 ## [ ] Phase 0: Ansofra architecture verified
@@ -304,10 +304,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred
 - **Prisma model:** `prisma/models/address.prisma`
 - **Test:** `tests/integration/addresses/preferredAddress.test.ts`
-- **Result/evidence:** CI 45668579947 passed PostgreSQL preference/profile regressions and Flutter address repository tests; UI screens and real client-server integration absent
+- **Result/evidence:** CI 45693166479 passed mobile widget empty/add/prefer/delete and permission-error tests with mock repository; CI 45667707752 passed database ownership/concurrency
 - **Security:** Owner-scoped access and composite foreign key for preference ownership
-- **Frontend:** Flutter address repository implemented; screens remain empty; web integration absent
-- **Remaining/limitations:** Address screens and web client integration missing; broader security and client integration testing incomplete
+- **Frontend:** Flutter address CRUD UI uses real repository; mock widget/contract tests passed; SvelteKit not integrated
+- **Remaining/limitations:** Live device-to-API integration, web screens, pagination/edit widget tests and broader security testing incomplete
 
 ## [ ] Phase 2A: Procurer profiles work
 
@@ -333,7 +333,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45641130413 passed
 - **Security:** Ownership, eligibility; exact matching
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No official geography identifiers; stale discovery page gaps; release requirement needs independent verification
+- **Remaining/limitations:** No official geography identifiers; large dataset scalability and additional security tests remain; invitation-owner pagination regression passed CI 45669122196
 
 ## [ ] Phase 2A: Availability works
 
@@ -476,7 +476,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete
+- **Remaining/limitations:** Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete
 
 ## [ ] Phase 2B: Rating submission works
 
@@ -489,7 +489,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete
+- **Remaining/limitations:** Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete
 
 ## [ ] Phase 2B: Written comments work
 
@@ -502,7 +502,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete
+- **Remaining/limitations:** Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete
 
 ## [ ] Phase 2B: Duplicate prevention works
 
@@ -515,7 +515,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45666580444 passed private review admission, ownership, concurrency, invalid rating, payment reversal and currency mismatch using isolated payment fixture
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; broader adversarial and end-to-end verification incomplete
+- **Remaining/limitations:** Private moderation and versioned reports exist; public visibility, refund integration, deployed-provider verification and broader adversarial tests remain incomplete
 
 ## [ ] Phase 2B: Review editing rules work
 
@@ -572,15 +572,15 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 ## [ ] Phase 2B: Public review queries work
 
 - **Requirement:** Public review queries work
-- **Status:** missing
+- **Status:** blocked
 - **Source:** `docs/architecture/procurementReputationHandoff.md`
 - **API:** none
 - **Prisma model:** `none`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
+- **Result/evidence:** No public endpoint enabled; private reports and moderation pass CI 45691632029
 - **Security:** Audit moderation; prevent abuse and XSS
 - **Frontend:** No verified integration
-- **Remaining/limitations:** No review/report/moderation implementation
+- **Remaining/limitations:** Public review visibility explicitly requires product approval; routes and aggregates remain disabled pending privacy, refund and abuse policies
 
 ## [ ] Phase 2B: Review moderation works
 
@@ -590,23 +590,23 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** GET /api/v1/admin/reviews; POST /api/v1/admin/reviews/:reviewId/moderate
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** CI 45670541457 passed permission denial, recent MFA, self-moderation denial, concurrent decisions, reinstatement and audit persistence
+- **Result/evidence:** CI 45691632029 passed versioned private reporting and concurrent administrative decisions; earlier moderation and edit regressions pass
 - **Security:** Granular reviews.moderate permission, recent MFA, exclude self and assigned procurer, audited optimistic transitions
 - **Frontend:** Not integrated
-- **Remaining/limitations:** Public visibility and dispute/refund policy absent; abuse reporting, reviewer identity policy and full adversarial tests incomplete
+- **Remaining/limitations:** Public visibility and refund policy absent; customer-only reporting, report retention, reviewer identity policy and full adversarial tests incomplete
 
 ## [ ] Phase 2B: Review security tests pass
 
 - **Requirement:** Review security tests pass
-- **Status:** missing
-- **Source:** `docs/architecture/procurementReputationHandoff.md`
-- **API:** none
-- **Prisma model:** `none`
+- **Status:** partial
+- **Source:** `src/repositories/reviews/reviewReport.repository.ts`
+- **API:** POST /api/v1/orders/:orderId/review/reports; GET/POST /api/v1/admin/review-reports
+- **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Audit moderation; prevent abuse and XSS
-- **Frontend:** No verified integration
-- **Remaining/limitations:** No review/report/moderation implementation
+- **Result/evidence:** CI 45691632029 passed concurrent duplicate report and decision, stale version, MFA, self-review and cross-role denial, private snapshot and audit checks
+- **Security:** Owner-only reporting, explicit staff permission and recent MFA for decisions; no automatic suppression
+- **Frontend:** Not integrated
+- **Remaining/limitations:** Other-customer isolation, reporting broader than own review, audit history API, stored-XSS frontend and privacy-retention tests incomplete
 
 ## [ ] Phase 2C: Relevant APIs are registered
 
@@ -658,7 +658,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** CI 45670541457 passed registration through private review and audited moderation using isolated admin and payment fixtures
 - **Security:** Real roles; fixture-only verified test payment
 - **Frontend:** Not integrated
-- **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, reports, aggregates, refund and provider verification absent; full requested journey incomplete
+- **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, public aggregates, refund and provider verification absent; full requested journey incomplete
 
 ## [ ] Phase 2C: Security regression tests pass
 
@@ -723,4 +723,4 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Result/evidence:** disposable db:sync only in CI
 - **Security:** No production db push; backups and rollback
 - **Frontend:** not applicable
-- **Remaining/limitations:** No reviewed migration process compatible with no handwritten SQL
+- **Remaining/limitations:** Migration and rollback proposal exists but requires independent review and a decision on generated SQL artifacts under the no-handwritten-SQL constraint
