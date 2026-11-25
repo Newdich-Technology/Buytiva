@@ -1,6 +1,6 @@
 # Procurement implementation status
 
-The repository contains functioning identity routes and repositories, but most procurement files are empty. `address.prisma`, `pricingPolicy.prisma`, `order.prisma`, `quotation.prisma`, and `payment.prisma` contain no models. Shopping-list routes are registered when their repository is provided. Checkout, ledger, and payout implementations are absent. Do not expose the pricing calculation as checkout until the business rules and persistence/authorization design are approved and tested.
+The repository contains functioning identity routes and repositories, but most procurement files are empty. `pricingPolicy.prisma`, `order.prisma`, `quotation.prisma`, and `payment.prisma` contain no models. Shopping-list routes are registered when their repository is provided. Checkout, ledger, and payout implementations are absent. Do not expose the pricing calculation as checkout until the business rules and persistence/authorization design are approved and tested.
 
 ## Work added
 
@@ -12,9 +12,13 @@ The OTP and MFA retry counters now atomically increment every concurrent invalid
 
 ## Operational profile and service zones
 
-`GET/PUT /api/v1/procurer-services/me` and `POST/PUT /api/v1/procurer-services/me/zones[/{zoneId}]` require an active, MFA-authenticated procurer. Mutable fields are public name, biography, accepting-requests flag and owned zones. `GET /api/v1/procurers/discovery?country=NG&region=FCT&city=Abuja&area=Wuse` requires an active customer and returns only active, accepting profiles with approved, verified, compliant applications, an accepted invitation, active verified user and role, enabled MFA and an exact active zone. Country is a two-letter code; region/city/area are NFKC-normalized, whitespace-collapsed, case-folded strings, and all four must match exactly. This is not a standardized authoritative location registry; spelling variants are not resolved. Zones have NGN delivery fees as minor-unit strings. Discovery is paginated and ordered by public name and zone ID. It excludes confidential identity evidence. Invitation ownership is checked after page selection, so inconsistent legacy invitation data may produce short pages; cursor-based pagination and a database-enforced relationship are follow-up work. It does not calculate service fees, save addresses, or report rating summaries; reviews do not yet exist.
+`GET/PUT /api/v1/procurer-services/me` and `POST/PUT /api/v1/procurer-services/me/zones[/{zoneId}]` require an active, MFA-authenticated procurer. Mutable fields are public name, biography, accepting-requests flag and owned zones. `GET /api/v1/procurers/discovery?country=NG&region=FCT&city=Abuja&area=Wuse` requires an active customer and returns only active, accepting profiles with approved, verified, compliant applications, an accepted invitation, active verified user and role, enabled MFA and an exact active zone. Country is a two-letter code; region/city/area are NFKC-normalized, whitespace-collapsed, case-folded strings, and all four must match exactly. This is not a standardized authoritative location registry; spelling variants are not resolved. Zones have NGN delivery fees as minor-unit strings. Discovery is paginated and ordered by public name and zone ID. It excludes confidential identity evidence. Invitation ownership is checked after page selection, so inconsistent legacy invitation data may produce short pages; cursor-based pagination and a database-enforced relationship are follow-up work. It does not calculate service fees or report rating summaries; reviews do not yet exist.
 
 A procurer cannot update verification or approval through these APIs. Profiles default to not accepting requests. Zone uniqueness is enforced by database constraint. A customer must not rely on a discovery response as a permanent eligibility decision; no quotation/order process exists yet to revalidate it. Deployment requires reviewed migrations before enabling routes; the existing `db:sync` remains restricted to disposable databases.
+
+## Customer addresses and list naming
+
+Authenticated customers can create, list, retrieve, update and delete their own addresses at `/api/v1/addresses` and `/api/v1/addresses/{addressId}`. `GET /api/v1/addresses/{addressId}/procurers` derives the discovery location from a customer-owned saved address. Missing and other customers' address IDs both return 404. Address lookups use normalized exact matching; address updates are not a quotation snapshot and must be revalidated and copied into a future order transaction. A location with no matches returns an empty array. No order or quotation currently selects or saves an address. Customers can rename their own draft list with `PATCH /api/v1/shopping-lists/{listId}`; submitted lists remain immutable.
 
 ## Database deployment constraint
 
@@ -23,7 +27,7 @@ Prisma 7.10 uses Prisma Client generated from the multi-file schema; existing `d
 ## Outstanding work and validation
 
 - Validate customer, staff and procurer identity integration against disposable PostgreSQL, including OTP expiry/resend, permissions, invitation acceptance and bootstrap. Existing database suites are skipped without a configured test DB.
-- Complete procurer pricing, customer address selection and hardened location-based eligibility, quote/order state machines with transactional concurrency controls, and versioned immutable snapshots.
+- Complete procurer pricing and hardened location-based eligibility, quote/order state machines with transactional concurrency controls, and versioned immutable snapshots.
 - Build authorization and integration tests, including cross-customer access, suspension, duplicate requests and rollback, before registering procurement endpoints.
 - Paystack is not enabled. Collections, ledger reconciliation, release eligibility and payouts require an independently reviewed financial model and current provider/merchant eligibility; virtual accounts are not individual custody accounts.
 - Empty/TODO tests are not coverage. No end-to-end procurement workflow is currently available; no customer-to-procurer HTTP example is represented as working.

@@ -53,9 +53,12 @@ suite('shopping lists API with PostgreSQL', () => {
     const id = created.json<{ id: string }>().id;
     const path = `/api/v1/shopping-lists/${id}`;
     expect((await app.inject({ method: 'GET', url: path, headers: b.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'PATCH', url: path, headers: b.headers, payload: { title: 'Stolen' } })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'PATCH', url: path, headers: a.headers, payload: { title: '  New name  ' } })).json()).toMatchObject({ title: 'New name' });
+    expect((await app.inject({ method: 'PATCH', url: path, headers: a.headers, payload: { title: '  ' } })).statusCode).toBe(400);
     expect((await app.inject({ method: 'POST', url: `${path}/items`, headers: b.headers, payload: { name: 'Rice', quantity: '1', expectedUnitPriceMinor: '200' } })).statusCode).toBe(404);
     expect((await app.inject({ method: 'POST', url: `${path}/submit`, headers: a.headers })).statusCode).toBe(400);
-    expect((await prisma.shoppingList.findUniqueOrThrow({ where: { id } })).revision).toBe(0);
+    expect((await prisma.shoppingList.findUniqueOrThrow({ where: { id } })).revision).toBe(1);
     expect((await app.inject({ method: 'POST', url: `${path}/items`, headers: a.headers, payload: { name: 'Rice', quantity: '-1', expectedUnitPriceMinor: '200' } })).statusCode).toBe(400);
     const added = await app.inject({ method: 'POST', url: `${path}/items`, headers: a.headers, payload: { name: 'Rice', quantity: '1.125', expectedUnitPriceMinor: '9007199254740993', notes: 'Brown' } });
     expect(added.statusCode).toBe(200);
@@ -72,6 +75,7 @@ suite('shopping lists API with PostgreSQL', () => {
     expect((await app.inject({ method: 'DELETE', url: draftPath, headers: a.headers })).statusCode).toBe(200);
     const attempts = await Promise.all([1, 2].map(() => app.inject({ method: 'POST', url: `${path}/submit`, headers: a.headers })));
     expect(attempts.map((response) => response.statusCode).sort()).toEqual([200, 404]);
+    expect((await app.inject({ method: 'PATCH', url: path, headers: a.headers, payload: { title: 'After submission' } })).statusCode).toBe(404);
     expect((await app.inject({ method: 'DELETE', url: path, headers: a.headers })).statusCode).toBe(404);
     expect((await app.inject({ method: 'DELETE', url: `${path}/items/${item.id}`, headers: a.headers })).statusCode).toBe(404);
     await prisma.user.update({ where: { id: a.id }, data: { status: 'SUSPENDED' } });

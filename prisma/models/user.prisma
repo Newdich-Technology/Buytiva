@@ -43,6 +43,7 @@ model User {
   procurerProfile          ProcurerProfile?
   passwordResetTokens     PasswordResetToken[]
   shoppingLists           ShoppingList[]
+  customerAddresses       CustomerAddress[]
   staffProfile            StaffProfile?
 
   @@index([status, createdAt])

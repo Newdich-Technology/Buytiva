@@ -5,7 +5,8 @@ import type { AuthDependencies } from '../../types/authDependencies.type.js';
 import type { ShoppingListRepository } from '../../interfaces/shoppingLists/shoppingListRepository.interface.js';
 import { createAuthenticateMiddleware, getAuthenticatedPrincipal, requireAuthenticatedRole } from '../../middlewares/authenticate.middleware.js';
 import { UserRole } from '../../enums/userRole.enum.js';
-import { createListBody, itemBody, itemParams, listParams, listQuery, listResponse } from '../../dtos/shoppingLists/shoppingList.dto.js';
+import { createListBody, renameListBody, itemBody, itemParams, listParams, listQuery, listResponse } from '../../dtos/shoppingLists/shoppingList.dto.js';
+import { renameShoppingListCommand } from '../../services/shoppingLists/commands/renameShoppingList.command.js';
 import { createShoppingListCommand } from '../../services/shoppingLists/commands/createShoppingList.command.js';
 import { changeShoppingListCommand } from '../../services/shoppingLists/commands/changeShoppingList.command.js';
 import { deleteShoppingListCommand } from '../../services/shoppingLists/commands/deleteShoppingList.command.js';
@@ -24,6 +25,8 @@ export const shoppingListRoute: FastifyPluginAsync<Options> = async (app, option
     async (request) => listShoppingListsQuery(repo, getAuthenticatedPrincipal(request).userId, request.query.offset ?? 0, request.query.limit ?? 20));
   api.get('/shopping-lists/:listId', { preHandler: guards, schema: { ...common, params: listParams, response: { 200: listResponse }, operationId: 'getShoppingList' } },
     async (request) => getShoppingListQuery(repo, getAuthenticatedPrincipal(request).userId, request.params.listId));
+  api.patch('/shopping-lists/:listId', { preHandler: guards, schema: { ...common, params: listParams, body: renameListBody, response: { 200: listResponse }, operationId: 'renameShoppingList' } },
+    async (request) => renameShoppingListCommand(repo, getAuthenticatedPrincipal(request).userId, request.params.listId, request.body.title));
   api.post('/shopping-lists/:listId/items', { preHandler: guards, schema: { ...common, params: listParams, body: itemBody, response: { 200: listResponse }, operationId: 'addShoppingListItem' } },
     async (request) => changeShoppingListCommand(repo, getAuthenticatedPrincipal(request).userId, request.params.listId, { type: 'add', input: request.body }));
   api.put('/shopping-lists/:listId/items/:itemId', { preHandler: guards, schema: { ...common, params: itemParams, body: itemBody, response: { 200: listResponse }, operationId: 'updateShoppingListItem' } },

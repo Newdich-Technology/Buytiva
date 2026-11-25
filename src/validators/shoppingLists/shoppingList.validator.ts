@@ -10,6 +10,7 @@ function optionalText(value: string | null | undefined, max: number): string | n
   if (value == null || !value.trim()) return null;
   return text(value, max);
 }
+export function validateListTitle(value: string): string { return text(value, 120); }
 export function validateList(input: ListInput): ListInput {
   if (input.currency !== 'NGN') throw invalidInputError('Unsupported currency.');
   return { title: text(input.title, 120), currency: input.currency, notes: optionalText(input.notes, 2000) };

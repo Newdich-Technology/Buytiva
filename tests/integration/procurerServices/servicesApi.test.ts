@@ -6,6 +6,7 @@ import { createBuytivaFastifyApplication } from '../../../src/app.js';
 import { createPrismaAuthRepository } from '../../../src/repositories/auths/auth.repository.js';
 import { PrismaProcurerApplicationRepository } from '../../../src/repositories/identity/procurerApplication.repository.js';
 import { PrismaStaffInvitationRepository } from '../../../src/repositories/administrators/staffInvitation.repository.js';
+import { PrismaAddressRepository } from '../../../src/repositories/addresses/address.repository.js';
 import { PrismaProcurerServicesRepository } from '../../../src/repositories/procurerServices/procurerServices.repository.js';
 import { Argon2PasswordHasher } from '../../../src/lib/security/passwordHasher.js';
 import { MemoryEmailProvider } from '../../../src/lib/email/emailSender.js';
@@ -23,11 +24,12 @@ const secret = 'test-secret-long-enough-for-authentication';
     prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl! }) });
     const config = { tokenSecret: secret, otpPepper: secret, encryptionKey: Buffer.alloc(32, 22), publicBaseUrl: 'https://example.test', secureCookies: true, passwordMinLength: 12, passwordMaxLength: 128 };
     const deps: AuthDependencies = { config, repository: createPrismaAuthRepository(prisma), identityRepository: new PrismaProcurerApplicationRepository(prisma), staffRepository: new PrismaStaffInvitationRepository(prisma), passwordHasher: new Argon2PasswordHasher(), emailProvider: new MemoryEmailProvider() };
-    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma) });
+    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma), addressRepository: new PrismaAddressRepository(prisma) });
     await app.ready();
   });
   afterAll(async () => {
     await app.close();
+    await prisma.customerAddress.deleteMany({ where: { customerId: { in: users } } });
     await prisma.procurerServiceZone.deleteMany({ where: { profile: { userId: { in: users } } } });
     await prisma.accountInvitation.deleteMany({ where: { applicationId: { in: applications } } });
     await prisma.procurerProfile.deleteMany({ where: { userId: { in: users } } });
@@ -56,7 +58,7 @@ const secret = 'test-secret-long-enough-for-authentication';
     return application;
   }
   it('limits configuration and discovery to active verified procurers and exact normalized locations', async () => {
-    const customer = await account('CUSTOMER'), procurer = await account('PROCURER'), other = await account('PROCURER');
+    const customer = await account('CUSTOMER'), secondCustomer = await account('CUSTOMER'), procurer = await account('PROCURER'), other = await account('PROCURER');
     const application = await approved(procurer); await approved(other);
     const profile = { publicName: 'Trusted Shop', biography: 'Groceries', acceptingRequests: true };
     const zone = { country: 'ng', region: ' FCT ', city: 'Abuja', area: 'Wuse 2', deliveryFeeMinor: '250000', currency: 'NGN', active: true };
@@ -74,6 +76,22 @@ const secret = 'test-secret-long-enough-for-authentication';
     const discover = () => app.inject({ method: 'GET', url, headers: customer.headers });
     expect((await discover()).json()).toMatchObject([{ userId: procurer.id, publicName: 'Trusted Shop', zone: { deliveryFeeMinor: '250000' } }]);
     expect((await app.inject({ method: 'GET', url: url.replace('wuse%202', 'wuse'), headers: customer.headers })).json()).toEqual([]);
+    const address = { label: 'Home', line1: '123 Example Street', line2: null, country: 'ng', region: ' FCT ', city: 'Abuja', area: 'Wuse 2' };
+    const saved = await app.inject({ method: 'POST', url: '/api/v1/addresses', headers: customer.headers, payload: address });
+    expect(saved.statusCode).toBe(201);
+    const addressId = saved.json<{ id: string }>().id;
+    expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}/procurers`, headers: customer.headers })).json()).toMatchObject([{ userId: procurer.id }]);
+    for (const method of ['GET', 'DELETE'] as const) {
+      expect((await app.inject({ method, url: `/api/v1/addresses/${addressId}`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    }
+    expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}/procurers`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'PUT', url: `/api/v1/addresses/${addressId}`, headers: secondCustomer.headers, payload: address })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'GET', url: '/api/v1/addresses', headers: secondCustomer.headers })).json()).toEqual([]);
+    expect((await app.inject({ method: 'PUT', url: `/api/v1/addresses/${addressId}`, headers: customer.headers, payload: { ...address, area: 'Garki' } })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}/procurers`, headers: customer.headers })).json()).toEqual([]);
+    expect((await app.inject({ method: 'DELETE', url: `/api/v1/addresses/${addressId}`, headers: customer.headers })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}`, headers: customer.headers })).statusCode).toBe(404);
+
     await prisma.procurerApplication.update({ where: { id: application.id }, data: { complianceVerifiedAt: null } });
     expect((await discover()).json()).toEqual([]);
     expect((await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: procurer.headers, payload: profile })).statusCode).toBe(403);

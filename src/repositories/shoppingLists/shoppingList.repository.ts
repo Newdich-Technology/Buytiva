@@ -23,6 +23,13 @@ export class PrismaShoppingListRepository implements ShoppingListRepository {
   async create(ownerId: string, input: ListInput): Promise<ShoppingListView> {
     return view(await this.prisma.shoppingList.create({ data: { customerId: ownerId, title: input.title, currency: input.currency, notes: input.notes ?? null }, include: includeItems }));
   }
+  async rename(ownerId: string, listId: string, title: string): Promise<ShoppingListView | null> {
+    return this.prisma.$transaction(async (tx) => {
+      if (!await this.locked(tx, ownerId, listId)) return null;
+      await tx.shoppingList.update({ where: { id: listId }, data: { title } });
+      return this.current(tx, listId);
+    });
+  }
   async get(ownerId: string, listId: string): Promise<ShoppingListView | null> {
     const row = await this.prisma.shoppingList.findFirst({ where: { id: listId, customerId: ownerId }, include: includeItems });
     return row ? view(row) : null;
