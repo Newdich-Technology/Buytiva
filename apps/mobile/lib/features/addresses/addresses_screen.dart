@@ -35,10 +35,12 @@ class _AddressesScreenState extends State<AddressesScreen> {
       _token = widget.tokenLoader != null ? await widget.tokenLoader!() : (await const SecureSessionStore().read())?['accessToken'] as String?;
       if (_token == null || _token!.isEmpty) { throw StateError('Please sign in to manage addresses.'); }
       final results = await Future.wait([_repository.list(_token!, offset: _offset, limit: _pageSize), _repository.preferred(_token!)]);
-      if (mounted) setState(() {
-        _addresses = results[0] as List<Map<String, dynamic>>;
-        _preferredId = (results[1] as Map<String, dynamic>?)?['id'] as String?;
-      });
+      if (mounted) {
+        setState(() {
+          _addresses = results[0] as List<Map<String, dynamic>>;
+          _preferredId = (results[1] as Map<String, dynamic>?)?['id'] as String?;
+        });
+      }
     } catch (error) { if (mounted) setState(() => _error = error.toString()); }
     if (mounted) setState(() => _busy = false);
   }
