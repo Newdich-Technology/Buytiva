@@ -53,6 +53,7 @@ jobs:
       - run: pnpm --filter @buytiva/web build
       - run: python3 scripts/ci/checkErrorCatalogs.py
       - run: pnpm check:file-length
+      - run: python3 scripts/ci/checkImplementationChecklist.py
       - run: pnpm db:validate
       - run: pnpm audit --audit-level high
 

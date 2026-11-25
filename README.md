@@ -3,7 +3,7 @@
 
 BUYTIVA is a procurement platform built with Flutter and Dart in apps/mobile, SvelteKit in apps/web, a Node.js, TypeScript, and Fastify API in root src, and PostgreSQL with Prisma in root prisma.
 
-The Ansofra structure is preserved as the complete file map. A path being present does not mean its capability is implemented. Procurer registration, role-management endpoints, discovery, checkout, payment collection, payouts, chat, and file moderation are not yet working features.
+The Ansofra structure is preserved as the complete file map. A path being present does not mean its capability is implemented. Identity, applications, staff management and an initial procurement workflow are implemented in part. Checkout, payment collection, payouts, reviews, chat and file moderation are not complete. See `docs/implementation/PHASE_0_TO_2_MASTER_CHECKLIST.md` and `docs/implementation/RELEASE_READINESS.md` for evidence and open release gates.
 
 ## Current verified behavior
 
@@ -29,7 +29,7 @@ pnpm install
 pnpm dev
 ```
 
-The API listens on port 3000. Identity and customer shopping-list routes are registered alongside GET /api/v1/health; see the generated OpenAPI documentation at /api/v1/docs. Shopping-list submission does not yet create a quotation or order.
+The API listens on port 3000. Identity and customer shopping-list routes are registered alongside GET /api/v1/health; see the generated OpenAPI documentation at /api/v1/docs. Shopping-list submission alone does not create a quotation or order. Separate request, quotation and initial order routes exist, but no real payment verification is integrated.
 
 ## Start the web app
 

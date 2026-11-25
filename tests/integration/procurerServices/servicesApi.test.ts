@@ -79,7 +79,7 @@ const secret = 'test-secret-long-enough-for-authentication';
     const zone = { country: 'ng', region: ' FCT ', city: 'Abuja', area: 'Wuse 2', deliveryFeeMinor: '250000', currency: 'NGN', active: true };
     expect((await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: customer.headers, payload: profile })).statusCode).toBe(403);
     const attemptedEscalation = await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: procurer.headers, payload: { ...profile, status: 'SUSPENDED' } });
-    expect(attemptedEscalation.statusCode).toBe(200);
+    expect(attemptedEscalation.statusCode).toBe(400);
     expect((await prisma.procurerProfile.findUniqueOrThrow({ where: { userId: procurer.id } })).status).toBe('ACTIVE');
     expect((await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: procurer.headers, payload: profile })).statusCode).toBe(200);
     const created = await app.inject({ method: 'POST', url: '/api/v1/procurer-services/me/zones', headers: procurer.headers, payload: zone });

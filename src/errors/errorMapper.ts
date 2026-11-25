@@ -25,6 +25,10 @@ export function registerErrorMapper(app: FastifyInstance): void {
       });
     }
 
+    if ('statusCode' in error && error.statusCode === 413) {
+      return reply.status(413).send({ error: { code: ErrorCode.VALIDATION, message: 'Request body is too large', requestId: request.id } });
+    }
+
     if (error.validation) {
       return reply.status(400).send({
         error: {
@@ -35,7 +39,8 @@ export function registerErrorMapper(app: FastifyInstance): void {
       });
     }
 
-    request.log.error({ err: error }, 'Unhandled request error');
+    // Error objects can contain Prisma query arguments, addresses, passwords or tokens.
+    request.log.error({ event: 'UNHANDLED_REQUEST_ERROR', requestId: request.id }, 'Unhandled request error');
     return reply.status(500).send({
       error: {
         code: ErrorCode.INTERNAL,

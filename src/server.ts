@@ -15,13 +15,20 @@ const logger = pino();
 const port = Number(process.env.PORT ?? DEFAULT_SERVER_PORT);
 const host = process.env.HOST ?? DEFAULT_SERVER_HOST;
 
+let app: ReturnType<typeof createBuytivaFastifyApplication> | undefined;
 try {
+  await prismaClient.$connect();
   const runtime = createAuthRuntime(prismaClient, logger);
-  const app = createBuytivaFastifyApplication({ authDependencies: runtime.dependencies, orderRepository: new PrismaOrderRepository(prismaClient), quotationRepository: new PrismaQuotationRepository(prismaClient), shoppingRequestRepository: new PrismaShoppingRequestRepository(prismaClient), addressRepository: new PrismaAddressRepository(prismaClient), shoppingListRepository: new PrismaShoppingListRepository(prismaClient), procurerServicesRepository: new PrismaProcurerServicesRepository(prismaClient) });
+  app = createBuytivaFastifyApplication({ authDependencies: runtime.dependencies, orderRepository: new PrismaOrderRepository(prismaClient), quotationRepository: new PrismaQuotationRepository(prismaClient), shoppingRequestRepository: new PrismaShoppingRequestRepository(prismaClient), addressRepository: new PrismaAddressRepository(prismaClient), shoppingListRepository: new PrismaShoppingListRepository(prismaClient), procurerServicesRepository: new PrismaProcurerServicesRepository(prismaClient) });
   const emailPollingTimer = startAuthEmailOutboxPolling(runtime.emailOutboxJob, logger);
-  app.addHook('onClose', async () => clearInterval(emailPollingTimer));
+  app.addHook('onClose', async () => { clearInterval(emailPollingTimer); await prismaClient.$disconnect(); });
+  const shutdown = () => { void app?.close().catch(() => { logger.error({ event: 'SERVER_SHUTDOWN_FAILURE' }); process.exitCode = 1; }); };
+  process.once('SIGTERM', shutdown);
+  process.once('SIGINT', shutdown);
   await app.listen({ port, host });
 } catch (error) {
   logger.error({ event: 'SERVER_START_FAILURE' });
+  if (app) await app.close().catch(() => undefined);
+  await prismaClient.$disconnect().catch(() => undefined);
   process.exitCode = 1;
 }

@@ -1,3 +1,4 @@
+import { normalizeApiError } from './apiError.js';
 import { API_BASE_URL } from '$app/env/private';
 import type { Cookies } from '@sveltejs/kit';
 import { AUTH_API_VERSION, AUTH_FORM_MESSAGES } from '../constants/auth.js';
@@ -29,7 +30,7 @@ export async function requestAuthApi(fetcher: typeof fetch, path: string, method
 		return { ok: false, status: 503, data: { message: AUTH_FORM_MESSAGES.serviceUnavailable } };
 	}
 	const data = await response.json().catch(() => ({ message: AUTH_FORM_MESSAGES.invalidResponse }));
-	return { ok: response.ok, status: response.status, data };
+	return { ok: response.ok, status: response.status, data: response.ok ? data : normalizeApiError(data) };
 }
 
 export function setAuthSession(cookies: Cookies, session: AuthSession) {

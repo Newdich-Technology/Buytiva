@@ -43,7 +43,7 @@ class ApiClient {
     final text = await response.transform(utf8.decoder).join();
     final dynamic decoded = text.isEmpty ? <String, dynamic>{} : jsonDecode(text);
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      final message = decoded is Map<String, dynamic> ? decoded['message'] as String? : null;
+      final message = apiErrorMessage(decoded);
       throw ApiError(message ?? authClientErrorMessages['requestFailed']!, statusCode: response.statusCode);
     }
     return decoded;
