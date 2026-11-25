@@ -63,6 +63,13 @@ suite('shopping lists API with PostgreSQL', () => {
     expect(item).toMatchObject({ quantity: '1.125', expectedUnitPriceMinor: '9007199254740993' });
     expect((await app.inject({ method: 'PUT', url: `${path}/items/${item.id}`, headers: a.headers, payload: { name: 'Rice', quantity: '2', expectedUnitPriceMinor: '250' } })).statusCode).toBe(200);
     expect((await app.inject({ method: 'GET', url: '/api/v1/shopping-lists?limit=1&offset=0', headers: a.headers })).json()).toHaveLength(1);
+    const newDraft = await app.inject({ method: 'POST', url: '/api/v1/shopping-lists', headers: a.headers, payload: { title: 'Delete', currency: 'NGN' } });
+    const draftPath = `/api/v1/shopping-lists/${newDraft.json<{ id: string }>().id}`;
+    const draftItem = await app.inject({ method: 'POST', url: `${draftPath}/items`, headers: a.headers, payload: { name: 'Tea', quantity: '1', expectedUnitPriceMinor: '0' } });
+    const draftItemId = draftItem.json<{ items: { id: string }[] }>().items[0]!.id;
+    expect((await app.inject({ method: 'DELETE', url: `${draftPath}/items/${draftItemId}`, headers: a.headers })).json<{ items: unknown[] }>().items).toHaveLength(0);
+    expect((await app.inject({ method: 'DELETE', url: draftPath, headers: b.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'DELETE', url: draftPath, headers: a.headers })).statusCode).toBe(200);
     const attempts = await Promise.all([1, 2].map(() => app.inject({ method: 'POST', url: `${path}/submit`, headers: a.headers })));
     expect(attempts.map((response) => response.statusCode).sort()).toEqual([200, 404]);
     expect((await app.inject({ method: 'DELETE', url: path, headers: a.headers })).statusCode).toBe(404);

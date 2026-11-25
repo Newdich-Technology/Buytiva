@@ -14,5 +14,6 @@ describe('shopping list input validation', () => {
   it('accepts a zero expected price and rejects blank titles', () => {
     expect(validateItem({ name: 'Tea', quantity: '0.001', expectedUnitPriceMinor: '0' }).expectedUnitPriceMinor).toBe(0n);
     expect(() => validateList({ title: '   ', currency: 'NGN' })).toThrow();
+    expect(() => validateList({ title: 'List', currency: 'ZZZ' })).toThrow();
   });
 });

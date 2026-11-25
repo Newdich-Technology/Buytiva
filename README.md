@@ -29,7 +29,7 @@ pnpm install
 pnpm dev
 ```
 
-The API listens on port 3000. Its implemented endpoint is GET /api/v1/health.
+The API listens on port 3000. Identity and customer shopping-list routes are registered alongside GET /api/v1/health; see the generated OpenAPI documentation at /api/v1/docs. Shopping-list submission does not yet create a quotation or order.
 
 ## Start the web app
 

@@ -21,3 +21,7 @@ Prisma 7.10 uses Prisma Client generated from the multi-file schema; existing `d
 - Build authorization and integration tests, including cross-customer access, suspension, duplicate requests and rollback, before registering procurement endpoints.
 - Paystack is not enabled. Collections, ledger reconciliation, release eligibility and payouts require an independently reviewed financial model and current provider/merchant eligibility; virtual accounts are not individual custody accounts.
 - Empty/TODO tests are not coverage. No end-to-end procurement workflow is currently available; no customer-to-procurer HTTP example is represented as working.
+
+## Shopping-list HTTP example
+
+With a verified, active CUSTOMER access token, create a draft using `POST /api/v1/shopping-lists` and `{ "title": "Weekly shop", "currency": "NGN" }`. A successful response is `201` with a list `id`, `status: "DRAFT"`, and an empty `items` array. Add an item with `POST /api/v1/shopping-lists/{id}/items` and `{ "name": "Rice", "quantity": "1.250", "expectedUnitPriceMinor": "250000" }`. Submit with `POST /api/v1/shopping-lists/{id}/submit`; a successful `200` returns the list with `status: "SUBMITTED"`. The API supports NGN only until an authoritative currency configuration is available. Request and response schemas appear in `/api/v1/docs`. Draft list and item lookups are scoped to the authenticated customer; a different customer receives `404`. Submissions are one-way and no quote or procurer is created.

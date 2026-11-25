@@ -11,7 +11,7 @@ function optionalText(value: string | null | undefined, max: number): string | n
   return text(value, max);
 }
 export function validateList(input: ListInput): ListInput {
-  if (!/^[A-Z]{3}$/.test(input.currency)) throw invalidInputError('Invalid currency.');
+  if (input.currency !== 'NGN') throw invalidInputError('Unsupported currency.');
   return { title: text(input.title, 120), currency: input.currency, notes: optionalText(input.notes, 2000) };
 }
 export function validateItem(input: ItemInput): StoredItemInput {
