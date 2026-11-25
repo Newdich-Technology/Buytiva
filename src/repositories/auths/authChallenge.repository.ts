@@ -66,14 +66,14 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
     });
   }
 
-  async incrementOtpAttempt(id: string, expectedAttempts: number, now: Date): Promise<boolean> {
+  async incrementOtpAttempt(id: string, _expectedAttempts: number, now: Date): Promise<boolean> {
     const result = await this.prisma.emailOtpChallenge.updateMany({
       where: {
         id,
         consumedAt: null,
         supersededAt: null,
         expiresAt: { gt: now },
-        AND: [{ attempts: expectedAttempts }, { attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } }]
+        attempts: { lt: AUTH_OTP_MAX_ATTEMPTS }
       },
       data: { attempts: { increment: 1 } }
     });
@@ -117,13 +117,13 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
     });
   }
 
-  async incrementLoginAttempt(id: string, expectedAttempts: number, now: Date): Promise<boolean> {
+  async incrementLoginAttempt(id: string, _expectedAttempts: number, now: Date): Promise<boolean> {
     const result = await this.prisma.loginChallenge.updateMany({
       where: {
         id,
         consumedAt: null,
         expiresAt: { gt: now },
-        AND: [{ attempts: expectedAttempts }, { attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } }]
+        attempts: { lt: AUTH_OTP_MAX_ATTEMPTS }
       },
       data: { attempts: { increment: 1 } }
     });
