@@ -50,6 +50,7 @@ model OrderReview {
   orderId   String           @unique @db.Uuid
   order     ProcurementOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
   rating    Int
+  version   Int              @default(1)
   moderationStatus ReviewModerationStatus @default(PENDING)
   comment   String?          @db.VarChar(2000)
   createdAt DateTime         @default(now())

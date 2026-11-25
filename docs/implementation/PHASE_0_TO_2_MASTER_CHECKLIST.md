@@ -7,7 +7,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 | 0 | 8 | 1 | 7 | 0 | 0 | 0 |
 | 1 | 14 | 0 | 14 | 0 | 0 | 0 |
 | 2A | 13 | 0 | 13 | 0 | 0 | 0 |
-| 2B | 11 | 0 | 7 | 4 | 0 | 0 |
+| 2B | 11 | 0 | 9 | 2 | 0 | 0 |
 | 2C | 9 | 0 | 7 | 0 | 2 | 0 |
 
 ## [ ] Phase 0: Ansofra architecture verified
@@ -520,15 +520,15 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 ## [ ] Phase 2B: Review editing rules work
 
 - **Requirement:** Review editing rules work
-- **Status:** missing
-- **Source:** `docs/architecture/procurementReputationHandoff.md`
-- **API:** none
-- **Prisma model:** `none`
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** PUT /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Audit moderation; prevent abuse and XSS
-- **Frontend:** No verified integration
-- **Remaining/limitations:** No review/report/moderation implementation
+- **Result/evidence:** Versioned editing and moderation concurrency regression added; PostgreSQL CI pending
+- **Security:** Owner only; rechecks payment and completion; hidden reviews cannot be edited; edits reset moderation; moderators bind decision to version
+- **Frontend:** Not integrated
+- **Remaining/limitations:** Product approval, public reporting/refund handling and additional adversarial tests remain
 
 ## [ ] Phase 2B: Rating averages work
 
@@ -546,15 +546,15 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 ## [ ] Phase 2B: Review counts work
 
 - **Requirement:** Review counts work
-- **Status:** missing
-- **Source:** `docs/architecture/procurementReputationHandoff.md`
-- **API:** none
-- **Prisma model:** `none`
+- **Status:** partial
+- **Source:** `src/repositories/reviews/review.repository.ts`
+- **API:** GET /api/v1/admin/procurers/:procurerId/rating-summary
+- **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
-- **Security:** Persisted eligible reviews; null average for zero
-- **Frontend:** No verified integration
-- **Remaining/limitations:** No review aggregation or ranking implementation
+- **Result/evidence:** CI 45671161336 verifies internal eligible review count across moderation and reversal
+- **Security:** Permission-protected, approved reviews with eligible completion and payment
+- **Frontend:** Not integrated
+- **Remaining/limitations:** Public availability, refund policy, multi-review and scalability tests remain
 
 ## [ ] Phase 2B: Rating distributions work
 

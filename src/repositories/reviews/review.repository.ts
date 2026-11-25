@@ -7,7 +7,7 @@ import { AppError } from '../../errors/app.error.js';
 import { ErrorCode } from '../../enums/errorCode.enum.js';
 
 function view(row: OrderReview) {
-  return { id: row.id, orderId: row.orderId, rating: row.rating, comment: row.comment,
+  return { id: row.id, orderId: row.orderId, rating: row.rating, comment: row.comment, version: row.version,
     createdAt: row.createdAt.toISOString(), updatedAt: row.updatedAt.toISOString() };
 }
 const unavailable = () => new AppError(ErrorCode.NOT_FOUND, 404, 'Order or review not found.');
@@ -48,16 +48,36 @@ export class PrismaReviewRepository implements ReviewRepository {
         const where = { id: reviewId, order: { request: { customerId: { not: actorId }, procurerId: { not: actorId } } } };
         const existing = await tx.orderReview.findFirst({ where });
         if (!existing) throw unavailable();
-        if (existing.moderationStatus !== decision.expectedStatus || existing.moderationStatus === decision.targetStatus) throw conflictError('Review state changed or decision is redundant.');
-        const updated = await tx.orderReview.updateMany({ where: { ...where, moderationStatus: decision.expectedStatus }, data: { moderationStatus: decision.targetStatus } });
+        if (existing.version !== decision.expectedVersion || existing.moderationStatus !== decision.expectedStatus || existing.moderationStatus === decision.targetStatus) throw conflictError('Review state changed or decision is redundant.');
+        const updated = await tx.orderReview.updateMany({ where: { ...where, version: decision.expectedVersion, moderationStatus: decision.expectedStatus }, data: { moderationStatus: decision.targetStatus } });
         if (!updated.count) throw conflictError('Review state changed; retry.');
         await tx.auditLog.create({ data: { actorId, action: 'REVIEW_MODERATED', resourceType: 'ORDER_REVIEW', resourceId: reviewId,
-          metadata: { fromStatus: decision.expectedStatus, toStatus: decision.targetStatus, reason: decision.reason } } });
+          metadata: { version: decision.expectedVersion, fromStatus: decision.expectedStatus, toStatus: decision.targetStatus, reason: decision.reason } } });
         const review = await tx.orderReview.findUniqueOrThrow({ where: { id: reviewId } });
         return { ...view(review), moderationStatus: review.moderationStatus };
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') throw conflictError('Review state changed; retry.');
+      throw error;
+    }
+  }
+  async edit(customerId: string, orderId: string, expectedVersion: number, input: ReviewInput) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const order = await tx.procurementOrder.findFirst({ where: { id: orderId, request: { customerId } },
+          include: { request: true, quotation: true, payment: true, history: { where: { toStatus: 'COMPLETED', actorId: customerId }, take: 1 }, review: true } });
+        if (!order || !order.review) throw unavailable();
+        const payment = order.payment;
+        if (order.status !== 'COMPLETED' || order.request.procurerId === customerId || !order.history.length || !payment || payment.reversedAt ||
+            payment.verifiedAt > new Date() || payment.currency !== order.quotation.currency || payment.amountMinor !== order.quotation.totalMinor ||
+            order.review.moderationStatus === 'HIDDEN' || order.review.version !== expectedVersion) throw conflictError('Review cannot be edited or has changed.');
+        const changed = await tx.orderReview.updateMany({ where: { id: order.review.id, version: expectedVersion, moderationStatus: { in: ['PENDING', 'APPROVED'] } },
+          data: { rating: input.rating, comment: input.comment, version: { increment: 1 }, moderationStatus: 'PENDING' } });
+        if (!changed.count) throw conflictError('Review has changed; retry.');
+        return view(await tx.orderReview.findUniqueOrThrow({ where: { id: order.review.id } }));
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') throw conflictError('Review or order state changed; retry.');
       throw error;
     }
   }

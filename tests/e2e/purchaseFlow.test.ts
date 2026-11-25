@@ -138,7 +138,7 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     expect((await app.inject({ method: 'GET', url: `/api/v1${customerOrder}/review`, headers: customerHeaders })).json()).toMatchObject({ rating: 5, comment: 'Careful service.' });
     expect((await post(`${customerOrder}/review`, { rating: 1 }, customerToken)).statusCode).toBe(409);
     const reviewId = review.json<{ id: string }>().id, moderate = `/admin/reviews/${reviewId}/moderate`;
-    const decision = { expectedStatus: 'PENDING', targetStatus: 'APPROVED', reason: 'Checked against moderation rules.' };
+    const decision = { expectedVersion: 1, expectedStatus: 'PENDING', targetStatus: 'APPROVED', reason: 'Checked against moderation rules.' };
     expect((await post(moderate, decision, customerToken)).statusCode).toBe(403);
     expect((await post(moderate, decision, reviewerToken)).statusCode).toBe(403);
     const customer = await prisma.user.findUniqueOrThrow({ where: { emailNormalized: customerEmail } });
@@ -162,14 +162,26 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     expect((await prisma.orderReview.findUniqueOrThrow({ where: { id: reviewId } })).moderationStatus).toBe('APPROVED');
     expect(await prisma.auditLog.count({ where: { actorId: reviewerId, action: 'REVIEW_MODERATED', resourceId: reviewId } })).toBe(1);
     expect((await summary()).json()).toMatchObject({ averageRating: 5, reviewCount: 1, distribution: { five: 1 } });
-    expect((await post(moderate, { expectedStatus: 'APPROVED', targetStatus: 'HIDDEN', reason: 'Policy violation identified.' }, reviewerToken)).statusCode).toBe(200);
+    expect((await post(moderate, { expectedVersion: 1, expectedStatus: 'APPROVED', targetStatus: 'HIDDEN', reason: 'Policy violation identified.' }, reviewerToken)).statusCode).toBe(200);
     expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0, distribution: { five: 0 } });
-    expect((await post(moderate, { expectedStatus: 'HIDDEN', targetStatus: 'APPROVED', reason: 'Reinstated after review.' }, reviewerToken)).statusCode).toBe(200);
+    const edit = (token: string, body: object) => app.inject({ method: 'PUT', url: `/api/v1${customerOrder}/review`, headers: { authorization: `Bearer ${token}` }, payload: body });
+    const editBody = { expectedVersion: 1, rating: 3, comment: 'Updated review.' };
+    expect((await edit(customerToken, editBody)).statusCode).toBe(409);
+    expect((await edit(procurerToken, editBody)).statusCode).toBe(403);
+    expect((await post(moderate, { expectedVersion: 1, expectedStatus: 'HIDDEN', targetStatus: 'APPROVED', reason: 'Reinstated after review.' }, reviewerToken)).statusCode).toBe(200);
     await prisma.verifiedOrderPayment.update({ where: { orderId }, data: { reversedAt: new Date() } });
     expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0, distribution: { five: 0 } });
+    expect((await edit(customerToken, editBody)).statusCode).toBe(409);
     await prisma.verifiedOrderPayment.update({ where: { orderId }, data: { reversedAt: null } });
     expect((await summary()).json()).toMatchObject({ averageRating: 5, reviewCount: 1, distribution: { five: 1 } });
     expect(await prisma.auditLog.count({ where: { action: 'REVIEW_MODERATED', resourceId: reviewId } })).toBe(3);
+    const edits = await Promise.all([edit(customerToken, editBody), edit(customerToken, editBody)]);
+    expect(edits.map((response) => response.statusCode).sort()).toEqual([200, 409]);
+    expect((await prisma.orderReview.findUniqueOrThrow({ where: { id: reviewId } }))).toMatchObject({ version: 2, moderationStatus: 'PENDING', rating: 3 });
+    expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0 });
+    expect((await post(moderate, decision, reviewerToken)).statusCode).toBe(409);
+    expect((await post(moderate, { ...decision, expectedVersion: 2 }, reviewerToken)).statusCode).toBe(200);
+    expect((await summary()).json()).toMatchObject({ averageRating: 3, reviewCount: 1, distribution: { three: 1 } });
   });
 });
 
