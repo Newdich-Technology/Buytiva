@@ -16,6 +16,7 @@ model ShoppingList {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
   items       ShoppingListItem[]
+  shoppingRequests ShoppingRequest[]
 
   @@index([customerId, createdAt, id])
   @@map("shopping_lists")

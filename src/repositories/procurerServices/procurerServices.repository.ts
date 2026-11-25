@@ -11,7 +11,7 @@ const eligible: Prisma.ProcurerProfileWhereInput = {
     accountInvitations: { some: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null, acceptedById: { not: null } } } }
 };
 
-function eligibleOwner(userId: string): Prisma.ProcurerProfileWhereInput {
+export function eligibleOwner(userId: string): Prisma.ProcurerProfileWhereInput {
   return { ...eligible, application: { status: 'APPROVED', emailVerifiedAt: { not: null }, identityVerifiedAt: { not: null }, complianceVerifiedAt: { not: null },
     accountInvitations: { some: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null, acceptedById: userId } } } };
 }

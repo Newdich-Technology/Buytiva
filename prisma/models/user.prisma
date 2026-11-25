@@ -42,6 +42,7 @@ model User {
   acceptedInvitations      AccountInvitation[]        @relation("InvitationAcceptor")
   procurerProfile          ProcurerProfile?
   passwordResetTokens     PasswordResetToken[]
+  shoppingRequests        ShoppingRequest[]          @relation("CustomerShoppingRequests")
   shoppingLists           ShoppingList[]
   customerAddresses       CustomerAddress[]
   staffProfile            StaffProfile?

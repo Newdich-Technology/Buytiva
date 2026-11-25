@@ -1,0 +1,24 @@
+enum ShoppingRequestStatus {
+  REQUESTED
+  CANCELLED
+}
+
+model ShoppingRequest {
+  id               String                @id @default(uuid()) @db.Uuid
+  customerId       String                @db.Uuid
+  customer         User                  @relation("CustomerShoppingRequests", fields: [customerId], references: [id], onDelete: Restrict)
+  procurerId       String                @db.Uuid
+  procurer         ProcurerProfile       @relation(fields: [procurerId], references: [userId], onDelete: Restrict)
+  shoppingListId   String                @db.Uuid
+  shoppingList     ShoppingList          @relation(fields: [shoppingListId], references: [id], onDelete: Restrict)
+  addressSnapshot  Json
+  listSnapshot     Json
+  status           ShoppingRequestStatus @default(REQUESTED)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@unique([shoppingListId, procurerId])
+  @@index([customerId, createdAt, id])
+  @@index([procurerId, createdAt, id])
+  @@map("shopping_requests")
+}

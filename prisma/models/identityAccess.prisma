@@ -58,6 +58,7 @@ model ProcurerProfile {
   publicName    String?              @db.VarChar(120)
   biography     String?              @db.VarChar(2000)
   acceptingRequests Boolean          @default(false)
+  shoppingRequests ShoppingRequest[]
   serviceZones  ProcurerServiceZone[]
   pricingVersion Int                 @default(0)
   pricingPolicies ProcurerPricingPolicy[]

@@ -1,6 +1,6 @@
 # Procurement implementation status
 
-The repository contains functioning identity routes and repositories, but most procurement files are empty. `order.prisma`, `quotation.prisma`, and `payment.prisma` contain no models. Shopping-list routes are registered when their repository is provided. Checkout, ledger, and payout implementations are absent. The pricing preview is nonbinding and is not checkout; production use requires business-rule approval.
+The repository contains functioning identity routes and repositories, but most procurement files are empty. `order.prisma` and `payment.prisma` contain no models; `quotation.prisma` currently contains shopping requests, not quotations. Shopping-list routes are registered when their repository is provided. Checkout, ledger, and payout implementations are absent. The pricing preview is nonbinding and is not checkout; production use requires business-rule approval.
 
 ## Work added
 
@@ -24,7 +24,11 @@ The provisional rule remains fixed fee at or below threshold and percentage of t
 
 ## Customer addresses and list naming
 
-Authenticated customers can create, list, retrieve, update and delete their own addresses at `/api/v1/addresses` and `/api/v1/addresses/{addressId}`. `GET /api/v1/addresses/{addressId}/procurers` derives the discovery location from a customer-owned saved address. Missing and other customers' address IDs both return 404. Address lookups use normalized exact matching; address updates are not a quotation snapshot and must be revalidated and copied into a future order transaction. A location with no matches returns an empty array. No order or quotation currently selects or saves an address. Customers can rename their own draft list with `PATCH /api/v1/shopping-lists/{listId}`; submitted lists remain immutable.
+Authenticated customers can create, list, retrieve, update and delete their own addresses at `/api/v1/addresses` and `/api/v1/addresses/{addressId}`. `GET /api/v1/addresses/{addressId}/procurers` derives the discovery location from a customer-owned saved address. Missing and other customers' address IDs both return 404. Address lookups use normalized exact matching; address updates are not a quotation snapshot and must be revalidated and copied into a future order transaction. A location with no matches returns an empty array. Shopping requests copy a selected address; no order or quotation currently exists. Customers can rename their own draft list with `PATCH /api/v1/shopping-lists/{listId}`; submitted lists remain immutable.
+
+## Submitted shopping requests
+
+A customer can `POST /api/v1/shopping-requests` with their own submitted `listId`, `addressId`, and selected `procurerId`. The serializable transaction rechecks the submitted list, customer ownership, current procurer approval and compliance, accepted invitation, active account and MFA, availability, pricing policy and exact active delivery zone. It persists independent list and address snapshots and creates one request per list/procurer pair. A repeat or concurrent duplicate returns 409; cancellation does not free the pair for reuse. `GET /api/v1/shopping-requests`, `GET /api/v1/shopping-requests/{requestId}` and `POST /api/v1/shopping-requests/{requestId}/cancel` are customer-owned. The assigned procurer can use `GET /api/v1/procurer-services/me/requests` and `GET /api/v1/procurer-services/me/requests/{requestId}`. Other users receive 404. The snapshot is not a quotation, reserves no price, initiates no payment, sends no notification and does not create an order. Future quote issuance must recheck eligibility and current fee policy and transactionally serialize against cancellation.
 
 ## Database deployment constraint
 
