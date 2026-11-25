@@ -1,0 +1,5 @@
+# Phase 1 identity audit
+
+Registration, email challenge, sessions, reset, TOTP, application review, invitations, and staff administration are implemented but only partially verified. See `docs/security/authenticationReadiness.md` and the [master checklist](PHASE_0_TO_2_MASTER_CHECKLIST.md). Authentication middleware reloads session, user state and permissions for protected calls, requires verified active users and enforces MFA for privileged roles. Local tests cannot substitute for live PostgreSQL tests, and production SMTP delivery is unverified.
+
+Review actions previously required MFA but not *recent* MFA. This change adds the existing recent-MFA guard to identity checks and application decisions, and a PostgreSQL regression checks stale-session denial and persisted non-mutation. The new regression has not yet run against PostgreSQL in this environment. Remaining work includes the full permission/revocation matrix, invitations lifecycle, recovery and bootstrap scenarios, multi-role behavior, and operational lockout handling. There is no evidence that the complete requested security suite has passed.

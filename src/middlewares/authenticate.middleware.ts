@@ -60,7 +60,8 @@ export function requireStaffPermission(permission: string): preHandlerAsyncHookH
 
 export function requireRecentMfa(request: FastifyRequest): void {
   const principal = requirePrincipal(request);
-  if (!principal.mfaAt || Date.now() - principal.mfaAt.getTime() > AUTH_RECENT_MFA_MINUTES * AUTH_MINUTE_MS) {
+  const age = principal.mfaAt ? Date.now() - principal.mfaAt.getTime() : Number.NaN;
+  if (!Number.isFinite(age) || age < 0 || age > AUTH_RECENT_MFA_MINUTES * AUTH_MINUTE_MS) {
     throw accountStateError(ErrorCode.MFA_REQUIRED, 'Recent authenticator verification is required.');
   }
 }

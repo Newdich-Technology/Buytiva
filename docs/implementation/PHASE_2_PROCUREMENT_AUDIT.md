@@ -1,0 +1,7 @@
+# Phase 2 procurement audit
+
+The implemented routes and limitations are in `docs/backend/procurementImplementationStatus.md` and the [master checklist](PHASE_0_TO_2_MASTER_CHECKLIST.md). Addresses, shopping lists, zones, pricing, discovery, requests, versioned quotations and initial payment-gated orders exist. Product must approve threshold, rounding and commission policy; price preview is not binding. Preferred addresses, complete profile functionality, expiry jobs, refunds, notification events and dispute resolution are incomplete.
+
+An accepted quotation could previously be converted to an order after the procurer lost compliance eligibility or the matching zone was disabled. `src/repositories/orders/order.repository.ts` now rechecks the persisted address snapshot, active zone and eligibility in its serializable creation transaction. A PostgreSQL test checks both loss of coverage and compliance without creating an order; it is not yet executed locally. This does not stop future eligibility changes after creation; later transitions recheck actor eligibility and payment, and operations still need explicit product policy for post-creation suspension.
+
+No review models, endpoints, moderation or aggregates exist. Review implementation remains blocked on completing and verifying the order ownership/completion contract and deciding dispute/refund/moderation policy. Direct test insertion of a verified payment record is not provider integration and does not support real-money readiness.

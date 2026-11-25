@@ -3,7 +3,7 @@
   "entries": [
     {
       "phase": "0",
-      "feature": "Architecture, centralized layers and Fastify",
+      "feature": "Ansofra architecture verified",
       "status": "partial",
       "source": "src/app.ts",
       "api": "/api/v1",
@@ -12,24 +12,12 @@
       "result": "local tests and previous CI passed",
       "security": "Avoid duplicate layers; no handwritten SQL",
       "frontend": "Web and mobile exist",
-      "remaining": "591 empty src files; architectural and circular dependency audit incomplete"
+      "remaining": "591 empty src files; architectural and circular dependency audit incomplete; release requirement needs independent verification; CORS, CSRF, security headers and architecture dependency audit remain incomplete",
+      "requirement": "Ansofra architecture verified"
     },
     {
       "phase": "0",
-      "feature": "Health liveness",
-      "status": "verified",
-      "source": "src/routes/health/health.route.ts",
-      "api": "GET /api/v1/health",
-      "model": "none",
-      "tests": "tests/unit/app.test.ts",
-      "result": "local test passed",
-      "security": "No sensitive data",
-      "frontend": "No dedicated consumer",
-      "remaining": "Liveness is not database readiness"
-    },
-    {
-      "phase": "0",
-      "feature": "Database schema and generator",
+      "feature": "Database schema valid",
       "status": "partial",
       "source": "prisma/schema.prisma",
       "api": "none",
@@ -38,24 +26,12 @@
       "result": "CI 45641130413 passed db:validate and disposable PG tests",
       "security": "No destructive sync on production",
       "frontend": "not applicable",
-      "remaining": "No reviewed production migration or full constraint audit"
+      "remaining": "No reviewed production migration or full constraint audit; release requirement needs independent verification",
+      "requirement": "Database schema valid"
     },
     {
       "phase": "0",
-      "feature": "Environment configuration and secrets",
-      "status": "partial",
-      "source": "src/configs/auth.config.ts",
-      "api": "none",
-      "model": "none",
-      "tests": "tests/unit/auths/authConfig.test.ts",
-      "result": "local test passed",
-      "security": "Unique strong secrets; TLS and trusted origin",
-      "frontend": "Web uses API_BASE_URL; mobile build define",
-      "remaining": "Deployment settings and secret rotation unverified"
-    },
-    {
-      "phase": "0",
-      "feature": "Startup, graceful shutdown and health readiness",
+      "feature": "Fastify bootstrapping works",
       "status": "partial",
       "source": "src/server.ts",
       "api": "GET /api/v1/health",
@@ -64,11 +40,26 @@
       "result": "liveness test passed; no real startup/shutdown test",
       "security": "Fail closed on DB connection; release resources",
       "frontend": "not applicable",
-      "remaining": "Failure and signal shutdown tests and readiness endpoint missing"
+      "remaining": "Failure and signal shutdown tests and readiness endpoint missing; release requirement needs independent verification",
+      "requirement": "Fastify bootstrapping works"
     },
     {
       "phase": "0",
-      "feature": "Error mapping and request validation",
+      "feature": "Environment configuration verified",
+      "status": "partial",
+      "source": "src/configs/auth.config.ts",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/unit/auths/authConfig.test.ts",
+      "result": "local test passed",
+      "security": "Unique strong secrets; TLS and trusted origin",
+      "frontend": "Web uses API_BASE_URL; mobile build define",
+      "remaining": "Deployment settings and secret rotation unverified; release requirement needs independent verification",
+      "requirement": "Environment configuration verified"
+    },
+    {
+      "phase": "0",
+      "feature": "Centralized error handling works",
       "status": "partial",
       "source": "src/errors/errorMapper.ts",
       "api": "all registered APIs",
@@ -77,24 +68,26 @@
       "result": "local tests passed",
       "security": "Reject extra fields and avoid sensitive error logs",
       "frontend": "Error envelope normalization added in both clients",
-      "remaining": "Response/error OpenAPI coverage incomplete"
+      "remaining": "Response/error OpenAPI coverage incomplete; release requirement needs independent verification",
+      "requirement": "Centralized error handling works"
     },
     {
       "phase": "0",
-      "feature": "CORS, CSRF and security headers",
-      "status": "blocked",
-      "source": "src/app.ts",
-      "api": "all APIs",
+      "feature": "Authentication dependencies initialize",
+      "status": "partial",
+      "source": "src/server.ts",
+      "api": "GET /api/v1/health",
       "model": "none",
-      "tests": "tests/security/csrfProtection.test.ts",
-      "result": "TODO, not executed",
-      "security": "Deployment-specific allowed origins and CSRF for cookies",
-      "frontend": "Web BFF uses cookies",
-      "remaining": "No deployed ingress/cookie/CSRF assessment or full security headers"
+      "tests": "tests/unit/app.test.ts",
+      "result": "liveness test passed; no real startup/shutdown test",
+      "security": "Fail closed on DB connection; release resources",
+      "frontend": "not applicable",
+      "remaining": "Failure and signal shutdown tests and readiness endpoint missing; release requirement needs independent verification",
+      "requirement": "Authentication dependencies initialize"
     },
     {
       "phase": "0",
-      "feature": "Logging, outbox and observability",
+      "feature": "Logging and background processing work",
       "status": "partial",
       "source": "src/jobs/workers/processAuthEmailOutbox.job.ts",
       "api": "none",
@@ -103,24 +96,26 @@
       "result": "CI 45641130413 passed with fake provider",
       "security": "No secret logs; retries may duplicate SMTP",
       "frontend": "not applicable",
-      "remaining": "Production SMTP, monitoring and delivery reconciliation unverified"
+      "remaining": "Production SMTP, monitoring and delivery reconciliation unverified; release requirement needs independent verification",
+      "requirement": "Logging and background processing work"
     },
     {
       "phase": "0",
-      "feature": "File-length enforcement",
+      "feature": "File-length checks pass",
       "status": "verified",
       "source": "scripts/checkFileLength.ts",
       "api": "none",
       "model": "none",
       "tests": "scripts/checkFileLength.ts",
-      "result": "local check passed",
+      "result": "local check passed; CI 45644677058 passed on e52c4ed",
       "security": "250-line limit",
       "frontend": "Both platforms included by script",
-      "remaining": "Does not prove business correctness"
+      "remaining": "Does not prove business correctness",
+      "requirement": "File-length checks pass"
     },
     {
       "phase": "1",
-      "feature": "Customer registration and email OTP",
+      "feature": "Customer registration works",
       "status": "partial",
       "source": "src/routes/auths/auth.route.ts",
       "api": "POST /api/v1/auth/register; /auth/email-otp/verify",
@@ -129,11 +124,26 @@
       "result": "CI 45641130413 passed",
       "security": "Hash OTP; atomic consume; rate limit",
       "frontend": "Web/mobile auth clients exist",
-      "remaining": "Real SMTP, expiry/resend exhaustive HTTP cases remain"
+      "remaining": "Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification",
+      "requirement": "Customer registration works"
     },
     {
       "phase": "1",
-      "feature": "Login, rotation, logout and revocation",
+      "feature": "OTP verification works",
+      "status": "partial",
+      "source": "src/routes/auths/auth.route.ts",
+      "api": "POST /api/v1/auth/register; /auth/email-otp/verify",
+      "model": "prisma/models/authCredentials.prisma",
+      "tests": "tests/integration/auths/registerUser.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Hash OTP; atomic consume; rate limit",
+      "frontend": "Web/mobile auth clients exist",
+      "remaining": "Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification",
+      "requirement": "OTP verification works"
+    },
+    {
+      "phase": "1",
+      "feature": "Password login works",
       "status": "partial",
       "source": "src/routes/auths/session.route.ts",
       "api": "/api/v1/auth/login; /auth/refresh; /auth/logout",
@@ -142,11 +152,40 @@
       "result": "CI 45641130413 passed",
       "security": "Replay revokes family; ownership; no token logs",
       "frontend": "Web/mobile auth clients exist",
-      "remaining": "Full session expiry and device HTTP matrix incomplete"
+      "remaining": "Full session expiry and device HTTP matrix incomplete; release requirement needs independent verification",
+      "requirement": "Password login works"
     },
     {
       "phase": "1",
-      "feature": "Password change and recovery",
+      "feature": "Sessions work",
+      "status": "partial",
+      "source": "src/routes/auths/session.route.ts",
+      "api": "/api/v1/auth/login; /auth/refresh; /auth/logout",
+      "model": "prisma/models/user.prisma",
+      "tests": "tests/integration/security/sessionConcurrency.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Replay revokes family; ownership; no token logs",
+      "frontend": "Web/mobile auth clients exist",
+      "remaining": "Full session expiry and device HTTP matrix incomplete; release requirement needs independent verification",
+      "requirement": "Sessions work"
+    },
+    {
+      "phase": "1",
+      "feature": "Refresh-token rotation works",
+      "status": "partial",
+      "source": "src/routes/auths/session.route.ts",
+      "api": "/api/v1/auth/login; /auth/refresh; /auth/logout",
+      "model": "prisma/models/user.prisma",
+      "tests": "tests/integration/security/sessionConcurrency.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Replay revokes family; ownership; no token logs",
+      "frontend": "Web/mobile auth clients exist",
+      "remaining": "Full session expiry and device HTTP matrix incomplete; release requirement needs independent verification",
+      "requirement": "Refresh-token rotation works"
+    },
+    {
+      "phase": "1",
+      "feature": "Password reset works",
       "status": "partial",
       "source": "src/services/auths/commands/resetPassword.command.ts",
       "api": "/api/v1/auth/password/reset; /auth/password/change",
@@ -155,11 +194,12 @@
       "result": "CI 45641130413 passed",
       "security": "One-time reset; invalidate sessions",
       "frontend": "Web/mobile forms exist",
-      "remaining": "Real delivery and comprehensive concurrency not verified"
+      "remaining": "Real delivery and comprehensive concurrency not verified; release requirement needs independent verification",
+      "requirement": "Password reset works"
     },
     {
       "phase": "1",
-      "feature": "MFA enrollment and TOTP replay",
+      "feature": "MFA works",
       "status": "partial",
       "source": "src/routes/auths/mfa.route.ts",
       "api": "/api/v1/auth/mfa/totp/*",
@@ -168,24 +208,40 @@
       "result": "CI 45641130413 passed",
       "security": "Monotonic step; MFA on privileged endpoints",
       "frontend": "Web/mobile auth flows exist",
-      "remaining": "Recovery and operational lockout policy unresolved"
+      "remaining": "Recovery and operational lockout policy unresolved; release requirement needs independent verification",
+      "requirement": "MFA works"
     },
     {
       "phase": "1",
-      "feature": "Procurer application and status lookup",
+      "feature": "Procurer applications work",
       "status": "partial",
       "source": "src/routes/identity/procurerApplication.route.ts",
       "api": "/api/v1/procurer-applications",
       "model": "prisma/models/procurerApplications.prisma",
       "tests": "tests/integration/identity/procurerApplication.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45641130413 passed; recent-MFA route unit test passed locally; new PostgreSQL regression not executed",
       "security": "Review permissions and atomic OTP attempts",
       "frontend": "Web/mobile application forms exist",
-      "remaining": "Full rejection, more-info and race tests missing"
+      "remaining": "Full rejection, more-info and race tests missing; release requirement needs independent verification",
+      "requirement": "Procurer applications work"
     },
     {
       "phase": "1",
-      "feature": "Procurer approval, invitation and activation",
+      "feature": "Procurer approval works",
+      "status": "partial",
+      "source": "src/repositories/identity/procurerApplication.repository.ts",
+      "api": "/api/v1/invitations/*",
+      "model": "prisma/models/identityAccess.prisma",
+      "tests": "tests/integration/identity/procurerApplication.test.ts",
+      "result": "CI 45641130413 passed; recent-MFA route unit test passed locally; new PostgreSQL regression not executed",
+      "security": "Approval, one-time invite and MFA",
+      "frontend": "Web/mobile invitation flows exist",
+      "remaining": "Expiry/revocation and concurrent lifecycle tests incomplete; release requirement needs independent verification; recent MFA was added to review actions; regression test not yet executed on PostgreSQL",
+      "requirement": "Procurer approval works"
+    },
+    {
+      "phase": "1",
+      "feature": "Invitations work",
       "status": "partial",
       "source": "src/repositories/identity/procurerApplication.repository.ts",
       "api": "/api/v1/invitations/*",
@@ -194,11 +250,12 @@
       "result": "CI 45641130413 passed",
       "security": "Approval, one-time invite and MFA",
       "frontend": "Web/mobile invitation flows exist",
-      "remaining": "Expiry/revocation and concurrent lifecycle tests incomplete"
+      "remaining": "Expiry/revocation and concurrent lifecycle tests incomplete; release requirement needs independent verification",
+      "requirement": "Invitations work"
     },
     {
       "phase": "1",
-      "feature": "Staff and Super Admin management",
+      "feature": "Admin management works",
       "status": "partial",
       "source": "src/routes/administrators/staff.route.ts",
       "api": "/api/v1/super-admin/staff/*",
@@ -207,11 +264,26 @@
       "result": "CI 45641130413 passed",
       "security": "Granular permissions, recent MFA, last-admin protection",
       "frontend": "Web staff routes exist",
-      "remaining": "Bootstrap, reactivation and all permission races not fully verified"
+      "remaining": "Bootstrap, reactivation and all permission races not fully verified; release requirement needs independent verification",
+      "requirement": "Admin management works"
     },
     {
       "phase": "1",
-      "feature": "Role and permission enforcement",
+      "feature": "Super Admin management works",
+      "status": "partial",
+      "source": "src/routes/administrators/staff.route.ts",
+      "api": "/api/v1/super-admin/staff/*",
+      "model": "prisma/models/identityAccess.prisma",
+      "tests": "tests/integration/security/staffConcurrency.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Granular permissions, recent MFA, last-admin protection",
+      "frontend": "Web staff routes exist",
+      "remaining": "Bootstrap, reactivation and all permission races not fully verified; release requirement needs independent verification",
+      "requirement": "Super Admin management works"
+    },
+    {
+      "phase": "1",
+      "feature": "Role permissions work",
       "status": "partial",
       "source": "src/middlewares/authenticate.middleware.ts",
       "api": "protected routes",
@@ -220,24 +292,26 @@
       "result": "CI 45641130413 passed",
       "security": "Server-side MFA and ownership",
       "frontend": "Frontend checks are not authoritative",
-      "remaining": "Full multi-role and active-session permission matrix incomplete"
+      "remaining": "Full multi-role and active-session permission matrix incomplete; release requirement needs independent verification",
+      "requirement": "Role permissions work"
     },
     {
-      "phase": "2A",
-      "feature": "Customer profile",
+      "phase": "1",
+      "feature": "Security tests pass",
       "status": "partial",
-      "source": "src/routes/auths/auth.route.ts",
-      "api": "GET /api/v1/me",
+      "source": "src/middlewares/authenticate.middleware.ts",
+      "api": "protected routes",
       "model": "prisma/models/user.prisma",
-      "tests": "tests/integration/auths/registerUser.test.ts",
+      "tests": "tests/integration/identity/procurerApplication.test.ts",
       "result": "CI 45641130413 passed",
-      "security": "Owner access",
-      "frontend": "Web/mobile identity clients exist",
-      "remaining": "Customer profile update not implemented"
+      "security": "Server-side MFA and ownership",
+      "frontend": "Frontend checks are not authoritative",
+      "remaining": "Full multi-role and active-session permission matrix incomplete; release requirement needs independent verification",
+      "requirement": "Security tests pass"
     },
     {
       "phase": "2A",
-      "feature": "Customer addresses",
+      "feature": "Customer addresses work",
       "status": "partial",
       "source": "src/routes/addresses/address.route.ts",
       "api": "/api/v1/addresses",
@@ -246,11 +320,12 @@
       "result": "CI 45641130413 passed",
       "security": "Owner-only access",
       "frontend": "Mobile address repository is empty",
-      "remaining": "Preferred address selection and geographic registry missing"
+      "remaining": "Preferred address selection and geographic registry missing; release requirement needs independent verification",
+      "requirement": "Customer addresses work"
     },
     {
       "phase": "2A",
-      "feature": "Procurer operational profile and availability",
+      "feature": "Procurer profiles work",
       "status": "partial",
       "source": "src/routes/procurerServices/procurerServices.route.ts",
       "api": "/api/v1/procurer-services/me",
@@ -259,11 +334,12 @@
       "result": "CI 45641130413 passed",
       "security": "Verified application, MFA, active role",
       "frontend": "No verified frontend integration",
-      "remaining": "Public profile endpoint, completion requirements and audits incomplete"
+      "remaining": "Public profile endpoint, completion requirements and audits incomplete; release requirement needs independent verification",
+      "requirement": "Procurer profiles work"
     },
     {
       "phase": "2A",
-      "feature": "Service zones and delivery fees",
+      "feature": "Service zones work",
       "status": "partial",
       "source": "src/repositories/procurerServices/procurerServices.repository.ts",
       "api": "/api/v1/procurer-services/me/zones",
@@ -272,24 +348,26 @@
       "result": "CI 45641130413 passed",
       "security": "Ownership, eligibility; exact matching",
       "frontend": "No verified frontend integration",
-      "remaining": "No official geography identifiers; stale discovery page gaps"
+      "remaining": "No official geography identifiers; stale discovery page gaps; release requirement needs independent verification",
+      "requirement": "Service zones work"
     },
     {
       "phase": "2A",
-      "feature": "Shopping lists and items",
+      "feature": "Availability works",
       "status": "partial",
-      "source": "src/routes/shoppingLists/shoppingList.route.ts",
-      "api": "/api/v1/shopping-lists",
-      "model": "prisma/models/shoppingList.prisma",
-      "tests": "tests/integration/shoppingLists/shoppingListApi.test.ts",
+      "source": "src/routes/procurerServices/procurerServices.route.ts",
+      "api": "/api/v1/procurer-services/me",
+      "model": "prisma/models/identityAccess.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
       "result": "CI 45641130413 passed",
-      "security": "Ownership, immutable submitted state",
-      "frontend": "Mobile shopping list repository is empty",
-      "remaining": "Units, item timestamps and idempotent repeated writes missing"
+      "security": "Verified application, MFA, active role",
+      "frontend": "No verified frontend integration",
+      "remaining": "Public profile endpoint, completion requirements and audits incomplete; release requirement needs independent verification",
+      "requirement": "Availability works"
     },
     {
       "phase": "2A",
-      "feature": "Price policy and preview",
+      "feature": "Pricing policies work",
       "status": "partial",
       "source": "src/services/pricing/queries/calculatePricing.query.ts",
       "api": "/api/v1/procurer-services/me/pricing; /api/v1/pricing/preview",
@@ -298,11 +376,40 @@
       "result": "local tests and CI 45641130413 passed",
       "security": "Exact minor units; never trust client total",
       "frontend": "No verified frontend integration",
-      "remaining": "Threshold needs approval; preview nonbinding; no policy retirement"
+      "remaining": "Threshold needs approval; preview nonbinding; no policy retirement; release requirement needs independent verification",
+      "requirement": "Pricing policies work"
     },
     {
       "phase": "2A",
-      "feature": "Procurer discovery",
+      "feature": "Shopping lists work",
+      "status": "partial",
+      "source": "src/routes/shoppingLists/shoppingList.route.ts",
+      "api": "/api/v1/shopping-lists",
+      "model": "prisma/models/shoppingList.prisma",
+      "tests": "tests/integration/shoppingLists/shoppingListApi.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Ownership, immutable submitted state",
+      "frontend": "Mobile shopping list repository is empty",
+      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification",
+      "requirement": "Shopping lists work"
+    },
+    {
+      "phase": "2A",
+      "feature": "Shopping item operations work",
+      "status": "partial",
+      "source": "src/routes/shoppingLists/shoppingList.route.ts",
+      "api": "/api/v1/shopping-lists",
+      "model": "prisma/models/shoppingList.prisma",
+      "tests": "tests/integration/shoppingLists/shoppingListApi.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Ownership, immutable submitted state",
+      "frontend": "Mobile shopping list repository is empty",
+      "remaining": "Units, item timestamps and idempotent repeated writes missing; release requirement needs independent verification",
+      "requirement": "Shopping item operations work"
+    },
+    {
+      "phase": "2A",
+      "feature": "Procurer discovery works",
       "status": "partial",
       "source": "src/repositories/procurerServices/procurerServices.repository.ts",
       "api": "GET /api/v1/procurers/discovery",
@@ -311,24 +418,12 @@
       "result": "CI 45641130413 passed",
       "security": "Do not expose private evidence; eligibility checks",
       "frontend": "No verified frontend integration",
-      "remaining": "No rating/ranking, authoritative location registry or full filtering"
+      "remaining": "No rating/ranking, authoritative location registry or full filtering; release requirement needs independent verification",
+      "requirement": "Procurer discovery works"
     },
     {
       "phase": "2A",
-      "feature": "Shopping request snapshots",
-      "status": "partial",
-      "source": "src/repositories/shoppingRequests/shoppingRequest.repository.ts",
-      "api": "/api/v1/shopping-requests",
-      "model": "prisma/models/quotation.prisma",
-      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "CI 45641130413 passed",
-      "security": "Owned snapshots; one request per list/procurer",
-      "frontend": "No verified frontend integration",
-      "remaining": "No notification or complete request lifecycle"
-    },
-    {
-      "phase": "2A",
-      "feature": "Quotation revision and acceptance",
+      "feature": "Quotations work",
       "status": "partial",
       "source": "src/repositories/quotations/quotation.repository.ts",
       "api": "/api/v1/quotations/*",
@@ -337,24 +432,68 @@
       "result": "CI 45641130413 passed",
       "security": "Snapshot prices; reject stale/expired and competing acceptance",
       "frontend": "No verified frontend integration",
-      "remaining": "No expiry job, independent commission administration or exhaustive race tests"
+      "remaining": "No expiry job, independent commission administration or exhaustive race tests; release requirement needs independent verification",
+      "requirement": "Quotations work"
     },
     {
       "phase": "2A",
-      "feature": "Order and verified completion",
+      "feature": "Orders work",
       "status": "partial",
       "source": "src/repositories/orders/order.repository.ts",
       "api": "/api/v1/orders/*",
       "model": "prisma/models/order.prisma",
       "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "CI 45641130413 passed with isolated payment fixture",
+      "result": "CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed",
       "security": "Only customer completes after delivery and verified payment",
       "frontend": "No verified frontend integration",
-      "remaining": "No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution"
+      "remaining": "No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL",
+      "requirement": "Orders work"
+    },
+    {
+      "phase": "2A",
+      "feature": "Order transitions work",
+      "status": "partial",
+      "source": "src/repositories/orders/order.repository.ts",
+      "api": "/api/v1/orders/*",
+      "model": "prisma/models/order.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed",
+      "security": "Only customer completes after delivery and verified payment",
+      "frontend": "No verified frontend integration",
+      "remaining": "No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL",
+      "requirement": "Order transitions work"
+    },
+    {
+      "phase": "2A",
+      "feature": "Verified completion works",
+      "status": "partial",
+      "source": "src/repositories/orders/order.repository.ts",
+      "api": "/api/v1/orders/*",
+      "model": "prisma/models/order.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed",
+      "security": "Only customer completes after delivery and verified payment",
+      "frontend": "No verified frontend integration",
+      "remaining": "No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL",
+      "requirement": "Verified completion works"
+    },
+    {
+      "phase": "2A",
+      "feature": "Ownership checks pass",
+      "status": "partial",
+      "source": "src/repositories/orders/order.repository.ts",
+      "api": "/api/v1/orders/*",
+      "model": "prisma/models/order.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed with isolated payment fixture; stale eligibility mock regression passed locally; new PostgreSQL cases not executed",
+      "security": "Only customer completes after delivery and verified payment",
+      "frontend": "No verified frontend integration",
+      "remaining": "No production payment verification, refund/reconciliation, complete lifecycle or dispute resolution; release requirement needs independent verification; new order creation eligibility and payment race tests have not yet executed on PostgreSQL",
+      "requirement": "Ownership checks pass"
     },
     {
       "phase": "2B",
-      "feature": "Review eligibility and submission",
+      "feature": "Review eligibility works",
       "status": "missing",
       "source": "prisma/models/order.prisma",
       "api": "none",
@@ -363,11 +502,54 @@
       "result": "TODO; not executed",
       "security": "Persisted completion, payment, ownership and dispute gates",
       "frontend": "No verified integration",
-      "remaining": "Review model and endpoints absent"
+      "remaining": "Review model and endpoints absent",
+      "requirement": "Review eligibility works"
     },
     {
       "phase": "2B",
-      "feature": "Review editing, reporting and moderation",
+      "feature": "Rating submission works",
+      "status": "missing",
+      "source": "prisma/models/order.prisma",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Persisted completion, payment, ownership and dispute gates",
+      "frontend": "No verified integration",
+      "remaining": "Review model and endpoints absent",
+      "requirement": "Rating submission works"
+    },
+    {
+      "phase": "2B",
+      "feature": "Written comments work",
+      "status": "missing",
+      "source": "prisma/models/order.prisma",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Persisted completion, payment, ownership and dispute gates",
+      "frontend": "No verified integration",
+      "remaining": "Review model and endpoints absent",
+      "requirement": "Written comments work"
+    },
+    {
+      "phase": "2B",
+      "feature": "Duplicate prevention works",
+      "status": "missing",
+      "source": "prisma/models/order.prisma",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Persisted completion, payment, ownership and dispute gates",
+      "frontend": "No verified integration",
+      "remaining": "Review model and endpoints absent",
+      "requirement": "Duplicate prevention works"
+    },
+    {
+      "phase": "2B",
+      "feature": "Review editing rules work",
       "status": "missing",
       "source": "docs/architecture/procurementReputationHandoff.md",
       "api": "none",
@@ -376,11 +558,12 @@
       "result": "TODO; not executed",
       "security": "Audit moderation; prevent abuse and XSS",
       "frontend": "No verified integration",
-      "remaining": "No review/report/moderation implementation"
+      "remaining": "No review/report/moderation implementation",
+      "requirement": "Review editing rules work"
     },
     {
       "phase": "2B",
-      "feature": "Rating average, distribution and discovery ranking",
+      "feature": "Rating averages work",
       "status": "missing",
       "source": "docs/architecture/procurementReputationHandoff.md",
       "api": "none",
@@ -389,11 +572,82 @@
       "result": "TODO; not executed",
       "security": "Persisted eligible reviews; null average for zero",
       "frontend": "No verified integration",
-      "remaining": "No review aggregation or ranking implementation"
+      "remaining": "No review aggregation or ranking implementation",
+      "requirement": "Rating averages work"
+    },
+    {
+      "phase": "2B",
+      "feature": "Review counts work",
+      "status": "missing",
+      "source": "docs/architecture/procurementReputationHandoff.md",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Persisted eligible reviews; null average for zero",
+      "frontend": "No verified integration",
+      "remaining": "No review aggregation or ranking implementation",
+      "requirement": "Review counts work"
+    },
+    {
+      "phase": "2B",
+      "feature": "Rating distributions work",
+      "status": "missing",
+      "source": "docs/architecture/procurementReputationHandoff.md",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Persisted eligible reviews; null average for zero",
+      "frontend": "No verified integration",
+      "remaining": "No review aggregation or ranking implementation",
+      "requirement": "Rating distributions work"
+    },
+    {
+      "phase": "2B",
+      "feature": "Public review queries work",
+      "status": "missing",
+      "source": "docs/architecture/procurementReputationHandoff.md",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Audit moderation; prevent abuse and XSS",
+      "frontend": "No verified integration",
+      "remaining": "No review/report/moderation implementation",
+      "requirement": "Public review queries work"
+    },
+    {
+      "phase": "2B",
+      "feature": "Review moderation works",
+      "status": "missing",
+      "source": "docs/architecture/procurementReputationHandoff.md",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Audit moderation; prevent abuse and XSS",
+      "frontend": "No verified integration",
+      "remaining": "No review/report/moderation implementation",
+      "requirement": "Review moderation works"
+    },
+    {
+      "phase": "2B",
+      "feature": "Review security tests pass",
+      "status": "missing",
+      "source": "docs/architecture/procurementReputationHandoff.md",
+      "api": "none",
+      "model": "none",
+      "tests": "tests/e2e/purchaseFlow.test.ts",
+      "result": "TODO; not executed",
+      "security": "Audit moderation; prevent abuse and XSS",
+      "frontend": "No verified integration",
+      "remaining": "No review/report/moderation implementation",
+      "requirement": "Review security tests pass"
     },
     {
       "phase": "2C",
-      "feature": "API and OpenAPI coverage",
+      "feature": "Relevant APIs are registered",
       "status": "partial",
       "source": "src/apis/v1/registerRoutes.ts",
       "api": "/api/v1/*",
@@ -402,24 +656,40 @@
       "result": "CI 45641130413 passed registered paths exercised",
       "security": "Validation, error contracts and auth",
       "frontend": "Clients incomplete",
-      "remaining": "No complete contract validation and some schemas broad"
+      "remaining": "No complete contract validation and some schemas broad; release requirement needs independent verification",
+      "requirement": "Relevant APIs are registered"
     },
     {
       "phase": "2C",
-      "feature": "Cross-platform contract parity",
+      "feature": "OpenAPI contracts are accurate",
       "status": "partial",
-      "source": "apps/web/src/lib/auth/server.ts",
-      "api": "/api/v1/auth/*",
-      "model": "none",
-      "tests": "tests/unit/frontend/apiError.test.ts",
-      "result": "local tests passed; mobile CI pending",
-      "security": "Secure storage; backend authority",
-      "frontend": "Auth partial; procurement repositories empty",
-      "remaining": "Full web/mobile API contract and live integration testing missing"
+      "source": "src/apis/v1/registerRoutes.ts",
+      "api": "/api/v1/*",
+      "model": "prisma/schema.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed registered paths exercised",
+      "security": "Validation, error contracts and auth",
+      "frontend": "Clients incomplete",
+      "remaining": "No complete contract validation and some schemas broad; release requirement needs independent verification",
+      "requirement": "OpenAPI contracts are accurate"
     },
     {
       "phase": "2C",
-      "feature": "Integrated authentication-to-review workflow",
+      "feature": "Database-backed integration tests pass",
+      "status": "partial",
+      "source": "prisma/schema.prisma",
+      "api": "none",
+      "model": "prisma/models/",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed db:validate and disposable PG tests",
+      "security": "No destructive sync on production",
+      "frontend": "not applicable",
+      "remaining": "No reviewed production migration or full constraint audit; release requirement needs independent verification",
+      "requirement": "Database-backed integration tests pass"
+    },
+    {
+      "phase": "2C",
+      "feature": "Complete procurement workflow passes",
       "status": "missing",
       "source": "tests/e2e/purchaseFlow.test.ts",
       "api": "none",
@@ -428,11 +698,54 @@
       "result": "TODO; not executed",
       "security": "Real roles; fixture-only verified test payment",
       "frontend": "Not integrated",
-      "remaining": "No full end-to-end test or review implementation"
+      "remaining": "No full end-to-end test or review implementation",
+      "requirement": "Complete procurement workflow passes"
     },
     {
       "phase": "2C",
-      "feature": "Financial operations and production delivery",
+      "feature": "Security regression tests pass",
+      "status": "partial",
+      "source": "src/middlewares/authenticate.middleware.ts",
+      "api": "protected routes",
+      "model": "prisma/models/user.prisma",
+      "tests": "tests/integration/identity/procurerApplication.test.ts",
+      "result": "CI 45641130413 passed",
+      "security": "Server-side MFA and ownership",
+      "frontend": "Frontend checks are not authoritative",
+      "remaining": "Full multi-role and active-session permission matrix incomplete; release requirement needs independent verification",
+      "requirement": "Security regression tests pass"
+    },
+    {
+      "phase": "2C",
+      "feature": "Frontend API parity has been audited",
+      "status": "partial",
+      "source": "apps/web/src/lib/auth/server.ts",
+      "api": "/api/v1/auth/*",
+      "model": "none",
+      "tests": "tests/unit/frontend/apiError.test.ts",
+      "result": "local tests passed; mobile CI pending",
+      "security": "Secure storage; backend authority",
+      "frontend": "Auth partial; procurement repositories empty",
+      "remaining": "Full web/mobile API contract and live integration testing missing; release requirement needs independent verification",
+      "requirement": "Frontend API parity has been audited"
+    },
+    {
+      "phase": "2C",
+      "feature": "CI checks pass",
+      "status": "partial",
+      "source": "src/apis/v1/registerRoutes.ts",
+      "api": "/api/v1/*",
+      "model": "prisma/schema.prisma",
+      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
+      "result": "CI 45641130413 passed registered paths exercised",
+      "security": "Validation, error contracts and auth",
+      "frontend": "Clients incomplete",
+      "remaining": "No complete contract validation and some schemas broad; release requirement needs independent verification",
+      "requirement": "CI checks pass"
+    },
+    {
+      "phase": "2C",
+      "feature": "External blockers are documented",
       "status": "blocked",
       "source": "prisma/models/payment.prisma",
       "api": "none",
@@ -441,11 +754,12 @@
       "result": "TODO; not executed",
       "security": "Verify provider and webhook; no real transfers",
       "frontend": "Not integrated",
-      "remaining": "Paystack merchant/provider terms, legal/compliance, ledger, reconciliation and payouts unverified"
+      "remaining": "Paystack merchant/provider terms, legal/compliance, ledger, reconciliation and payouts unverified",
+      "requirement": "External blockers are documented"
     },
     {
       "phase": "2C",
-      "feature": "Production migrations and deployment",
+      "feature": "Release-readiness report is complete",
       "status": "blocked",
       "source": "prisma.config.ts",
       "api": "none",
@@ -454,20 +768,8 @@
       "result": "disposable db:sync only in CI",
       "security": "No production db push; backups and rollback",
       "frontend": "not applicable",
-      "remaining": "No reviewed migration process compatible with no handwritten SQL"
-    },
-    {
-      "phase": "2C",
-      "feature": "Load, monitoring and operations",
-      "status": "blocked",
-      "source": "src/server.ts",
-      "api": "GET /api/v1/health",
-      "model": "none",
-      "tests": "tests/unit/app.test.ts",
-      "result": "liveness only",
-      "security": "Monitoring, privacy, rate limits and incident response",
-      "frontend": "not applicable",
-      "remaining": "No load evidence, production observability or external ingress review"
+      "remaining": "No reviewed migration process compatible with no handwritten SQL",
+      "requirement": "Release-readiness report is complete"
     }
   ]
 }

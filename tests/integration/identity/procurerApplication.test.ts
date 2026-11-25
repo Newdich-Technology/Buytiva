@@ -73,6 +73,13 @@ suite('procurer application and invitation security', () => {
 
     const reviewer = await createStaffSession(prisma, dependencies, 'reviewer@example.com', UserRole.ADMIN, ['procurerApplication.review']);
     const application = await prisma.procurerApplication.findUniqueOrThrow({ where: { publicReference: submitted.reference } });
+    // A valid but stale MFA session must not perform sensitive reviews.
+    await prisma.authSession.updateMany({ where: { userId: reviewer.user.id }, data: { mfaVerifiedAt: new Date(Date.now() - 11 * 60_000) } });
+    const staleReview = await app.inject({ method: 'POST', url: `/api/v1/admin/procurer-applications/${application.id}/identity-checks`, headers: { authorization: 'Bearer ' + reviewer.accessToken }, payload: { identityEvidenceReference: 'evidence-identity-reference-001', complianceEvidenceReference: 'evidence-compliance-reference-001' } });
+    expect(staleReview.statusCode).toBe(403);
+    expect((await prisma.procurerApplication.findUniqueOrThrow({ where: { id: application.id } })).identityVerifiedAt).toBeNull();
+    // Test fixture restores freshness; a real staff member must reauthenticate with MFA.
+    await prisma.authSession.updateMany({ where: { userId: reviewer.user.id }, data: { mfaVerifiedAt: new Date() } });
     const checks = await app.inject({ method: 'POST', url: `/api/v1/admin/procurer-applications/${application.id}/identity-checks`, headers: { authorization: 'Bearer ' + reviewer.accessToken }, payload: { identityEvidenceReference: 'evidence-identity-reference-001', complianceEvidenceReference: 'evidence-compliance-reference-001' } });
     expect(checks.statusCode).toBe(200);
     const approval = await app.inject({ method: 'POST', url: `/api/v1/admin/procurer-applications/${application.id}/approve`, headers: { authorization: 'Bearer ' + reviewer.accessToken }, payload: { reason: 'Identity and compliance documents reviewed.' } });

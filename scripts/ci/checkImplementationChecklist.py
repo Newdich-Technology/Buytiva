@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'docs/implementation/checklist.json'
 REPORT = ROOT / 'docs/implementation/PHASE_0_TO_2_MASTER_CHECKLIST.md'
-REQUIRED = {'phase', 'feature', 'status', 'source', 'api', 'model', 'tests', 'result', 'security', 'frontend', 'remaining'}
+REQUIRED = {'phase', 'feature', 'requirement', 'status', 'source', 'api', 'model', 'tests', 'result', 'security', 'frontend', 'remaining'}
 PHASES = ('0', '1', '2A', '2B', '2C')
 STATUSES = {'verified', 'partial', 'missing', 'blocked', 'failed'}
 
@@ -54,7 +54,7 @@ def main():
     for item in entries:
         checked = 'x' if item['status'] == 'verified' else ' '
         lines.extend(['', f"## [{checked}] Phase {item['phase']}: {item['feature']}", '',
-                      f"- **Status:** {item['status']}", f"- **Source:** `{item['source']}`", f"- **API:** {item['api']}",
+                      f"- **Requirement:** {item['requirement']}", f"- **Status:** {item['status']}", f"- **Source:** `{item['source']}`", f"- **API:** {item['api']}",
                       f"- **Prisma model:** `{item['model']}`", f"- **Test:** `{item['tests']}`", f"- **Result/evidence:** {item['result']}",
                       f"- **Security:** {item['security']}", f"- **Frontend:** {item['frontend']}", f"- **Remaining/limitations:** {item['remaining']}"])
     report = '\n'.join(lines) + '\n'
@@ -62,7 +62,14 @@ def main():
         REPORT.write_text(report)
     elif not REPORT.exists() or REPORT.read_text() != report:
         raise ValueError('Checklist report is out of date: run python3 scripts/ci/checkImplementationChecklist.py --write')
-    print(f'Checklist structure and evidence paths verified for {len(entries)} entries; this is not release certification.')
+    release = (ROOT / 'docs/implementation/RELEASE_READINESS_REPORT.md').read_text()
+    for phase in PHASES:
+        subset = [item for item in entries if item['phase'] == phase]
+        counts = Counter(item['status'] for item in subset)
+        row = f"| Phase {phase} | {len(subset)} | {counts['verified']} | {counts['partial']} | {counts['failed']} | {counts['blocked'] + counts['missing']} |"
+        if row not in release:
+            raise ValueError(f'Release report count differs from checklist: Phase {phase}')
+    print(f'Checklist structure, evidence paths and release totals checked for {len(entries)} entries; this is not release certification.')
 
 
 if __name__ == '__main__':

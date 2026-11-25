@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { OrderRepository } from '../../interfaces/orders/orderRepository.interface.js';
 import type { OrderView, TransitionRule } from '../../models/orders/order.model.js';
+import type { RequestAddressSnapshot } from '../../models/shoppingRequests/shoppingRequest.model.js';
 import { eligibleOwner } from '../procurerServices/procurerServices.repository.js';
 import { conflictError } from '../../errors/auths/auth.error.js';
 import { AppError } from '../../errors/app.error.js';
@@ -21,6 +22,15 @@ export class PrismaOrderRepository implements OrderRepository {
       return await this.prisma.$transaction(async (tx) => {
         const quote = await tx.quotation.findFirst({ where: { id: quotationId, status: 'ACCEPTED', request: { customerId: customer, status: 'ACCEPTED' } }, include: { request: true } });
         if (!quote) throw missing();
+        // Acceptance and order creation can be separated in time. Never assign a
+        // suspended or no-longer-covered procurer based only on an old quote.
+        const address = quote.request.addressSnapshot as unknown as RequestAddressSnapshot;
+        const zone = await tx.procurerServiceZone.findFirst({ where: {
+          country: address.country, region: address.region, city: address.city, area: address.area,
+          active: true, currency: quote.currency,
+          profile: { userId: quote.request.procurerId, ...eligibleOwner(quote.request.procurerId), acceptingRequests: true }
+        }, select: { id: true } });
+        if (!zone) throw conflictError('Procurer or delivery zone is no longer available.');
         const order = await tx.procurementOrder.create({ data: { quotationId, requestId: quote.requestId, history: { create: { actorId: customer, toStatus: 'AWAITING_PAYMENT' } } }, include });
         return view(order);
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
