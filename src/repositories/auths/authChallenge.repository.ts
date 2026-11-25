@@ -137,29 +137,30 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
     timeStep: bigint,
     now: Date
   ): Promise<boolean> {
-    return this.prisma.$transaction(async (tx) => {
-      const challenge = await tx.loginChallenge.updateMany({
-        where: {
-          id,
-          userId,
-          purpose: LoginChallengePurpose.LOGIN_MFA,
-          consumedAt: null,
-          expiresAt: { gt: now },
-          AND: [{ attempts: expectedAttempts }, { attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } }]
-        },
-        data: { consumedAt: now }
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        const factor = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: { not: null }, disabledAt: null } });
+        if (!factor) return false;
+        const accepted = await tx.mfaFactor.updateMany({
+          where: { id: factor.id, userId, enabledAt: { not: null }, disabledAt: null,
+            OR: [{ lastAcceptedTimeStep: null }, { lastAcceptedTimeStep: { lt: timeStep } }] },
+          data: { lastAcceptedTimeStep: timeStep }
+        });
+        if (accepted.count !== 1) return false;
+        const challenge = await tx.loginChallenge.updateMany({
+          where: { id, userId, purpose: LoginChallengePurpose.LOGIN_MFA, consumedAt: null,
+            expiresAt: { gt: now }, AND: [{ attempts: expectedAttempts }, { attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } }] },
+          data: { consumedAt: now }
+        });
+        // Throw so a concurrently consumed or expired challenge rolls the factor update back.
+        if (challenge.count !== 1) throw new ChallengeRace();
+        return true;
       });
-      if (challenge.count !== 1) return false;
-      const factor = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: { not: null }, disabledAt: null } });
-      if (!factor) return false;
-      const stepCondition = factor.lastAcceptedTimeStep === null
-        ? { lastAcceptedTimeStep: null }
-        : { lastAcceptedTimeStep: factor.lastAcceptedTimeStep };
-      const accepted = await tx.mfaFactor.updateMany({
-        where: { id: factor.id, ...stepCondition },
-        data: { lastAcceptedTimeStep: timeStep }
-      });
-      return accepted.count === 1;
-    });
+    } catch (error) {
+      if (error instanceof ChallengeRace) return false;
+      throw error;
+    }
   }
 }
+
+class ChallengeRace extends Error {}

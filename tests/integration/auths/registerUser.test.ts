@@ -83,6 +83,19 @@ suite('customer authentication integration', () => {
     expect((await app.inject({ method: 'GET', url: '/api/v1/me', headers: { authorization: `Bearer ${secondSession.accessToken}` } })).statusCode).toBe(401);
   });
 
+  it('rejects refresh for a suspended account and revokes the session', async () => {
+    await app.inject({ method: 'POST', url: '/api/v1/auth/register', payload: createRegistrationBody() });
+    const verification = await getVerificationDetails(prisma, config);
+    expect((await verifyEmail(app, verification.challengeId, verification.code)).statusCode).toBe(200);
+    const login = await app.inject({ method: 'POST', url: '/api/v1/auth/login', payload: { email: 'customer@example.com', password: 'SecureCustomerPass42!' } });
+    const session = login.json<{ session: { refreshToken: string; accessToken: string } }>().session;
+    const user = await prisma.user.update({ where: { emailNormalized: 'customer@example.com' }, data: { status: 'SUSPENDED' } });
+    const response = await app.inject({ method: 'POST', url: '/api/v1/auth/refresh', payload: { refreshToken: session.refreshToken } });
+    expect(response.statusCode).toBe(401);
+    expect(await prisma.authSession.count({ where: { userId: user.id, revokedAt: null } })).toBe(0);
+    expect((await app.inject({ method: 'GET', url: '/api/v1/me', headers: { authorization: `Bearer ${session.accessToken}` } })).statusCode).toBe(401);
+  });
+
   it('keeps registration and recovery responses generic and consumes password reset tokens once', async () => {
     const registration = await app.inject({ method: 'POST', url: '/api/v1/auth/register', payload: createRegistrationBody('recovery@example.com') });
     expect(registration.statusCode).toBe(202);

@@ -144,6 +144,7 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
   }
 
   async acceptTotpStep(userId: string, factorId: string, expectedStep: bigint | null, nextStep: bigint, now: Date): Promise<boolean> {
+    if (expectedStep !== null && nextStep <= expectedStep) return false;
     const expected = expectedStep === null ? { lastAcceptedTimeStep: null } : { lastAcceptedTimeStep: expectedStep };
     const result = await this.prisma.mfaFactor.updateMany({
       where: { id: factorId, userId, enabledAt: { not: null }, disabledAt: null, ...expected },

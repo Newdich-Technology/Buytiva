@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { InvitationKind, PrismaClient, StaffProfileStatus, UserRole, UserStatus } from '../../generated/prisma/client.js';
+import { InvitationKind, Prisma, PrismaClient, StaffProfileStatus, UserRole, UserStatus } from '../../generated/prisma/client.js';
 import type { StaffInvitationRepository, StaffInvitationRole } from '../../interfaces/administrators/staffInvitationRepository.interface.js';
 import { AUTH_EMAIL_OUTBOX_TYPES } from '../../constants/auths/auth.constants.js';
 
@@ -92,7 +92,8 @@ export class PrismaStaffInvitationRepository implements StaffInvitationRepositor
   }
 
   private async changeStaffAccess(input: { userId: string; actorId: string; reason: string; now: Date }, status: 'SUSPENDED' | 'REVOKED'): Promise<boolean> {
-    return this.prisma.$transaction(async (tx) => {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
       const superAdmin = await tx.roleAssignment.findFirst({ where: { userId: input.userId, role: UserRole.SUPER_ADMIN, revokedAt: null } });
       if (superAdmin) {
         const activeCount = await tx.roleAssignment.count({ where: { role: UserRole.SUPER_ADMIN, revokedAt: null, user: { status: UserStatus.ACTIVE, staffProfile: { is: { status: StaffProfileStatus.ACTIVE } } } } });
@@ -104,7 +105,11 @@ export class PrismaStaffInvitationRepository implements StaffInvitationRepositor
       await tx.authSession.updateMany({ where: { userId: input.userId, revokedAt: null }, data: { revokedAt: input.now, revokedReason: status } });
       await tx.auditLog.create({ data: { actorId: input.actorId, action: status === StaffProfileStatus.SUSPENDED ? 'STAFF_SUSPENDED' : 'STAFF_REVOKED', resourceType: 'USER', resourceId: input.userId, metadata: { reason: input.reason } } });
       return true;
-    });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2034') return false;
+      throw error;
+    }
   }
 }
 
