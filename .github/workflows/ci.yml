@@ -51,7 +51,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm --filter @buytiva/web build
-      - run: cmp apps/web/src/lib/constants/errorCatalog.data.json apps/mobile/assets/config/error_catalog.json
+      - run: python3 scripts/ci/checkErrorCatalogs.py
       - run: pnpm check:file-length
       - run: pnpm db:validate
       - run: pnpm audit --audit-level high

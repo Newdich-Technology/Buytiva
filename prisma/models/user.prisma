@@ -42,6 +42,7 @@ model User {
   acceptedInvitations      AccountInvitation[]        @relation("InvitationAcceptor")
   procurerProfile          ProcurerProfile?
   passwordResetTokens     PasswordResetToken[]
+  shoppingLists           ShoppingList[]
   staffProfile            StaffProfile?
 
   @@index([status, createdAt])

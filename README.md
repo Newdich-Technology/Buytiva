@@ -62,4 +62,4 @@ Use pnpm db:sync only after reviewing the configured target database. Production
 
 CI runs the database-backed auth tests against a disposable PostgreSQL database. To run them locally, set `DATABASE_URL` and `AUTH_TEST_DATABASE_URL` to the same dedicated test database, then run `pnpm db:sync` and `pnpm test --no-file-parallelism`. These tests delete authentication records; never point them at production or a shared database. The empty migration directory means this test setup uses schema synchronization, not migration validation.
 
-The mobile error catalog mirrors `apps/web/src/lib/constants/errorCatalog.data.json`; update both copies together. CI checks that they match. The mobile package lockfile has not yet been generated, so Flutter dependency resolution is not currently locked.
+The mobile and web error catalogs share the same error contract; update both copies together. CI checks their contract fields while allowing platform-specific artwork. The mobile package lockfile has not yet been generated, so Flutter dependency resolution is not currently locked.
