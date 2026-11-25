@@ -8,7 +8,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 | 1 | 14 | 0 | 14 | 0 | 0 | 0 |
 | 2A | 13 | 0 | 13 | 0 | 0 | 0 |
 | 2B | 11 | 0 | 4 | 7 | 0 | 0 |
-| 2C | 9 | 0 | 6 | 1 | 2 | 0 |
+| 2C | 9 | 0 | 7 | 0 | 2 | 0 |
 
 ## [ ] Phase 0: Ansofra architecture verified
 
@@ -650,15 +650,15 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 ## [ ] Phase 2C: Complete procurement workflow passes
 
 - **Requirement:** Complete procurement workflow passes
-- **Status:** missing
+- **Status:** partial
 - **Source:** `tests/e2e/purchaseFlow.test.ts`
-- **API:** none
-- **Prisma model:** `none`
+- **API:** registration through POST /api/v1/orders/:orderId/review
+- **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** TODO; not executed
+- **Result/evidence:** Database-backed journey added; PostgreSQL CI pending
 - **Security:** Real roles; fixture-only verified test payment
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No full end-to-end test or review implementation
+- **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, moderation, aggregates, refund and provider verification absent; complete requested journey not yet implemented
 
 ## [ ] Phase 2C: Security regression tests pass
 

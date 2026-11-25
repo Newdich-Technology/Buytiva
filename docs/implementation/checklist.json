@@ -690,15 +690,15 @@
     {
       "phase": "2C",
       "feature": "Complete procurement workflow passes",
-      "status": "missing",
+      "status": "partial",
       "source": "tests/e2e/purchaseFlow.test.ts",
-      "api": "none",
-      "model": "none",
+      "api": "registration through POST /api/v1/orders/:orderId/review",
+      "model": "prisma/models/order.prisma",
       "tests": "tests/e2e/purchaseFlow.test.ts",
-      "result": "TODO; not executed",
+      "result": "Database-backed journey added; PostgreSQL CI pending",
       "security": "Real roles; fixture-only verified test payment",
       "frontend": "Not integrated",
-      "remaining": "No full end-to-end test or review implementation",
+      "remaining": "Admin and payment are isolated fixtures; public reviews, moderation, aggregates, refund and provider verification absent; complete requested journey not yet implemented",
       "requirement": "Complete procurement workflow passes"
     },
     {
