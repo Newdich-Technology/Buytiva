@@ -10,9 +10,10 @@ import { AUTH_GLOBAL_RATE_LIMIT_PER_MINUTE, AUTH_RATE_WINDOW_MS } from './consta
 import { OPENAPI_ROUTE_PREFIX } from './constants/api.constants.js';
 import { registerAuthenticationRequestContext } from './middlewares/authenticate.middleware.js';
 import type { AuthDependencies } from './types/authDependencies.type.js';
+import type { ProcurerServicesRepository } from './interfaces/procurerServices/procurerServicesRepository.interface.js';
 import type { ShoppingListRepository } from './interfaces/shoppingLists/shoppingListRepository.interface.js';
 
-export function createBuytivaFastifyApplication(options: { authDependencies?: AuthDependencies; shoppingListRepository?: ShoppingListRepository } = {}): FastifyInstance {
+export function createBuytivaFastifyApplication(options: { authDependencies?: AuthDependencies; shoppingListRepository?: ShoppingListRepository; procurerServicesRepository?: ProcurerServicesRepository } = {}): FastifyInstance {
   const app = Fastify({ logger: true });
   registerErrorMapper(app);
   app.register(rateLimit, { global: true, max: AUTH_GLOBAL_RATE_LIMIT_PER_MINUTE, timeWindow: AUTH_RATE_WINDOW_MS });
