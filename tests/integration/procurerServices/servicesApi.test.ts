@@ -140,6 +140,7 @@ const secret = 'test-secret-long-enough-for-authentication';
     expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}`, headers: customer.headers })).statusCode).toBe(404);
 
     await prisma.procurerApplication.update({ where: { id: application.id }, data: { complianceVerifiedAt: null } });
+    expect((await app.inject({ method: 'GET', url: `/api/v1/procurer-services/me/requests/${requestId}`, headers: procurer.headers })).statusCode).toBe(404);
     expect((await discover()).json()).toEqual([]);
     expect((await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: procurer.headers, payload: profile })).statusCode).toBe(403);
     await prisma.procurerApplication.update({ where: { id: application.id }, data: { complianceVerifiedAt: new Date() } });
