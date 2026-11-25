@@ -304,7 +304,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred
 - **Prisma model:** `prisma/models/address.prisma`
 - **Test:** `tests/integration/addresses/preferredAddress.test.ts`
-- **Result/evidence:** CI 45668238690 passed PostgreSQL preferred address and customer display-name update regressions; mobile address client added, mobile CI pending
+- **Result/evidence:** CI 45668579947 passed PostgreSQL preference/profile regressions and Flutter address repository tests; UI screens and real client-server integration absent
 - **Security:** Owner-scoped access and composite foreign key for preference ownership
 - **Frontend:** Flutter address repository implemented; screens remain empty; web integration absent
 - **Remaining/limitations:** Address screens and web client integration missing; broader security and client integration testing incomplete
@@ -394,11 +394,11 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **Source:** `src/repositories/procurerServices/procurerServices.repository.ts`
 - **API:** GET /api/v1/procurers/discovery
 - **Prisma model:** `prisma/models/deliveryZone.prisma`
-- **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Test:** `tests/integration/procurerServices/discoveryPagination.test.ts`
+- **Result/evidence:** Unit regression passed; PostgreSQL pagination regression pending CI; earlier discovery tests passed CI
 - **Security:** Do not expose private evidence; eligibility checks
 - **Frontend:** No verified frontend integration
-- **Remaining/limitations:** No rating/ranking, authoritative location registry or full filtering; release requirement needs independent verification
+- **Remaining/limitations:** No rating/ranking, authoritative location registry or full filtering; offset scanning can be expensive; frontend integration incomplete
 
 ## [ ] Phase 2A: Quotations work
 

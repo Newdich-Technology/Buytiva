@@ -317,7 +317,7 @@
       "api": "/api/v1/addresses; GET /api/v1/addresses/preferred; PUT /api/v1/addresses/:addressId/preferred",
       "model": "prisma/models/address.prisma",
       "tests": "tests/integration/addresses/preferredAddress.test.ts",
-      "result": "CI 45668238690 passed PostgreSQL preferred address and customer display-name update regressions; mobile address client added, mobile CI pending",
+      "result": "CI 45668579947 passed PostgreSQL preference/profile regressions and Flutter address repository tests; UI screens and real client-server integration absent",
       "security": "Owner-scoped access and composite foreign key for preference ownership",
       "frontend": "Flutter address repository implemented; screens remain empty; web integration absent",
       "remaining": "Address screens and web client integration missing; broader security and client integration testing incomplete",
@@ -414,11 +414,11 @@
       "source": "src/repositories/procurerServices/procurerServices.repository.ts",
       "api": "GET /api/v1/procurers/discovery",
       "model": "prisma/models/deliveryZone.prisma",
-      "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "CI 45641130413 passed",
+      "tests": "tests/integration/procurerServices/discoveryPagination.test.ts",
+      "result": "Unit regression passed; PostgreSQL pagination regression pending CI; earlier discovery tests passed CI",
       "security": "Do not expose private evidence; eligibility checks",
       "frontend": "No verified frontend integration",
-      "remaining": "No rating/ranking, authoritative location registry or full filtering; release requirement needs independent verification",
+      "remaining": "No rating/ranking, authoritative location registry or full filtering; offset scanning can be expensive; frontend integration incomplete",
       "requirement": "Procurer discovery works"
     },
     {

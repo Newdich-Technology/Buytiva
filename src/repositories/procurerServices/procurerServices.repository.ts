@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { ProcurerServicesRepository } from '../../interfaces/procurerServices/procurerServicesRepository.interface.js';
-import type { DiscoveryInput, ProfileInput, ZoneInput, ZoneView, PricingPolicyInput, PricingPolicyView } from '../../models/procurerServices/procurerServices.model.js';
+import type { DiscoveryInput, ProfileInput, ZoneInput, ZoneView, PricingPolicyInput, PricingPolicyView, PublicProcurerView } from '../../models/procurerServices/procurerServices.model.js';
 import { conflictError, permissionDeniedError } from '../../errors/auths/auth.error.js';
 
 const eligible: Prisma.ProcurerProfileWhereInput = {
@@ -74,13 +74,31 @@ export class PrismaProcurerServicesRepository implements ProcurerServicesReposit
     });
   }
   async discover(input: DiscoveryInput) {
-    const zones = await this.prisma.procurerServiceZone.findMany({
-      where: { country: input.country, region: input.region, city: input.city, area: input.area, active: true,
-        profile: { ...eligible, acceptingRequests: true, publicName: { not: null }, pricingPolicies: { some: {} } } },
-      include: { profile: { include: { pricingPolicies: { orderBy: { version: 'desc' }, take: 1 }, application: { select: { accountInvitations: { where: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null }, select: { acceptedById: true } } } } } } }, orderBy: [{ profile: { publicName: 'asc' } }, { id: 'asc' }], skip: input.offset, take: input.limit
-    });
-    return zones.filter((row) => row.profile.application.accountInvitations.some((invitation) => invitation.acceptedById === row.profile.userId)).map((row) => ({ userId: row.profile.userId, publicName: row.profile.publicName!, biography: row.profile.biography,
-      zone: zoneView(row), pricing: policyView(row.profile.pricingPolicies[0]!) }));
+    // Invitation ownership must be checked before applying the public offset.
+    // Scan bounded batches under a stable snapshot rather than loading all zones.
+    return this.prisma.$transaction(async (tx) => {
+      const result: PublicProcurerView[] = [];
+      let scanned = 0, eligibleCount = 0;
+      const batchSize = 100;
+      while (result.length < input.limit) {
+        const zones = await tx.procurerServiceZone.findMany({
+          where: { country: input.country, region: input.region, city: input.city, area: input.area, active: true,
+            profile: { ...eligible, acceptingRequests: true, publicName: { not: null }, pricingPolicies: { some: {} } } },
+          include: { profile: { include: { pricingPolicies: { orderBy: { version: 'desc' }, take: 1 }, application: { select: { accountInvitations: { where: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null }, select: { acceptedById: true } } } } } } },
+          orderBy: [{ profile: { publicName: 'asc' } }, { id: 'asc' }], skip: scanned, take: batchSize
+        });
+        scanned += zones.length;
+        for (const row of zones) {
+          if (!row.profile.application.accountInvitations.some((invitation) => invitation.acceptedById === row.profile.userId)) continue;
+          if (eligibleCount++ < input.offset) continue;
+          result.push({ userId: row.profile.userId, publicName: row.profile.publicName!, biography: row.profile.biography,
+            zone: zoneView(row), pricing: policyView(row.profile.pricingPolicies[0]!) });
+          if (result.length === input.limit) break;
+        }
+        if (zones.length < batchSize) break;
+      }
+      return result;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
   }
 }
 function zoneView(row: { id: string; country: string; region: string; city: string; area: string; deliveryFeeMinor: bigint; currency: string; active: boolean }): ZoneView {
