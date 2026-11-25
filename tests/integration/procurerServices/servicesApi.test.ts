@@ -6,6 +6,7 @@ import { createBuytivaFastifyApplication } from '../../../src/app.js';
 import { createPrismaAuthRepository } from '../../../src/repositories/auths/auth.repository.js';
 import { PrismaProcurerApplicationRepository } from '../../../src/repositories/identity/procurerApplication.repository.js';
 import { PrismaStaffInvitationRepository } from '../../../src/repositories/administrators/staffInvitation.repository.js';
+import { PrismaOrderRepository } from '../../../src/repositories/orders/order.repository.js';
 import { PrismaQuotationRepository } from '../../../src/repositories/quotations/quotation.repository.js';
 import { PrismaShoppingRequestRepository } from '../../../src/repositories/shoppingRequests/shoppingRequest.repository.js';
 import { PrismaShoppingListRepository } from '../../../src/repositories/shoppingLists/shoppingList.repository.js';
@@ -29,11 +30,14 @@ const secret = 'test-secret-long-enough-for-authentication';
     prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl! }) });
     const config = { tokenSecret: secret, otpPepper: secret, encryptionKey: Buffer.alloc(32, 22), publicBaseUrl: 'https://example.test', secureCookies: true, passwordMinLength: 12, passwordMaxLength: 128 };
     const deps: AuthDependencies = { config, repository: createPrismaAuthRepository(prisma), identityRepository: new PrismaProcurerApplicationRepository(prisma), staffRepository: new PrismaStaffInvitationRepository(prisma), passwordHasher: new Argon2PasswordHasher(), emailProvider: new MemoryEmailProvider() };
-    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma), addressRepository: new PrismaAddressRepository(prisma), shoppingListRepository: new PrismaShoppingListRepository(prisma), shoppingRequestRepository: new PrismaShoppingRequestRepository(prisma), quotationRepository: new PrismaQuotationRepository(prisma) });
+    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma), addressRepository: new PrismaAddressRepository(prisma), shoppingListRepository: new PrismaShoppingListRepository(prisma), shoppingRequestRepository: new PrismaShoppingRequestRepository(prisma), quotationRepository: new PrismaQuotationRepository(prisma), orderRepository: new PrismaOrderRepository(prisma) });
     await app.ready();
   });
   afterAll(async () => {
     await app.close();
+    await prisma.procurementOrderHistory.deleteMany({ where: { order: { request: { customerId: { in: users } } } } });
+    await prisma.verifiedOrderPayment.deleteMany({ where: { order: { request: { customerId: { in: users } } } } });
+    await prisma.procurementOrder.deleteMany({ where: { request: { customerId: { in: users } } } });
     await prisma.quotation.deleteMany({ where: { request: { customerId: { in: users } } } });
     await prisma.shoppingRequest.deleteMany({ where: { customerId: { in: users } } });
     await prisma.shoppingList.deleteMany({ where: { customerId: { in: users } } });
@@ -149,6 +153,29 @@ const secret = 'test-secret-long-enough-for-authentication';
     expect((await prisma.quotation.findUniqueOrThrow({ where: { id: quoteId } })).status).toBe('ACCEPTED');
     expect((await prisma.shoppingList.findUniqueOrThrow({ where: { id: listId } })).awardedRequestId).toBe(requestId);
     expect((await app.inject({ method: 'POST', url: issueUrl, headers: procurer.headers, payload: { expectedRevision: 2, expiresAt: expiry } })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: '/api/v1/orders', headers: secondCustomer.headers, payload: { quotationId: quoteId } })).statusCode).toBe(404);
+    const orders = await Promise.all([1, 2].map(() => app.inject({ method: 'POST', url: '/api/v1/orders', headers: customer.headers, payload: { quotationId: quoteId } })));
+    expect(orders.map((response) => response.statusCode).sort()).toEqual([201, 409]);
+    const orderId = orders.find((response) => response.statusCode === 201)!.json<{ id: string }>().id;
+    const orderUrl = `/api/v1/orders/${orderId}`, workUrl = `/api/v1/procurer-services/me/orders/${orderId}`;
+    expect((await app.inject({ method: 'GET', url: orderUrl, headers: secondCustomer.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'GET', url: workUrl, headers: other.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'POST', url: `${workUrl}/start`, headers: procurer.headers })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: customer.headers })).statusCode).toBe(409);
+    // Isolated database fixture only: no public endpoint can claim a payment was verified.
+    const payment = await prisma.verifiedOrderPayment.create({ data: { orderId, provider: 'test-fixture', providerReference: randomUUID(), currency: 'NGN', amountMinor: 1n, verifiedAt: new Date() } });
+    expect((await app.inject({ method: 'POST', url: `${workUrl}/start`, headers: procurer.headers })).statusCode).toBe(409);
+    await prisma.verifiedOrderPayment.update({ where: { id: payment.id }, data: { amountMinor: 4650000n } });
+    expect((await app.inject({ method: 'POST', url: `${workUrl}/start`, headers: procurer.headers })).json()).toMatchObject({ status: 'IN_PROGRESS' });
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/cancel`, headers: customer.headers })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: customer.headers })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: `${workUrl}/report-delivery`, headers: procurer.headers })).json()).toMatchObject({ status: 'DELIVERY_REPORTED' });
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: procurer.headers })).statusCode).toBe(403);
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: customer.headers })).json()).toMatchObject({ status: 'COMPLETED' });
+    expect((await app.inject({ method: 'POST', url: `${orderUrl}/confirm-completion`, headers: customer.headers })).statusCode).toBe(409);
+    expect((await prisma.procurementOrderHistory.findMany({ where: { orderId }, orderBy: { createdAt: 'asc' } })).map((entry) => entry.toStatus)).toEqual(['AWAITING_PAYMENT', 'IN_PROGRESS', 'DELIVERY_REPORTED', 'COMPLETED']);
+
 
 
 

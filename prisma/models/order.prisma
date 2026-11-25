@@ -1,0 +1,38 @@
+enum ProcurementOrderStatus {
+  AWAITING_PAYMENT
+  IN_PROGRESS
+  DELIVERY_REPORTED
+  COMPLETED
+  DISPUTED
+  CANCELLED
+}
+
+model ProcurementOrder {
+  id          String                 @id @default(uuid()) @db.Uuid
+  quotationId String                 @unique @db.Uuid
+  quotation   Quotation              @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  requestId   String                 @unique @db.Uuid
+  request     ShoppingRequest        @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  status      ProcurementOrderStatus @default(AWAITING_PAYMENT)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  payment     VerifiedOrderPayment?
+  history     ProcurementOrderHistory[]
+
+  @@index([status, createdAt])
+  @@map("procurement_orders")
+}
+
+model ProcurementOrderHistory {
+  id         String                 @id @default(uuid()) @db.Uuid
+  orderId    String                 @db.Uuid
+  order      ProcurementOrder       @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  actorId    String                 @db.Uuid
+  actor      User                   @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  fromStatus ProcurementOrderStatus?
+  toStatus   ProcurementOrderStatus
+  createdAt  DateTime               @default(now())
+
+  @@index([orderId, createdAt, id])
+  @@map("procurement_order_history")
+}
