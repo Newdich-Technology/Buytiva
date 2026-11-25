@@ -11,6 +11,11 @@ const eligible: Prisma.ProcurerProfileWhereInput = {
     accountInvitations: { some: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null, acceptedById: { not: null } } } }
 };
 
+function eligibleOwner(userId: string): Prisma.ProcurerProfileWhereInput {
+  return { ...eligible, application: { status: 'APPROVED', emailVerifiedAt: { not: null }, identityVerifiedAt: { not: null }, complianceVerifiedAt: { not: null },
+    accountInvitations: { some: { kind: 'PROCURER', consumedAt: { not: null }, revokedAt: null, acceptedById: userId } } } };
+}
+
 export class PrismaProcurerServicesRepository implements ProcurerServicesRepository {
   constructor(private readonly prisma: PrismaClient) {}
   async getOwn(userId: string) {
@@ -19,13 +24,13 @@ export class PrismaProcurerServicesRepository implements ProcurerServicesReposit
       acceptingRequests: row.acceptingRequests, zones: row.serviceZones.map(zoneView) };
   }
   async updateOwn(userId: string, input: ProfileInput) {
-    const changed = await this.prisma.procurerProfile.updateMany({ where: { userId, ...eligible }, data: input });
+    const changed = await this.prisma.procurerProfile.updateMany({ where: { userId, ...eligibleOwner(userId) }, data: input });
     return changed.count ? this.getOwn(userId) : null;
   }
   async createZone(userId: string, input: ZoneInput) {
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const lock = await tx.procurerProfile.updateMany({ where: { userId, ...eligible }, data: { updatedAt: new Date() } });
+        const lock = await tx.procurerProfile.updateMany({ where: { userId, ...eligibleOwner(userId) }, data: { updatedAt: new Date() } });
         if (!lock.count) return null;
         const profile = await tx.procurerProfile.findUniqueOrThrow({ where: { userId }, select: { id: true } });
         return zoneView(await tx.procurerServiceZone.create({ data: { ...input, deliveryFeeMinor: BigInt(input.deliveryFeeMinor), profileId: profile.id } }));
@@ -35,7 +40,7 @@ export class PrismaProcurerServicesRepository implements ProcurerServicesReposit
   async updateZone(userId: string, zoneId: string, input: ZoneInput) {
     try {
       return await this.prisma.$transaction(async (tx) => {
-        const lock = await tx.procurerProfile.updateMany({ where: { userId, ...eligible }, data: { updatedAt: new Date() } });
+        const lock = await tx.procurerProfile.updateMany({ where: { userId, ...eligibleOwner(userId) }, data: { updatedAt: new Date() } });
         if (!lock.count) return null;
         const updated = await tx.procurerServiceZone.updateMany({ where: { id: zoneId, profile: { userId } }, data: { ...input, deliveryFeeMinor: BigInt(input.deliveryFeeMinor) } });
         if (!updated.count) return null;

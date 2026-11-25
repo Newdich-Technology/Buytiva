@@ -80,6 +80,7 @@ const secret = 'test-secret-long-enough-for-authentication';
     await prisma.procurerApplication.update({ where: { id: application.id }, data: { complianceVerifiedAt: new Date() } });
     await prisma.accountInvitation.updateMany({ where: { applicationId: application.id }, data: { acceptedById: other.id } });
     expect((await discover()).json()).toEqual([]);
+    expect((await app.inject({ method: 'PUT', url: '/api/v1/procurer-services/me', headers: procurer.headers, payload: profile })).statusCode).toBe(403);
     await prisma.accountInvitation.updateMany({ where: { applicationId: application.id }, data: { acceptedById: procurer.id } });
     await prisma.user.update({ where: { id: procurer.id }, data: { status: 'SUSPENDED' } });
     expect((await discover()).json()).toEqual([]);
