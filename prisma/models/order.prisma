@@ -52,10 +52,37 @@ model OrderReview {
   rating    Int
   version   Int              @default(1)
   moderationStatus ReviewModerationStatus @default(PENDING)
+  reports   ReviewReport[]
   comment   String?          @db.VarChar(2000)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 
   @@index([moderationStatus, createdAt, id])
   @@map("order_reviews")
+}
+
+// Reports are private: one report per customer and reviewed version.
+enum ReviewReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model ReviewReport {
+  id            String             @id @default(uuid()) @db.Uuid
+  reviewId      String             @db.Uuid
+  review        OrderReview        @relation(fields: [reviewId], references: [id], onDelete: Restrict)
+  reporterId    String             @db.Uuid
+  reporter      User               @relation(fields: [reporterId], references: [id], onDelete: Restrict)
+  reviewVersion Int
+  ratingSnapshot Int
+  commentSnapshot String?          @db.VarChar(2000)
+  reason        String             @db.VarChar(1000)
+  status        ReviewReportStatus @default(OPEN)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([reviewId, reporterId, reviewVersion])
+  @@index([status, createdAt, id])
+  @@map("review_reports")
 }

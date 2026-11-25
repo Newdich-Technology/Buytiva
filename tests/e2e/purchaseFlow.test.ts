@@ -183,12 +183,35 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     expect((await post(moderate, decision, reviewerToken)).statusCode).toBe(409);
     expect((await post(moderate, { ...decision, expectedVersion: 2 }, reviewerToken)).statusCode).toBe(200);
     expect((await summary()).json()).toMatchObject({ averageRating: 3, reviewCount: 1, distribution: { three: 1 } });
+    const reportBody = { expectedVersion: 2, reason: '<script>alert(1)</script> privacy issue' };
+    const reportPath = `${customerOrder}/review/reports`;
+    expect((await post(`/orders/${randomUUID()}/review/reports`, reportBody, customerToken)).statusCode).toBe(404);
+    expect((await post(reportPath, { ...reportBody, expectedVersion: 1 }, customerToken)).statusCode).toBe(409);
+    expect((await post(reportPath, reportBody, procurerToken)).statusCode).toBe(403);
+    const reports = await Promise.all([post(reportPath, reportBody, customerToken), post(reportPath, reportBody, customerToken)]);
+    expect(reports.map((r) => r.statusCode).sort()).toEqual([201, 409]);
+    const reported = reports.find((r) => r.statusCode === 201)!.json<{ id: string; status: string }>();
+    expect(reported.status).toBe('OPEN');
+    expect((await summary()).json()).toMatchObject({ averageRating: 3, reviewCount: 1 });
+    const reportDecision = `/admin/review-reports/${reported.id}/decision`;
+    const reportAction = { targetStatus: 'RESOLVED', reason: 'Verified report and handled request.' };
+    expect((await post(reportDecision, reportAction, customerToken)).statusCode).toBe(404);
+    const reportList = await app.inject({ method: 'GET', url: '/api/v1/admin/review-reports', headers: { authorization: `Bearer ${reviewerToken}` } });
+    expect(reportList.json()).toMatchObject([{ id: reported.id, reason: reportBody.reason, status: 'OPEN', reviewVersion: 2, ratingSnapshot: 3, commentSnapshot: 'Updated review.' }]);
+    expect(reportList.body).not.toContain(customerEmail);
+    await prisma.authSession.update({ where: { id: reviewerSession.id }, data: { mfaVerifiedAt: new Date(Date.now() - 11 * 60000) } });
+    expect((await post(reportDecision, reportAction, reviewerToken)).statusCode).toBe(403);
+    await prisma.authSession.update({ where: { id: reviewerSession.id }, data: { mfaVerifiedAt: new Date() } });
+    const decisions = await Promise.all([post(reportDecision, reportAction, reviewerToken), post(reportDecision, reportAction, reviewerToken)]);
+    expect(decisions.map((r) => r.statusCode).sort()).toEqual([200, 409]);
+    expect(await prisma.auditLog.count({ where: { actorId: reviewerId, action: 'REVIEW_REPORT_DECIDED', resourceId: reported.id } })).toBe(1);
+    expect((await summary()).json()).toMatchObject({ averageRating: 3, reviewCount: 1 });
   });
 });
 
 // Global cleanup is permitted only after the dedicated-database guard in beforeAll.
 async function clean(prisma: PrismaClient) {
-  await prisma.orderReview.deleteMany(); await prisma.procurementOrderHistory.deleteMany(); await prisma.verifiedOrderPayment.deleteMany();
+  await prisma.reviewReport.deleteMany(); await prisma.orderReview.deleteMany(); await prisma.procurementOrderHistory.deleteMany(); await prisma.verifiedOrderPayment.deleteMany();
   await prisma.procurementOrder.deleteMany(); await prisma.quotation.deleteMany(); await prisma.shoppingRequest.deleteMany();
   await prisma.shoppingList.deleteMany(); await prisma.customerAddress.deleteMany(); await prisma.procurerPricingPolicy.deleteMany(); await prisma.procurerServiceZone.deleteMany();
   await prisma.refreshToken.deleteMany(); await prisma.authSession.deleteMany(); await prisma.emailOtpChallenge.deleteMany(); await prisma.loginChallenge.deleteMany();

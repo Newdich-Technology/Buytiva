@@ -1,8 +1,9 @@
+import { createReviewReport, listReviewReports, decideReviewReport } from './reviewReport.repository.js';
 import { summarizeRatings } from '../../utils/reviews/ratingSummary.js';
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { OrderReview } from '../../generated/prisma/client.js';
 import type { ReviewRepository } from '../../interfaces/reviews/reviewRepository.interface.js';
-import type { ReviewInput, ReviewDecision, RatingSummary } from '../../models/reviews/review.model.js';
+import type { ReviewInput, ReviewDecision, RatingSummary, ReviewReportDecision } from '../../models/reviews/review.model.js';
 import { conflictError } from '../../errors/auths/auth.error.js';
 import { AppError } from '../../errors/app.error.js';
 import { ErrorCode } from '../../enums/errorCode.enum.js';
@@ -14,6 +15,9 @@ function view(row: OrderReview) {
 const unavailable = () => new AppError(ErrorCode.NOT_FOUND, 404, 'Order or review not found.');
 export class PrismaReviewRepository implements ReviewRepository {
   constructor(private readonly prisma: PrismaClient) {}
+  report(customerId: string, orderId: string, version: number, reason: string) { return createReviewReport(this.prisma, customerId, orderId, version, reason); }
+  listReports(actorId: string, offset: number, limit: number) { return listReviewReports(this.prisma, actorId, offset, limit); }
+  decideReport(actorId: string, reportId: string, decision: ReviewReportDecision) { return decideReviewReport(this.prisma, actorId, reportId, decision); }
   async ratingSummary(procurerId: string): Promise<RatingSummary> {
     return this.prisma.$transaction(async (tx) => {
       const distribution = { one: 0, two: 0, three: 0, four: 0, five: 0 };

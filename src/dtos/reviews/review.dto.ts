@@ -17,3 +17,8 @@ export const moderationResponse = Type.Object({ ...reviewResponse.properties, mo
 export const ratingParams = Type.Object({ procurerId: uuid });
 export const ratingSummaryResponse = Type.Object({ averageRating: Type.Union([Type.Number({ minimum: 1, maximum: 5 }), Type.Null()]), reviewCount: Type.Integer({ minimum: 0 }),
   distribution: Type.Object({ one: Type.Integer({ minimum: 0 }), two: Type.Integer({ minimum: 0 }), three: Type.Integer({ minimum: 0 }), four: Type.Integer({ minimum: 0 }), five: Type.Integer({ minimum: 0 }) }) });
+
+export const reviewReportBody = Type.Object({ expectedVersion: Type.Integer({ minimum: 1 }), reason: Type.String({ minLength: 8, maxLength: 1000 }) }, { additionalProperties: false });
+export const reviewReportParams = Type.Object({ reportId: uuid });
+export const reviewReportDecision = Type.Object({ targetStatus: Type.Union([Type.Literal('RESOLVED'), Type.Literal('DISMISSED')]), reason: Type.String({ minLength: 8, maxLength: 1000 }) }, { additionalProperties: false });
+export const reviewReportResponse = Type.Object({ id: uuid, reviewId: uuid, reviewVersion: Type.Integer({ minimum: 1 }), ratingSnapshot: Type.Integer({ minimum: 1, maximum: 5 }), commentSnapshot: Type.Union([Type.String(), Type.Null()]), reason: Type.String(), status: Type.Union([Type.Literal('OPEN'), Type.Literal('RESOLVED'), Type.Literal('DISMISSED')]), createdAt: Type.String({ format: 'date-time' }), updatedAt: Type.String({ format: 'date-time' }) });

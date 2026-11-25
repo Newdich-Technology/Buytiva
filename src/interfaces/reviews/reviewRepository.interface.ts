@@ -1,5 +1,8 @@
-import type { ReviewInput, ReviewView, ModerationView, ReviewDecision, RatingSummary } from '../../models/reviews/review.model.js';
+import type { ReviewInput, ReviewView, ModerationView, ReviewDecision, RatingSummary, ReviewReportView, ReviewReportDecision } from '../../models/reviews/review.model.js';
 export interface ReviewRepository {
+  report(customerId: string, orderId: string, version: number, reason: string): Promise<ReviewReportView>;
+  listReports(actorId: string, offset: number, limit: number): Promise<ReviewReportView[]>;
+  decideReport(actorId: string, reportId: string, decision: ReviewReportDecision): Promise<ReviewReportView>;
   ratingSummary(procurerId: string): Promise<RatingSummary>;
   listForModeration(actorId: string, offset: number, limit: number): Promise<ModerationView[]>;
   moderate(actorId: string, reviewId: string, decision: ReviewDecision): Promise<ModerationView>;
