@@ -9,7 +9,7 @@ import { REVIEW_CREATE_RATE_LIMIT_PER_MINUTE } from '../../constants/reviews/rev
 import { REVIEW_MODERATION_PERMISSION } from '../../constants/administration/permission.constants.js';
 import { UserRole } from '../../enums/userRole.enum.js';
 import { ReviewController } from '../../controllers/reviews/review.controller.js';
-import { reviewBody, reviewParams, reviewResponse, moderationBody, moderationPage, moderationParams, moderationResponse } from '../../dtos/reviews/review.dto.js';
+import { reviewBody, reviewParams, reviewResponse, moderationBody, moderationPage, moderationParams, moderationResponse, ratingParams, ratingSummaryResponse } from '../../dtos/reviews/review.dto.js';
 interface Options { authDependencies: AuthDependencies; reviewRepository: ReviewRepository }
 export const reviewRoute: FastifyPluginAsync<Options> = async (app, options) => {
   const api = app.withTypeProvider<TypeBoxTypeProvider>();
@@ -18,6 +18,8 @@ export const reviewRoute: FastifyPluginAsync<Options> = async (app, options) => 
   const common = { tags: ['reviews'], security: [{ bearerAuth: [] }] };
   const staff = [createAuthenticateMiddleware(options.authDependencies), requireStaffPermission(REVIEW_MODERATION_PERMISSION)];
   const recentMfa = async (request: FastifyRequest) => requireRecentMfa(request);
+  api.get('/admin/procurers/:procurerId/rating-summary', { preHandler: staff, schema: { ...common, params: ratingParams, response: { 200: ratingSummaryResponse }, operationId: 'getInternalRatingSummary' } },
+    async (request) => controller.ratingSummary(request.params.procurerId));
   api.get('/admin/reviews', { preHandler: staff, schema: { ...common, querystring: moderationPage, response: { 200: Type.Array(moderationResponse) }, operationId: 'listReviewsForModeration' } },
     async (request) => controller.listForModeration(getAuthenticatedPrincipal(request).userId, request.query.offset ?? 0, request.query.limit ?? 20));
   api.post('/admin/reviews/:reviewId/moderate', { preHandler: [...staff, recentMfa], schema: { ...common, params: moderationParams, body: moderationBody, response: { 200: moderationResponse }, operationId: 'moderateReview' } },

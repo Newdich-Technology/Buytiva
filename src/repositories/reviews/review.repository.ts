@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { OrderReview } from '../../generated/prisma/client.js';
 import type { ReviewRepository } from '../../interfaces/reviews/reviewRepository.interface.js';
-import type { ReviewInput, ReviewDecision } from '../../models/reviews/review.model.js';
+import type { ReviewInput, ReviewDecision, RatingSummary } from '../../models/reviews/review.model.js';
 import { conflictError } from '../../errors/auths/auth.error.js';
 import { AppError } from '../../errors/app.error.js';
 import { ErrorCode } from '../../enums/errorCode.enum.js';
@@ -13,6 +13,30 @@ function view(row: OrderReview) {
 const unavailable = () => new AppError(ErrorCode.NOT_FOUND, 404, 'Order or review not found.');
 export class PrismaReviewRepository implements ReviewRepository {
   constructor(private readonly prisma: PrismaClient) {}
+  async ratingSummary(procurerId: string): Promise<RatingSummary> {
+    return this.prisma.$transaction(async (tx) => {
+      const distribution = { one: 0, two: 0, three: 0, four: 0, five: 0 };
+      const keys = ['one', 'two', 'three', 'four', 'five'] as const;
+      let count = 0, sum = 0, offset = 0;
+      const now = new Date();
+      while (true) {
+        const reviews = await tx.orderReview.findMany({ where: { moderationStatus: 'APPROVED', order: { status: 'COMPLETED', request: { procurerId } } },
+          include: { order: { include: { request: true, quotation: true, payment: true, history: { where: { toStatus: 'COMPLETED' } } } } },
+          orderBy: { id: 'asc' }, skip: offset, take: 100 });
+        offset += reviews.length;
+        for (const review of reviews) {
+          const order = review.order, payment = order.payment;
+          if (review.rating < 1 || review.rating > 5 || order.request.customerId === procurerId || !payment || payment.reversedAt || payment.verifiedAt > now ||
+              payment.currency !== order.quotation.currency || payment.amountMinor !== order.quotation.totalMinor ||
+              !order.history.some((entry) => entry.actorId === order.request.customerId)) continue;
+          distribution[keys[review.rating - 1]!]++; count++; sum += review.rating;
+        }
+        if (reviews.length < 100) break;
+      }
+      // Half-up to one decimal; no editable denormalized average.
+      return { averageRating: count ? Math.floor((sum * 20 + count) / (2 * count)) / 10 : null, reviewCount: count, distribution };
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
+  }
   async listForModeration(actorId: string, offset: number, limit: number) {
     const rows = await this.prisma.orderReview.findMany({ where: { order: { request: { customerId: { not: actorId }, procurerId: { not: actorId } } } },
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], skip: offset, take: limit });

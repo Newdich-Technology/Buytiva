@@ -150,6 +150,10 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     await prisma.userPermissionGrant.create({ data: { userId: reviewerId, permission: 'reviews.moderate' } });
     const moderationList = await app.inject({ method: 'GET', url: '/api/v1/admin/reviews?limit=1', headers: { authorization: `Bearer ${reviewerToken}` } });
     expect(moderationList.json()).toMatchObject([{ id: reviewId, moderationStatus: 'PENDING' }]);
+    const summaryPath = `/api/v1/admin/procurers/${procurer.id}/rating-summary`;
+    const summary = () => app.inject({ method: 'GET', url: summaryPath, headers: { authorization: `Bearer ${reviewerToken}` } });
+    expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0, distribution: { five: 0 } });
+    expect((await app.inject({ method: 'GET', url: summaryPath, headers: customerHeaders })).statusCode).toBe(200);
     await prisma.authSession.update({ where: { id: reviewerSession.id }, data: { mfaVerifiedAt: new Date(Date.now() - 11 * 60000) } });
     expect((await post(moderate, decision, reviewerToken)).statusCode).toBe(403);
     await prisma.authSession.update({ where: { id: reviewerSession.id }, data: { mfaVerifiedAt: new Date() } });
@@ -157,8 +161,14 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     expect(approvals.map((response) => response.statusCode).sort()).toEqual([200, 409]);
     expect((await prisma.orderReview.findUniqueOrThrow({ where: { id: reviewId } })).moderationStatus).toBe('APPROVED');
     expect(await prisma.auditLog.count({ where: { actorId: reviewerId, action: 'REVIEW_MODERATED', resourceId: reviewId } })).toBe(1);
+    expect((await summary()).json()).toMatchObject({ averageRating: 5, reviewCount: 1, distribution: { five: 1 } });
     expect((await post(moderate, { expectedStatus: 'APPROVED', targetStatus: 'HIDDEN', reason: 'Policy violation identified.' }, reviewerToken)).statusCode).toBe(200);
+    expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0, distribution: { five: 0 } });
     expect((await post(moderate, { expectedStatus: 'HIDDEN', targetStatus: 'APPROVED', reason: 'Reinstated after review.' }, reviewerToken)).statusCode).toBe(200);
+    await prisma.verifiedOrderPayment.update({ where: { orderId }, data: { reversedAt: new Date() } });
+    expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0, distribution: { five: 0 } });
+    await prisma.verifiedOrderPayment.update({ where: { orderId }, data: { reversedAt: null } });
+    expect((await summary()).json()).toMatchObject({ averageRating: 5, reviewCount: 1, distribution: { five: 1 } });
     expect(await prisma.auditLog.count({ where: { action: 'REVIEW_MODERATED', resourceId: reviewId } })).toBe(3);
   });
 });
