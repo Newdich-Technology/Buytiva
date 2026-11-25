@@ -1,3 +1,4 @@
+import { summarizeRatings } from '../../utils/reviews/ratingSummary.js';
 import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { OrderReview } from '../../generated/prisma/client.js';
 import type { ReviewRepository } from '../../interfaces/reviews/reviewRepository.interface.js';
@@ -17,24 +18,23 @@ export class PrismaReviewRepository implements ReviewRepository {
     return this.prisma.$transaction(async (tx) => {
       const distribution = { one: 0, two: 0, three: 0, four: 0, five: 0 };
       const keys = ['one', 'two', 'three', 'four', 'five'] as const;
-      let count = 0, sum = 0, offset = 0;
+      let cursor: string | undefined;
       const now = new Date();
       while (true) {
         const reviews = await tx.orderReview.findMany({ where: { moderationStatus: 'APPROVED', order: { status: 'COMPLETED', request: { procurerId } } },
           include: { order: { include: { request: true, quotation: true, payment: true, history: { where: { toStatus: 'COMPLETED' } } } } },
-          orderBy: { id: 'asc' }, skip: offset, take: 100 });
-        offset += reviews.length;
+          orderBy: { id: 'asc' }, ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}), take: 100 });
+        cursor = reviews.at(-1)?.id;
         for (const review of reviews) {
           const order = review.order, payment = order.payment;
           if (review.rating < 1 || review.rating > 5 || order.request.customerId === procurerId || !payment || payment.reversedAt || payment.verifiedAt > now ||
               payment.currency !== order.quotation.currency || payment.amountMinor !== order.quotation.totalMinor ||
               !order.history.some((entry) => entry.actorId === order.request.customerId)) continue;
-          distribution[keys[review.rating - 1]!]++; count++; sum += review.rating;
+          distribution[keys[review.rating - 1]!]++;
         }
         if (reviews.length < 100) break;
       }
-      // Half-up to one decimal; no editable denormalized average.
-      return { averageRating: count ? Math.floor((sum * 20 + count) / (2 * count)) / 10 : null, reviewCount: count, distribution };
+      return summarizeRatings(distribution);
     }, { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead });
   }
   async listForModeration(actorId: string, offset: number, limit: number) {
@@ -74,6 +74,8 @@ export class PrismaReviewRepository implements ReviewRepository {
         const changed = await tx.orderReview.updateMany({ where: { id: order.review.id, version: expectedVersion, moderationStatus: { in: ['PENDING', 'APPROVED'] } },
           data: { rating: input.rating, comment: input.comment, version: { increment: 1 }, moderationStatus: 'PENDING' } });
         if (!changed.count) throw conflictError('Review has changed; retry.');
+        await tx.auditLog.create({ data: { actorId: customerId, action: 'REVIEW_EDITED', resourceType: 'ORDER_REVIEW', resourceId: order.review.id,
+          metadata: { fromVersion: expectedVersion, toVersion: expectedVersion + 1, fromStatus: order.review.moderationStatus, toStatus: 'PENDING' } } });
         return view(await tx.orderReview.findUniqueOrThrow({ where: { id: order.review.id } }));
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {

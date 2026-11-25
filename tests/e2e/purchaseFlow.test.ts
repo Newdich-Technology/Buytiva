@@ -179,6 +179,7 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     expect(edits.map((response) => response.statusCode).sort()).toEqual([200, 409]);
     expect((await prisma.orderReview.findUniqueOrThrow({ where: { id: reviewId } }))).toMatchObject({ version: 2, moderationStatus: 'PENDING', rating: 3 });
     expect((await summary()).json()).toMatchObject({ averageRating: null, reviewCount: 0 });
+    expect(await prisma.auditLog.count({ where: { actorId: customer.id, action: 'REVIEW_EDITED', resourceId: reviewId } })).toBe(1);
     expect((await post(moderate, decision, reviewerToken)).statusCode).toBe(409);
     expect((await post(moderate, { ...decision, expectedVersion: 2 }, reviewerToken)).statusCode).toBe(200);
     expect((await summary()).json()).toMatchObject({ averageRating: 3, reviewCount: 1, distribution: { three: 1 } });
