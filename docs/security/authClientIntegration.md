@@ -1,0 +1,14 @@
+# Authentication client integration checklist
+
+These are integration requirements, not a claim that the clients already meet them. Confirm route contracts using the generated `/docs/json` OpenAPI document on a configured instance; route registration depends on authentication dependencies being provided.
+
+- Treat the server as authoritative for verified account state, procurer activation, staff permissions and recent MFA. Never grant privileges from cached client roles.
+- Handle registration and password-recovery acceptance generically; do not reveal whether an account exists. Do not enable signed-in UI until verification and login succeed.
+- Handle the login result's session or MFA challenge branch explicitly. Complete MFA enrollment/verification before presenting privileged operations, and handle mandatory password-change and recent-MFA errors without bypasses.
+- Store access and refresh credentials using an appropriate threat model. On mobile, use platform-backed secure storage, never logs or preferences. Browser clients must not persist refresh tokens in JavaScript-readable local storage; this API currently accepts bearer and refresh tokens in request bodies rather than providing a hardened HttpOnly cookie/BFF flow. A reviewed browser session architecture is required before production integration.
+- Refresh requests for one session must be serialized: refresh-token rotation and replay detection can revoke the entire session when the same token is submitted concurrently. Replace the credential atomically after success; sign in again after an invalid/revoked session. Do not retry an old token after an ambiguous network failure without a recovery policy.
+- On logout, logout-all, password reset/change, suspension or session revocation, discard local credentials and handle the server rejecting earlier access tokens. Show generic session-expired messaging.
+- One-time tokens and OTPs must not enter analytics, client logs, crash reports or referrer headers. Password-reset/invitation links need a deliberate referrer policy and URL cleanup; verify the deployed frontend and proxies do not log token-bearing URLs.
+- Render server errors without exposing internal details. Validate forms for usability but rely on server validation. Honor rate-limit and expiry responses; do not leak account existence through UI behavior.
+- Verify production HTTPS, CORS allowlist, browser origin behavior, no unexpected credentialed cross-origin access and secure storage on real devices. If cookies are introduced, add CSRF protection, Secure, HttpOnly and appropriate SameSite flags before relying on them.
+- Test all four role journeys against a disposable backend, including disabled and suspended states, invitation expiry, MFA enrollment, logout and session revocation. Never use production credentials in test automation.
