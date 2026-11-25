@@ -7,6 +7,11 @@ import { UserStatus } from '../../enums/userStatus.enum.js';
 export class PrismaAuthUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
+  async updateCustomerDisplayName(userId: string, displayName: string): Promise<boolean> {
+    const result = await this.prisma.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null }, roleAssignments: { some: { role: 'CUSTOMER', revokedAt: null } } }, data: { displayName } });
+    return result.count === 1;
+  }
+
   async registerPendingCustomer(input: PendingCustomerInput): Promise<boolean> {
     try {
       await this.prisma.$transaction(async (tx) => {

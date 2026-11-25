@@ -11,3 +11,5 @@ CI 45665163104 at `9c10cb4` passed disposable PostgreSQL for recent MFA and orde
 CI 45666093815 at `3c73360` passed private-review PostgreSQL creation, duplicate concurrency and ownership tests using isolated payment data. Additional reversed-payment and currency-mismatch review cases were added afterwards and await CI.
 
 CI 45666580444 at `41bb5be` passed additional PostgreSQL review rejection cases for reversed payments and mismatched currency; all CodeQL checks passed. This is not a complete review security suite.
+
+CI 45667707752 at `41136c9` passed disposable PostgreSQL preferred-address ownership, composite foreign-key rejection, concurrent selection and cascade-delete regressions. The new customer profile update tests await CI.

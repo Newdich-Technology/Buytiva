@@ -38,6 +38,20 @@ const secret = 'isolated-address-test-secret-at-least-32-characters';
     const token = signAccessToken({ sub: id, sid: session.id, iss: AUTH_TOKEN_ISSUER, iat: now, exp: now + 3600, auth_time: now, amr: ['pwd'] }, secret);
     return { id, headers: { authorization: `Bearer ${token}` } };
   }
+  it('updates only the authenticated active customer profile', async () => {
+    const a = await customer(), b = await customer();
+    expect((await app.inject({ method: 'PATCH', url: '/api/v1/me', payload: { displayName: 'No Auth' } })).statusCode).toBe(401);
+    expect((await app.inject({ method: 'PATCH', url: '/api/v1/me', headers: a.headers, payload: { displayName: '  New Name  ', roles: ['SUPER_ADMIN'] } })).statusCode).toBe(400);
+    expect((await app.inject({ method: 'PATCH', url: '/api/v1/me', headers: a.headers, payload: { displayName: '  ' } })).statusCode).toBe(400);
+    const updated = await app.inject({ method: 'PATCH', url: '/api/v1/me', headers: a.headers, payload: { displayName: '  New Name  ' } });
+    expect(updated.json()).toEqual({ displayName: 'New Name' });
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: a.id } })).displayName).toBe('New Name');
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: b.id } })).displayName).toBeNull();
+    expect((await app.inject({ method: 'GET', url: '/api/v1/me', headers: a.headers })).json()).toMatchObject({ displayName: 'New Name' });
+    await prisma.roleAssignment.updateMany({ where: { userId: a.id }, data: { revokedAt: new Date() } });
+    expect((await app.inject({ method: 'PATCH', url: '/api/v1/me', headers: a.headers, payload: { displayName: 'Other Name' } })).statusCode).toBe(403);
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: a.id } })).displayName).toBe('New Name');
+  });
   it('enforces ownership, atomic selection and clears a deleted preference', async () => {
     const a = await customer(), b = await customer();
     const body = { label: 'Home', line1: '123 Example Street', line2: null, country: 'NG', region: 'FCT', city: 'Abuja', area: 'Wuse' };

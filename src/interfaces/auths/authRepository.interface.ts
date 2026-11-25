@@ -23,6 +23,7 @@ export interface CreateOtpInput {
 }
 
 export interface AuthRepository {
+  updateCustomerDisplayName(userId: string, displayName: string): Promise<boolean>;
   registerPendingCustomer(input: PendingCustomerInput): Promise<boolean>;
   findAccountByEmail(emailNormalized: string): Promise<AuthAccount | null>;
   findAccountById(userId: string): Promise<AuthAccount | null>;
