@@ -1,5 +1,6 @@
 model ProcurerPricingPolicy {
   id                    String          @id @default(uuid()) @db.Uuid
+  quotations            Quotation[]
   profileId             String          @db.Uuid
   profile               ProcurerProfile @relation(fields: [profileId], references: [id], onDelete: Restrict)
   version               Int

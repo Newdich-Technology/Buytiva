@@ -12,6 +12,7 @@ model ShoppingList {
   notes       String?            @db.VarChar(2000)
   status      ShoppingListStatus @default(DRAFT)
   revision    Int                @default(0)
+  awardedRequestId String?        @unique @db.Uuid
   submittedAt DateTime?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt

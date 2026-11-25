@@ -49,7 +49,7 @@ export class PrismaShoppingRequestRepository implements ShoppingRequestRepositor
   }
   async cancel(customerId: string, id: string) {
     return this.prisma.$transaction(async (tx) => {
-      const changed = await tx.shoppingRequest.updateMany({ where: { id, customerId, status: 'REQUESTED' }, data: { status: 'CANCELLED' } });
+      const changed = await tx.shoppingRequest.updateMany({ where: { id, customerId, status: { in: ['REQUESTED', 'QUOTED'] } }, data: { status: 'CANCELLED' } });
       return changed.count ? view(await tx.shoppingRequest.findUniqueOrThrow({ where: { id } })) : null;
     });
   }

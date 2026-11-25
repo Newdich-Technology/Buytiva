@@ -6,6 +6,7 @@ import { createBuytivaFastifyApplication } from '../../../src/app.js';
 import { createPrismaAuthRepository } from '../../../src/repositories/auths/auth.repository.js';
 import { PrismaProcurerApplicationRepository } from '../../../src/repositories/identity/procurerApplication.repository.js';
 import { PrismaStaffInvitationRepository } from '../../../src/repositories/administrators/staffInvitation.repository.js';
+import { PrismaQuotationRepository } from '../../../src/repositories/quotations/quotation.repository.js';
 import { PrismaShoppingRequestRepository } from '../../../src/repositories/shoppingRequests/shoppingRequest.repository.js';
 import { PrismaShoppingListRepository } from '../../../src/repositories/shoppingLists/shoppingList.repository.js';
 import { PrismaAddressRepository } from '../../../src/repositories/addresses/address.repository.js';
@@ -23,14 +24,17 @@ const secret = 'test-secret-long-enough-for-authentication';
   let app: ReturnType<typeof createBuytivaFastifyApplication>;
   const users: string[] = [], applications: string[] = [];
   beforeAll(async () => {
+    process.env.PLATFORM_COMMISSION_POLICY_VERSION = 'test-1';
+    process.env.PLATFORM_COMMISSION_BASIS_POINTS = '1000';
     prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: databaseUrl! }) });
     const config = { tokenSecret: secret, otpPepper: secret, encryptionKey: Buffer.alloc(32, 22), publicBaseUrl: 'https://example.test', secureCookies: true, passwordMinLength: 12, passwordMaxLength: 128 };
     const deps: AuthDependencies = { config, repository: createPrismaAuthRepository(prisma), identityRepository: new PrismaProcurerApplicationRepository(prisma), staffRepository: new PrismaStaffInvitationRepository(prisma), passwordHasher: new Argon2PasswordHasher(), emailProvider: new MemoryEmailProvider() };
-    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma), addressRepository: new PrismaAddressRepository(prisma), shoppingListRepository: new PrismaShoppingListRepository(prisma), shoppingRequestRepository: new PrismaShoppingRequestRepository(prisma) });
+    app = createBuytivaFastifyApplication({ authDependencies: deps, procurerServicesRepository: new PrismaProcurerServicesRepository(prisma), addressRepository: new PrismaAddressRepository(prisma), shoppingListRepository: new PrismaShoppingListRepository(prisma), shoppingRequestRepository: new PrismaShoppingRequestRepository(prisma), quotationRepository: new PrismaQuotationRepository(prisma) });
     await app.ready();
   });
   afterAll(async () => {
     await app.close();
+    await prisma.quotation.deleteMany({ where: { request: { customerId: { in: users } } } });
     await prisma.shoppingRequest.deleteMany({ where: { customerId: { in: users } } });
     await prisma.shoppingList.deleteMany({ where: { customerId: { in: users } } });
     await prisma.customerAddress.deleteMany({ where: { customerId: { in: users } } });
@@ -44,6 +48,8 @@ const secret = 'test-secret-long-enough-for-authentication';
     await prisma.procurerApplication.deleteMany({ where: { id: { in: applications } } });
     await prisma.user.deleteMany({ where: { id: { in: users } } });
     await prisma.$disconnect();
+    delete process.env.PLATFORM_COMMISSION_POLICY_VERSION;
+    delete process.env.PLATFORM_COMMISSION_BASIS_POINTS;
   });
   async function account(role: 'CUSTOMER' | 'PROCURER') {
     const id = randomUUID(); users.push(id); const email = `${id}@example.test`;
@@ -122,6 +128,28 @@ const secret = 'test-secret-long-enough-for-authentication';
     expect((await app.inject({ method: 'GET', url: `/api/v1/procurer-services/me/requests/${requestId}`, headers: other.headers })).statusCode).toBe(404);
     expect((await app.inject({ method: 'GET', url: `/api/v1/procurer-services/me/requests/${requestId}`, headers: procurer.headers })).json()).toMatchObject({ id: requestId, address: { area: 'wuse 2' }, list: { items: [{ name: 'Rice', expectedUnitPriceMinor: '4000000' }] } });
     expect((await app.inject({ method: 'POST', url: `/api/v1/shopping-requests/${requestId}/cancel`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    const issueUrl = `/api/v1/procurer-services/me/requests/${requestId}/quotations`;
+    const expiry = new Date(Date.now() + 3_600_000).toISOString();
+    expect((await app.inject({ method: 'POST', url: issueUrl, headers: other.headers, payload: { expectedRevision: 0, expiresAt: expiry } })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: issueUrl, headers: procurer.headers, payload: { expectedRevision: 0, expiresAt: new Date(Date.now() - 1000).toISOString() } })).statusCode).toBe(400);
+    const issued = await app.inject({ method: 'POST', url: issueUrl, headers: procurer.headers, payload: { expectedRevision: 0, expiresAt: expiry } });
+    expect(issued.statusCode).toBe(201);
+    const firstQuoteId = issued.json<{ id: string }>().id;
+    expect(issued.json()).toMatchObject({ revision: 1, status: 'ISSUED', subtotalMinor: '4000000', serviceFeeMinor: '400000', deliveryFeeMinor: '250000', totalMinor: '4650000' });
+    const savedQuote = await prisma.quotation.findUniqueOrThrow({ where: { id: firstQuoteId } });
+    expect(savedQuote).toMatchObject({ platformCommissionMinor: 40000n, procurerEarningsMinor: 360000n, commissionPolicyVersion: 'test-1' });
+    expect((await app.inject({ method: 'GET', url: `/api/v1/quotations/${firstQuoteId}`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    const revised = await app.inject({ method: 'POST', url: issueUrl, headers: procurer.headers, payload: { expectedRevision: 1, expiresAt: expiry } });
+    expect(revised.statusCode).toBe(201);
+    const quoteId = revised.json<{ id: string }>().id;
+    expect((await app.inject({ method: 'POST', url: `/api/v1/quotations/${firstQuoteId}/accept`, headers: customer.headers })).statusCode).toBe(409);
+    expect((await app.inject({ method: 'POST', url: `/api/v1/quotations/${quoteId}/accept`, headers: secondCustomer.headers })).statusCode).toBe(404);
+    const acceptances = await Promise.all([1, 2].map(() => app.inject({ method: 'POST', url: `/api/v1/quotations/${quoteId}/accept`, headers: customer.headers })));
+    expect(acceptances.map((response) => response.statusCode).sort()).toEqual([200, 409]);
+    expect((await prisma.quotation.findUniqueOrThrow({ where: { id: quoteId } })).status).toBe('ACCEPTED');
+    expect((await prisma.shoppingList.findUniqueOrThrow({ where: { id: listId } })).awardedRequestId).toBe(requestId);
+    expect((await app.inject({ method: 'POST', url: issueUrl, headers: procurer.headers, payload: { expectedRevision: 2, expiresAt: expiry } })).statusCode).toBe(409);
+
 
 
     for (const method of ['GET', 'DELETE'] as const) {
@@ -131,8 +159,8 @@ const secret = 'test-secret-long-enough-for-authentication';
     expect((await app.inject({ method: 'PUT', url: `/api/v1/addresses/${addressId}`, headers: secondCustomer.headers, payload: address })).statusCode).toBe(404);
     expect((await app.inject({ method: 'GET', url: '/api/v1/addresses', headers: secondCustomer.headers })).json()).toEqual([]);
     expect((await app.inject({ method: 'PUT', url: `/api/v1/addresses/${addressId}`, headers: customer.headers, payload: { ...address, area: 'Garki' } })).statusCode).toBe(200);
-    expect((await app.inject({ method: 'GET', url: `/api/v1/shopping-requests/${requestId}`, headers: customer.headers })).json()).toMatchObject({ address: { area: 'wuse 2' }, status: 'REQUESTED' });
-    expect((await app.inject({ method: 'POST', url: `/api/v1/shopping-requests/${requestId}/cancel`, headers: customer.headers })).json()).toMatchObject({ status: 'CANCELLED' });
+    expect((await app.inject({ method: 'GET', url: `/api/v1/shopping-requests/${requestId}`, headers: customer.headers })).json()).toMatchObject({ address: { area: 'wuse 2' }, status: 'ACCEPTED' });
+    expect((await app.inject({ method: 'POST', url: `/api/v1/shopping-requests/${requestId}/cancel`, headers: customer.headers })).statusCode).toBe(404);
     expect((await app.inject({ method: 'POST', url: `/api/v1/shopping-requests/${requestId}/cancel`, headers: customer.headers })).statusCode).toBe(404);
     expect((await app.inject({ method: 'GET', url: `/api/v1/addresses/${addressId}/procurers`, headers: customer.headers })).json()).toEqual([]);
     expect((await app.inject({ method: 'POST', url: '/api/v1/pricing/preview', headers: customer.headers, payload: preview })).statusCode).toBe(404);
