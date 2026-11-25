@@ -24,7 +24,7 @@ The provisional rule remains fixed fee at or below threshold and percentage of t
 
 ## Customer addresses and list naming
 
-Authenticated customers can create, list, retrieve, update and delete their own addresses at `/api/v1/addresses` and `/api/v1/addresses/{addressId}`. `GET /api/v1/addresses/{addressId}/procurers` derives the discovery location from a customer-owned saved address. Missing and other customers' address IDs both return 404. Address lookups use normalized exact matching; address updates are not a quotation snapshot and must be revalidated and copied into a future order transaction. A location with no matches returns an empty array. Shopping requests copy a selected address; no order or quotation currently exists. Customers can rename their own draft list with `PATCH /api/v1/shopping-lists/{listId}`; submitted lists remain immutable.
+Authenticated customers can create, list, retrieve, update and delete their own addresses at `/api/v1/addresses` and `/api/v1/addresses/{addressId}`. `GET /api/v1/addresses/{addressId}/procurers` derives the discovery location from a customer-owned saved address. Missing and other customers' address IDs both return 404. Address lookups use normalized exact matching; address updates are not a quotation snapshot and must be revalidated and copied into a future order transaction. A location with no matches returns an empty array. Shopping requests copy a selected address; separate quotation and order routes exist. Customers can rename their own draft list with `PATCH /api/v1/shopping-lists/{listId}`; submitted lists remain immutable.
 
 ## Submitted shopping requests
 

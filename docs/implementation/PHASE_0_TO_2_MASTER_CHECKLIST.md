@@ -590,7 +590,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** GET /api/v1/admin/reviews; POST /api/v1/admin/reviews/:reviewId/moderate
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** Moderation and PostgreSQL regression added; CI pending
+- **Result/evidence:** CI 45670541457 passed permission denial, recent MFA, self-moderation denial, concurrent decisions, reinstatement and audit persistence
 - **Security:** Granular reviews.moderate permission, recent MFA, exclude self and assigned procurer, audited optimistic transitions
 - **Frontend:** Not integrated
 - **Remaining/limitations:** Public visibility and dispute/refund policy absent; abuse reporting, reviewer identity policy and full adversarial tests incomplete
@@ -655,10 +655,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** registration through POST /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/e2e/purchaseFlow.test.ts`
-- **Result/evidence:** CI 45669983152 passed registration to private review with isolated admin and payment fixtures; moderation extension pending CI
+- **Result/evidence:** CI 45670541457 passed registration through private review and audited moderation using isolated admin and payment fixtures
 - **Security:** Real roles; fixture-only verified test payment
 - **Frontend:** Not integrated
-- **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, moderation, aggregates, refund and provider verification absent; complete requested journey not yet implemented
+- **Remaining/limitations:** Admin and payment are isolated fixtures; public reviews, reports, aggregates, refund and provider verification absent; full requested journey incomplete
 
 ## [ ] Phase 2C: Security regression tests pass
 

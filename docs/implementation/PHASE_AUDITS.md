@@ -16,7 +16,7 @@ Addresses, lists, zones, pricing, discovery, request snapshots, quotation versio
 
 ## Phase 2B — reputation
 
-Private verified-order review admission exists; public reviews, moderation and aggregates remain missing. Do not infer production verified-completion eligibility from a test-inserted payment record. Establish policies for disputes, refunds, edits and moderation and test legitimate persisted ownership/completion first, then build transactional one-per-order reviews, auditable moderation and eligible-only aggregates.
+Private verified-order review admission exists; audited private moderation exists; public reviews and aggregates remain missing. Do not infer production verified-completion eligibility from a test-inserted payment record. Establish policies for disputes, refunds, edits and moderation and test legitimate persisted ownership/completion first, then complete abuse reporting and eligible-only aggregates.
 
 ## Phase 2C — release
 
