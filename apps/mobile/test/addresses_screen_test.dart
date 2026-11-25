@@ -50,7 +50,7 @@ void main() {
       await tester.ensureVisible(find.widgetWithText(TextFormField, entry.key));
       await tester.enterText(find.widgetWithText(TextFormField, entry.key), entry.value);
     }
-    await tester.testTextInput.hide();
+    tester.testTextInput.hide();
     await tester.pumpAndSettle();
     await tester.ensureVisible(find.text('Save address'));
     await tester.pumpAndSettle();
