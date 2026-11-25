@@ -1,0 +1,1 @@
+export const REVIEW_CREATE_RATE_LIMIT_PER_MINUTE = 10;

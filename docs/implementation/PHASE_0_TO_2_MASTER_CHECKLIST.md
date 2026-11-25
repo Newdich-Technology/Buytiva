@@ -473,10 +473,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST/GET /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Result/evidence:** CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI
 
 ## [ ] Phase 2B: Rating submission works
 
@@ -486,10 +486,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST/GET /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Result/evidence:** CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI
 
 ## [ ] Phase 2B: Written comments work
 
@@ -499,10 +499,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST/GET /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Result/evidence:** CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI
 
 ## [ ] Phase 2B: Duplicate prevention works
 
@@ -512,10 +512,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST/GET /api/v1/orders/:orderId/review
 - **Prisma model:** `prisma/models/order.prisma`
 - **Test:** `tests/integration/procurerServices/servicesApi.test.ts`
-- **Result/evidence:** Implementation and integration regression added; current PostgreSQL CI pending
+- **Result/evidence:** CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI
 - **Security:** Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only
 - **Frontend:** Not integrated
-- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending
+- **Remaining/limitations:** No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI
 
 ## [ ] Phase 2B: Review editing rules work
 

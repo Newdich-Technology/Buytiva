@@ -499,10 +499,10 @@
       "api": "POST/GET /api/v1/orders/:orderId/review",
       "model": "prisma/models/order.prisma",
       "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "Implementation and integration regression added; current PostgreSQL CI pending",
+      "result": "CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending",
+      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI",
       "requirement": "Review eligibility works"
     },
     {
@@ -513,10 +513,10 @@
       "api": "POST/GET /api/v1/orders/:orderId/review",
       "model": "prisma/models/order.prisma",
       "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "Implementation and integration regression added; current PostgreSQL CI pending",
+      "result": "CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending",
+      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI",
       "requirement": "Rating submission works"
     },
     {
@@ -527,10 +527,10 @@
       "api": "POST/GET /api/v1/orders/:orderId/review",
       "model": "prisma/models/order.prisma",
       "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "Implementation and integration regression added; current PostgreSQL CI pending",
+      "result": "CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending",
+      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI",
       "requirement": "Written comments work"
     },
     {
@@ -541,10 +541,10 @@
       "api": "POST/GET /api/v1/orders/:orderId/review",
       "model": "prisma/models/order.prisma",
       "tests": "tests/integration/procurerServices/servicesApi.test.ts",
-      "result": "Implementation and integration regression added; current PostgreSQL CI pending",
+      "result": "CI 45666093815 passed private review admission and concurrency at 3c73360 with isolated test payment; expanded reversal/currency cases pending CI",
       "security": "Owner, completed history, matched non-reversed payment, no self-review, serializable uniqueness; private only",
       "frontend": "Not integrated",
-      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; PostgreSQL validation pending",
+      "remaining": "No moderation, public visibility, refund integration or deployed-provider verification; expanded PostgreSQL cases pending CI",
       "requirement": "Duplicate prevention works"
     },
     {
