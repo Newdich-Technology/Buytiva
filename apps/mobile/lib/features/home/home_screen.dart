@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (currentRole == 'ADMIN') const ListTile(title: Text('Administration workspace'), subtitle: Text('The backend does not currently expose an administrator application-review screen in this mobile app.')),
       if (currentRole == 'SUPER_ADMIN') const ListTile(title: Text('Super Administrator'), subtitle: Text('Staff invitations and access controls are available. Mobile permission editing and audit-log views are not implemented.')),
       if (currentRole == 'SUPER_ADMIN') FilledButton(onPressed: () => Navigator.pushNamed(context, '/admin/staff'), child: const Text('Manage staff')),
+      if (roles.contains('CUSTOMER')) OutlinedButton(onPressed: () => Navigator.pushNamed(context, '/addresses'), child: const Text('Delivery addresses')),
       OutlinedButton.icon(onPressed: () => Navigator.pushNamed(context, '/security'), icon: const Icon(Icons.security), label: const Text('Security settings')),
     ]));
   }
