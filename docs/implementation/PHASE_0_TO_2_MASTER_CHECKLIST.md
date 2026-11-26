@@ -187,7 +187,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/auth/password/reset; /auth/password/change
 - **Prisma model:** `prisma/models/passwordReset.prisma`
 - **Test:** `tests/integration/auths/registerUser.test.ts`
-- **Result/evidence:** CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts
+- **Result/evidence:** CI 45743359869 passed concurrent password reset, revoked pending MFA challenges and stale-hash issuance denial on disposable PostgreSQL
 - **Security:** One-time reset; invalidate sessions
 - **Frontend:** Web/mobile forms exist
 - **Remaining/limitations:** More cross-account/expiry abuse tests and real delivery remain; multiple queued reset emails may be delivered out of order
@@ -200,10 +200,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/auth/mfa/totp/*
 - **Prisma model:** `prisma/models/user.prisma`
 - **Test:** `tests/integration/security/mfaReplay.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Result/evidence:** CI 45743359869 passed persisted MFA challenge rejection after user/staff suspension and reset, credential issuance fencing and replay regressions on isolated PostgreSQL
 - **Security:** Monotonic step; MFA on privileged endpoints
 - **Frontend:** Web/mobile auth flows exist
-- **Remaining/limitations:** Recovery and operational lockout policy unresolved; release requirement needs independent verification
+- **Remaining/limitations:** MFA recovery/lockout policy, simultaneous role/profile changes, challenge issuance/credential-change race matrix and distributed abuse remain incomplete
 
 ## [ ] Phase 1: Procurer applications work
 

@@ -5,3 +5,5 @@ Registration, email challenge, sessions, reset, TOTP, application review, invita
 Review actions previously required MFA but not *recent* MFA. This change adds the existing recent-MFA guard to identity checks and application decisions, and a PostgreSQL regression checks stale-session denial and persisted non-mutation. The regression passed on disposable PostgreSQL in CI 45665163104; no local PostgreSQL was available. Remaining work includes the full permission/revocation matrix, invitations lifecycle, recovery and bootstrap scenarios, multi-role behavior, and operational lockout handling. There is no evidence that the complete requested security suite has passed.
 
 CI 45740462338 covers concurrent customer challenge issuance, password reset consumption, and device/session HTTP cases; see `docs/security/authenticationReadiness.md` for findings, exact evidence and remaining limitations. Authentication remains incomplete.
+
+CI 45743359869 verifies stale MFA challenge and credential issuance fencing for the exercised cases. Authentication remains incomplete; multi-role reactivation, MFA recovery, invitation lifecycle and operational checks remain open.

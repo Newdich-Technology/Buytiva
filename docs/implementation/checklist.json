@@ -191,7 +191,7 @@
       "api": "/api/v1/auth/password/reset; /auth/password/change",
       "model": "prisma/models/passwordReset.prisma",
       "tests": "tests/integration/auths/registerUser.test.ts",
-      "result": "CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts",
+      "result": "CI 45743359869 passed concurrent password reset, revoked pending MFA challenges and stale-hash issuance denial on disposable PostgreSQL",
       "security": "One-time reset; invalidate sessions",
       "frontend": "Web/mobile forms exist",
       "remaining": "More cross-account/expiry abuse tests and real delivery remain; multiple queued reset emails may be delivered out of order",
@@ -205,10 +205,10 @@
       "api": "/api/v1/auth/mfa/totp/*",
       "model": "prisma/models/user.prisma",
       "tests": "tests/integration/security/mfaReplay.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45743359869 passed persisted MFA challenge rejection after user/staff suspension and reset, credential issuance fencing and replay regressions on isolated PostgreSQL",
       "security": "Monotonic step; MFA on privileged endpoints",
       "frontend": "Web/mobile auth flows exist",
-      "remaining": "Recovery and operational lockout policy unresolved; release requirement needs independent verification",
+      "remaining": "MFA recovery/lockout policy, simultaneous role/profile changes, challenge issuance/credential-change race matrix and distributed abuse remain incomplete",
       "requirement": "MFA works"
     },
     {
