@@ -1,4 +1,4 @@
-import { AuthChallengePurpose, LoginChallengePurpose, Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { AuthChallengePurpose, LoginChallengePurpose, PrismaClient } from '../../generated/prisma/client.js';
 import { AUTH_OTP_DAILY_LIMIT, AUTH_OTP_DAILY_WINDOW_HOURS, AUTH_OTP_MAX_ATTEMPTS } from '../../constants/auths/auth.constants.js';
 import type { CreateOtpInput } from '../../interfaces/auths/authRepository.interface.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
@@ -21,8 +21,12 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
   async createOtpChallenge(input: CreateOtpInput): Promise<boolean> {
     const now = new Date();
     const dayStart = new Date(now.getTime() - AUTH_OTP_DAILY_WINDOW_HOURS * 60 * 60 * 1000);
-    try {
-      return await this.prisma.$transaction(async (tx) => {
+    return this.prisma.$transaction(async (tx) => {
+      // A no-op update locks the account row until commit; later statements then see
+      // the previous resend under PostgreSQL READ COMMITTED. It also updates updatedAt.
+      if (!input.userId) return false;
+      const locked = await tx.user.updateMany({ where: { id: input.userId, emailNormalized: input.emailNormalized, emailVerifiedAt: null }, data: { emailNormalized: input.emailNormalized } });
+      if (!locked.count) return false;
       const dailyCount = await tx.emailOtpChallenge.count({
         where: { emailNormalized: input.emailNormalized, purpose: input.purpose as AuthChallengePurpose, createdAt: { gt: dayStart } }
       });
@@ -64,12 +68,7 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
         }
       });
       return true;
-      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
-    } catch (error) {
-      // A competing resend may win; return the same generic accepted response.
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') return false;
-      throw error;
-    }
+    });
   }
 
   async incrementOtpAttempt(id: string, _expectedAttempts: number, now: Date): Promise<boolean> {

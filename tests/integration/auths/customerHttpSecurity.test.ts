@@ -8,6 +8,7 @@ import { PrismaProcurerApplicationRepository } from '../../../src/repositories/i
 import { PrismaStaffInvitationRepository } from '../../../src/repositories/administrators/staffInvitation.repository.js';
 import { Argon2PasswordHasher } from '../../../src/lib/security/passwordHasher.js';
 import { MemoryEmailProvider } from '../../../src/lib/email/emailSender.js';
+import { hashOneTimeToken } from '../../../src/lib/security/oneTimeToken.js';
 import { decryptSecret } from '../../../src/lib/security/secretBox.js';
 import type { AuthDependencies } from '../../../src/types/authDependencies.type.js';
 
@@ -18,7 +19,6 @@ const password = 'SecureCustomerPass42!';
 (url ? describe : describe.skip)('customer HTTP security with isolated PostgreSQL records', () => {
   let prisma: PrismaClient;
   let app: ReturnType<typeof createBuytivaFastifyApplication>;
-  let diagnostic: unknown;
   const userIds: string[] = [];
   const hasher = new Argon2PasswordHasher();
   beforeAll(() => {
@@ -28,8 +28,6 @@ const password = 'SecureCustomerPass42!';
   beforeEach(async () => {
     const deps: AuthDependencies = { config, repository: createPrismaAuthRepository(prisma), identityRepository: new PrismaProcurerApplicationRepository(prisma),
       staffRepository: new PrismaStaffInvitationRepository(prisma), passwordHasher: hasher, emailProvider: new MemoryEmailProvider() };
-    const original = deps.repository.requestPasswordReset.bind(deps.repository);
-    deps.repository.requestPasswordReset = async (...args) => { try { return await original(...args); } catch (e) { diagnostic = e; throw e; } };
     app = createBuytivaFastifyApplication({ authDependencies: deps });
     await app.ready();
   });
@@ -89,12 +87,17 @@ const password = 'SecureCustomerPass42!';
     const login = await post('/auth/login', { email, password });
     const session = login.json<{ session: { accessToken: string } }>().session;
     const requests = await Promise.all([post('/auth/password/forgot', { email }), post('/auth/password/forgot', { email })]);
-    expect(requests.map((r) => r.statusCode), JSON.stringify(diagnostic, Object.getOwnPropertyNames(diagnostic ?? {}))).toEqual([202, 202]);
+    expect(requests.map((r) => r.statusCode)).toEqual([202, 202]);
     expect(requests[0]!.body).toEqual(requests[1]!.body);
     expect(await prisma.passwordResetToken.count({ where: { userId, consumedAt: null } })).toBe(1);
-    const event = await prisma.outboxEvent.findFirstOrThrow({ where: { aggregateId: userId, eventType: 'AUTH_PASSWORD_RESET' }, orderBy: { createdAt: 'desc' } });
-    const text = (JSON.parse(decryptSecret((event.payload as { encryptedMessage: string }).encryptedMessage, config.encryptionKey)) as { text: string }).text;
-    const token = new URL(text.match(/Reset your password at: (\S+)/)![1]!).searchParams.get('token')!;
+    const active = await prisma.passwordResetToken.findFirstOrThrow({ where: { userId, consumedAt: null } });
+    const events = await prisma.outboxEvent.findMany({ where: { aggregateId: userId, eventType: 'AUTH_PASSWORD_RESET' } });
+    const tokens = events.map((event) => {
+      const text = (JSON.parse(decryptSecret((event.payload as { encryptedMessage: string }).encryptedMessage, config.encryptionKey)) as { text: string }).text;
+      return new URL(text.match(/Reset your password at: (\S+)/)![1]!).searchParams.get('token')!;
+    });
+    const token = tokens.find((value) => hashOneTimeToken(value) === active.tokenHash)!;
+    expect(token).toBeTruthy();
     const payload = { token, password: 'NewCustomerPassword43!', confirmPassword: 'NewCustomerPassword43!' };
     const attempts = await Promise.all([post('/auth/password/reset', payload), post('/auth/password/reset', payload)]);
     expect(attempts.map((r) => r.statusCode).sort()).toEqual([200, 401]);

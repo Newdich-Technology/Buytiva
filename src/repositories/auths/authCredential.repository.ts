@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { PrismaClient } from '../../generated/prisma/client.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
 
 export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
@@ -12,10 +12,12 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     expiresAt: Date;
     outbox: { id: string; payload: string; dedupeKey: string };
   }): Promise<void> {
-    try {
-      await this.prisma.$transaction(async (tx) => {
+    await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { emailNormalized }, select: { id: true } });
       if (!user) return;
+      // Serialize requests for this account before inspecting existing reset tokens.
+      const locked = await tx.user.updateMany({ where: { id: user.id, emailNormalized }, data: { emailNormalized } });
+      if (!locked.count) return;
       const now = new Date();
       await tx.passwordResetToken.updateMany({
         where: { userId: user.id, consumedAt: null },
@@ -34,12 +36,7 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
           payload: { encryptedMessage: input.outbox.payload }
         }
       });
-      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
-    } catch (error) {
-      // Concurrent requests fail closed without revealing account existence.
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') return;
-      throw error;
-    }
+    });
   }
 
   async resetPassword(tokenHash: string, passwordHash: string, now: Date): Promise<boolean> {
