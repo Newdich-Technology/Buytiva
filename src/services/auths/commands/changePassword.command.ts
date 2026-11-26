@@ -22,6 +22,7 @@ export async function changePasswordCommand(
   }
   const changed = await dependencies.repository.changePassword(
     userId,
+    account.passwordHash,
     await dependencies.passwordHasher.hashPassword(input.password),
     new Date()
   );

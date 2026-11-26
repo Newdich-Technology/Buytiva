@@ -66,15 +66,16 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     });
   }
 
-  async changePassword(userId: string, passwordHash: string, now: Date): Promise<boolean> {
+  async changePassword(userId: string, expectedPasswordHash: string, passwordHash: string, now: Date): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
       const locked = await tx.user.updateMany({ where: { id: userId }, data: { updatedAt: now } });
       if (!locked.count) return false;
       const changed = await tx.credential.updateMany({
-        where: { userId },
+        where: { userId, passwordHash: expectedPasswordHash },
         data: { passwordHash, mustChangePassword: false, passwordChangedAt: now }
       });
       if (changed.count !== 1) return false;
+      await tx.passwordResetToken.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.loginChallenge.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.authSession.updateMany({
         where: { userId, revokedAt: null },

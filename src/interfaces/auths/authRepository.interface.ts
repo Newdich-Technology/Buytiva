@@ -43,7 +43,7 @@ export interface AuthRepository {
   listSessions(userId: string, now: Date): Promise<readonly { id: string; deviceLabel: string | null; createdAt: Date; lastUsedAt: Date | null; expiresAt: Date }[]>;
   requestPasswordReset(emailNormalized: string, input: { id: string; tokenHash: string; expiresAt: Date; outbox: { id: string; payload: string; dedupeKey: string } }): Promise<void>;
   resetPassword(tokenHash: string, passwordHash: string, now: Date): Promise<boolean>;
-  changePassword(userId: string, passwordHash: string, now: Date): Promise<boolean>;
+  changePassword(userId: string, expectedPasswordHash: string, passwordHash: string, now: Date): Promise<boolean>;
   saveMfaEnrollment(userId: string, ciphertext: Uint8Array, factorId: string): Promise<boolean>;
   getMfaFactor(userId: string): Promise<{ id: string; secretCiphertext: Uint8Array; enabledAt: Date | null; lastAcceptedTimeStep: bigint | null } | null>;
   completeMfaEnrollment(userId: string, factorId: string, timeStep: bigint, now: Date, challengeId?: string, expectedAttempts?: number): Promise<boolean>;
