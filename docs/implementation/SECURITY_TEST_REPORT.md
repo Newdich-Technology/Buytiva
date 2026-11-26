@@ -25,3 +25,5 @@ CI 45740462338 passed the scoped customer HTTP/PostgreSQL race, expiry, revocati
 CI 45743359869 passed MFA challenge tests for user/staff suspension, post-reset invalidation and stale credential issuance, along with replay regression. The initial replay fixture lacked a verified email and failed CI 45742914602; the fixture was corrected to represent an eligible account, without weakening the replay assertion. Full role-reactivation and concurrent lifecycle coverage remains open.
 
 Staff reactivation regression: disposable PostgreSQL CI 45744475807 passed authorization, recent-MFA, duplicate reactivation, multi-role session revocation, audit and fresh login challenge checks. Complete adversarial lifecycle concurrency and MFA recovery testing remain outstanding; this does not certify authentication readiness.
+
+Password-change race and outstanding-reset-token regressions passed on disposable PostgreSQL in CI 45747084449; the tests exercise repository transactions rather than proving every HTTP interleaving. The credential update now compares the authenticated hash, and a successful change invalidates outstanding resets.
