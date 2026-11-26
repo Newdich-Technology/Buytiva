@@ -46,6 +46,7 @@ export const authRoute: FastifyPluginAsync<AuthenticationApiOptions> = async (ap
   }, async (request, reply) => reply.code(202).send(await controller.requestPasswordReset(request.body.email)));
 
   api.post(AUTH_API_PATHS.resetPassword, {
+    config: { rateLimit: { max: AUTH_LOGIN_RATE_LIMIT_PER_MINUTE, timeWindow: AUTH_RATE_WINDOW_MS } },
     schema: { body: resetPasswordBody, response: { 200: Type.Object({ passwordReset: Type.Literal(true) }) }, tags: ['authentication'], operationId: 'resetPassword' }
   }, async (request) => controller.resetPassword(request.body));
 

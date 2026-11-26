@@ -105,6 +105,11 @@ const password = 'SecureCustomerPass42!';
     expect((await post('/auth/login', { email, password })).statusCode).toBe(401);
     expect((await post('/auth/login', { email, password: payload.password })).statusCode).toBe(200);
   });
+  it('rate limits repeated password-reset submissions before unbounded password hashing', async () => {
+    const payload = { token: 'x'.repeat(48), password: 'NewCustomerPassword43!', confirmPassword: 'NewCustomerPassword43!' };
+    for (let attempt = 0; attempt < 8; attempt++) expect((await post('/auth/password/reset', payload)).statusCode).toBe(401);
+    expect((await post('/auth/password/reset', payload)).statusCode).toBe(429);
+  });
   it('isolates device revocation and rejects expired database sessions', async () => {
     const { email, userId } = await registered();
     const challenge = await verification(userId);
