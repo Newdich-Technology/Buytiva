@@ -1,3 +1,4 @@
+import { isRoleAccessSuspended } from '../../../utils/auths/accountAvailability.js';
 import { randomUUID } from 'node:crypto';
 import { AUTH_DUMMY_PASSWORD_VALUE, AUTH_LOGIN_CHALLENGE_MINUTES, AUTH_MINUTE_MS, AUTH_SECOND_MS } from '../../../constants/auths/auth.constants.js';
 import { UserRole } from '../../../enums/userRole.enum.js';
@@ -25,13 +26,7 @@ export async function loginUserCommand(
   if (!account || !account.passwordHash || !matches) throw invalidCredentialsError();
   if (account.status !== UserStatus.ACTIVE) throw accountUnavailableError();
   if (!account.emailVerifiedAt) throw emailNotVerifiedError();
-  if (account.roles.includes(UserRole.PROCURER) && account.procurerStatus === 'SUSPENDED' && !account.roles.includes(UserRole.CUSTOMER)) {
-    throw accountUnavailableError();
-  }
-  if ((account.roles.includes(UserRole.ADMIN) || account.roles.includes(UserRole.SUPER_ADMIN)) &&
-    account.staffStatus === 'SUSPENDED' && !account.roles.includes(UserRole.CUSTOMER)) {
-    throw accountUnavailableError();
-  }
+  if (isRoleAccessSuspended(account)) throw accountUnavailableError();
   const privilegedRole = account.roles.some((role) => role !== UserRole.CUSTOMER);
   const challengePurpose: 'LOGIN_MFA' | 'MFA_ENROLLMENT' | null = account.mfaSecret
     ? 'LOGIN_MFA'

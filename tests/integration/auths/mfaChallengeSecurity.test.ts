@@ -67,6 +67,12 @@ const password = 'SecureStaffPassword42!';
     expect((await post('/auth/login/complete', { challengeToken: token, code })).statusCode).toBe(401);
     expect(await prisma.authSession.count({ where: { userId: user.id } })).toBe(0);
   });
+  it('rejects a staff-only challenge if the staff profile is suspended after password verification', async () => {
+    const { user, code, token } = await setup();
+    await prisma.staffProfile.update({ where: { userId: user.id }, data: { status: 'SUSPENDED' } });
+    expect((await post('/auth/login/complete', { challengeToken: token, code })).statusCode).toBe(401);
+    expect(await prisma.authSession.count({ where: { userId: user.id } })).toBe(0);
+  });
   it('invalidates outstanding MFA challenges after password reset', async () => {
     const { user, email, code, token } = await setup();
     const oldHash = (await prisma.credential.findUniqueOrThrow({ where: { userId: user.id } })).passwordHash;

@@ -1,3 +1,4 @@
+import { isRoleAccessSuspended } from '../../../utils/auths/accountAvailability.js';
 import { UserStatus } from '../../../enums/userStatus.enum.js';
 import { randomUUID } from 'node:crypto';
 import { AUTH_LOGIN_CHALLENGE_MINUTES, AUTH_MINUTE_MS, AUTH_OTP_MAX_ATTEMPTS } from '../../../constants/auths/auth.constants.js';
@@ -21,7 +22,7 @@ export async function enrollTotpCommand(
   }
   if (!userId) throw invalidChallengeError();
   const account = await dependencies.repository.findAccountById(userId);
-  if (!account || account.status !== UserStatus.ACTIVE || !account.emailVerifiedAt) throw invalidChallengeError();
+  if (!account || account.status !== UserStatus.ACTIVE || !account.emailVerifiedAt || isRoleAccessSuspended(account)) throw invalidChallengeError();
   if (input.userId && !input.challengeToken &&
     (!input.currentPassword || !account.passwordHash || !(await dependencies.passwordHasher.verifyPassword(account.passwordHash, input.currentPassword)))) {
     throw invalidChallengeError();

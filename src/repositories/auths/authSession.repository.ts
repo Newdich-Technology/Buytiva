@@ -1,3 +1,4 @@
+import { isRoleAccessSuspended } from '../../utils/auths/accountAvailability.js';
 import { invalidChallengeError } from '../../errors/auths/auth.error.js';
 import { PrismaClient } from '../../generated/prisma/client.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
@@ -19,8 +20,11 @@ export class PrismaAuthSessionRepository implements Pick<AuthRepository,
     await this.prisma.$transaction(async (tx) => {
       const locked = await tx.user.updateMany({ where: { id: input.userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: new Date() } });
       if (!locked.count) throw invalidChallengeError();
-      const account = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, include: { credential: true } });
-      if ((account.credential?.passwordHash ?? account.passwordHash) !== input.expectedPasswordHash) throw invalidChallengeError();
+      // Serialize against staff suspension (which locks this profile before revoking sessions).
+      await tx.staffProfile.updateMany({ where: { userId: input.userId }, data: { updatedAt: new Date() } });
+      await tx.procurerProfile.updateMany({ where: { userId: input.userId }, data: { updatedAt: new Date() } });
+      const account = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, include: { credential: true, staffProfile: true, procurerProfile: true, roleAssignments: { where: { revokedAt: null } } } });
+      if ((account.credential?.passwordHash ?? account.passwordHash) !== input.expectedPasswordHash || isRoleAccessSuspended({ roles: account.roleAssignments.map((role) => role.role), staffStatus: account.staffProfile?.status ?? null, procurerStatus: account.procurerProfile?.status ?? null })) throw invalidChallengeError();
       await tx.authSession.create({
         data: {
           id: input.sessionId,
