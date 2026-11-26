@@ -12,7 +12,7 @@ const databaseUrl = process.env.AUTH_TEST_DATABASE_URL;
   afterAll(async () => { await prisma.$disconnect(); });
   it('rejects repeated or older time steps, including on different challenges', async () => {
     const email = `${randomUUID()}@example.invalid`;
-    const user = await prisma.user.create({ data: { email, emailNormalized: email } });
+    const user = await prisma.user.create({ data: { email, emailNormalized: email, emailVerifiedAt: new Date() } });
     const factor = await prisma.mfaFactor.create({ data: { userId: user.id, type: 'TOTP', secretCiphertext: Buffer.from('test'), enabledAt: new Date(), lastAcceptedTimeStep: 100n } });
     const createChallenge = () => prisma.loginChallenge.create({ data: { userId: user.id, tokenHash: randomUUID(), expiresAt: new Date(Date.now() + 60_000) } });
     try {
