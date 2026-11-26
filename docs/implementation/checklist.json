@@ -121,7 +121,7 @@
       "api": "POST /api/v1/auth/register; /auth/email-otp/verify",
       "model": "prisma/models/authCredentials.prisma",
       "tests": "tests/integration/auths/registerUser.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts",
       "security": "Hash OTP; atomic consume; rate limit",
       "frontend": "Web/mobile auth clients exist",
       "remaining": "Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification",
@@ -135,10 +135,10 @@
       "api": "POST /api/v1/auth/register; /auth/email-otp/verify",
       "model": "prisma/models/authCredentials.prisma",
       "tests": "tests/integration/auths/registerUser.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts",
       "security": "Hash OTP; atomic consume; rate limit",
       "frontend": "Web/mobile auth clients exist",
-      "remaining": "Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification",
+      "remaining": "Broader guessing/distributed abuse and resend delivery ordering remain; real SMTP and production ingress unverified",
       "requirement": "OTP verification works"
     },
     {
@@ -163,10 +163,10 @@
       "api": "/api/v1/auth/login; /auth/refresh; /auth/logout",
       "model": "prisma/models/user.prisma",
       "tests": "tests/integration/security/sessionConcurrency.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts",
       "security": "Replay revokes family; ownership; no token logs",
       "frontend": "Web/mobile auth clients exist",
-      "remaining": "Full session expiry and device HTTP matrix incomplete; release requirement needs independent verification",
+      "remaining": "Full cross-account, multi-role, logout-all and active permission HTTP matrix remains; distributed deployment and retention unverified",
       "requirement": "Sessions work"
     },
     {
@@ -191,10 +191,10 @@
       "api": "/api/v1/auth/password/reset; /auth/password/change",
       "model": "prisma/models/passwordReset.prisma",
       "tests": "tests/integration/auths/registerUser.test.ts",
-      "result": "CI 45641130413 passed",
+      "result": "CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts",
       "security": "One-time reset; invalidate sessions",
       "frontend": "Web/mobile forms exist",
-      "remaining": "Real delivery and comprehensive concurrency not verified; release requirement needs independent verification",
+      "remaining": "More cross-account/expiry abuse tests and real delivery remain; multiple queued reset emails may be delivered out of order",
       "requirement": "Password reset works"
     },
     {

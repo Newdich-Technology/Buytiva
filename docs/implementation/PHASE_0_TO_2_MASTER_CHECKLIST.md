@@ -122,7 +122,7 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST /api/v1/auth/register; /auth/email-otp/verify
 - **Prisma model:** `prisma/models/authCredentials.prisma`
 - **Test:** `tests/integration/auths/registerUser.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Result/evidence:** CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts
 - **Security:** Hash OTP; atomic consume; rate limit
 - **Frontend:** Web/mobile auth clients exist
 - **Remaining/limitations:** Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification
@@ -135,10 +135,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** POST /api/v1/auth/register; /auth/email-otp/verify
 - **Prisma model:** `prisma/models/authCredentials.prisma`
 - **Test:** `tests/integration/auths/registerUser.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Result/evidence:** CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts
 - **Security:** Hash OTP; atomic consume; rate limit
 - **Frontend:** Web/mobile auth clients exist
-- **Remaining/limitations:** Real SMTP, expiry/resend exhaustive HTTP cases remain; release requirement needs independent verification
+- **Remaining/limitations:** Broader guessing/distributed abuse and resend delivery ordering remain; real SMTP and production ingress unverified
 
 ## [ ] Phase 1: Password login works
 
@@ -161,10 +161,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/auth/login; /auth/refresh; /auth/logout
 - **Prisma model:** `prisma/models/user.prisma`
 - **Test:** `tests/integration/security/sessionConcurrency.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Result/evidence:** CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts
 - **Security:** Replay revokes family; ownership; no token logs
 - **Frontend:** Web/mobile auth clients exist
-- **Remaining/limitations:** Full session expiry and device HTTP matrix incomplete; release requirement needs independent verification
+- **Remaining/limitations:** Full cross-account, multi-role, logout-all and active permission HTTP matrix remains; distributed deployment and retention unverified
 
 ## [ ] Phase 1: Refresh-token rotation works
 
@@ -187,10 +187,10 @@ Generated from `checklist.json` by `scripts/ci/checkImplementationChecklist.py`.
 - **API:** /api/v1/auth/password/reset; /auth/password/change
 - **Prisma model:** `prisma/models/passwordReset.prisma`
 - **Test:** `tests/integration/auths/registerUser.test.ts`
-- **Result/evidence:** CI 45641130413 passed
+- **Result/evidence:** CI 45740462338 passed new Fastify/PostgreSQL duplicate registration, OTP expiry/concurrent resend, device revocation/session expiry and concurrent reset tests; scoped fixtures in customerHttpSecurity.test.ts
 - **Security:** One-time reset; invalidate sessions
 - **Frontend:** Web/mobile forms exist
-- **Remaining/limitations:** Real delivery and comprehensive concurrency not verified; release requirement needs independent verification
+- **Remaining/limitations:** More cross-account/expiry abuse tests and real delivery remain; multiple queued reset emails may be delivered out of order
 
 ## [ ] Phase 1: MFA works
 

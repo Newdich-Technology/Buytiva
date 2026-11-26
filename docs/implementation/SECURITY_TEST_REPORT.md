@@ -19,3 +19,5 @@ CI 45668579947 at `c70b9d9` passed mobile mock-contract tests and PostgreSQL cus
 CI 45669577753 at `78e7168` passed the mobile shopping-list mock contract test. The API-to-PostgreSQL purchase journey passed subsequent CI; it opts in explicitly to destructive cleanup and refuses database names other than `buytiva_test`. Real provider payment and public reputation remain untested and unavailable.
 
 CI 45691632029 passed private report duplicate concurrency, stale version, role and self-review denial, stale MFA and audited concurrent decisions. A report does not hide a review or alter ratings; snapshots and reasons must be treated as untrusted text. These tests do not prove a public UI is safe from stored XSS, nor cover all cross-account cases.
+
+CI 45740462338 passed the scoped customer HTTP/PostgreSQL race, expiry, revocation and reset rate-limit tests. Malformed signed JWT claims are now rejected; the serializable reset approach initially failed CI 45739637658 intermittently and was replaced with per-account row fencing. This does not establish full red-team or distributed-abuse coverage.
