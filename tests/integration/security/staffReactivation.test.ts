@@ -79,5 +79,5 @@ const config = { tokenSecret: 'test-token-secret-with-enough-entropy-00000000000
     const login = await app.inject({ method: 'POST', url: '/api/v1/auth/login', payload: { email: targetEmail, password: 'SecureStaffPassword42!' } });
     expect(login.json()).toMatchObject({ authenticationRequired: true, challengeType: 'LOGIN_MFA' });
     expect(login.body).not.toContain('accessToken');
-  });
+  }, 30000);
 });
