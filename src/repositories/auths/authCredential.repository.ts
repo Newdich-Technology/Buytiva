@@ -1,3 +1,5 @@
+import { AUTH_OTP_MAX_ATTEMPTS } from '../../constants/auths/auth.constants.js';
+import { isRoleAccessSuspended } from '../../utils/auths/accountAvailability.js';
 import { PrismaClient } from '../../generated/prisma/client.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
 
@@ -88,8 +90,15 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     });
   }
 
-  async saveMfaEnrollment(userId: string, ciphertext: Uint8Array, factorId: string): Promise<boolean> {
+  async saveMfaEnrollment(userId: string, ciphertext: Uint8Array, factorId: string, expectedPasswordHash: string | null, challengeId?: string): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: new Date() } });
+      if (!locked.count) return false;
+      await tx.staffProfile.updateMany({ where: { userId }, data: { updatedAt: new Date() } });
+      await tx.procurerProfile.updateMany({ where: { userId }, data: { updatedAt: new Date() } });
+      const account = await tx.user.findUniqueOrThrow({ where: { id: userId }, include: { credential: true, staffProfile: true, procurerProfile: true, roleAssignments: { where: { revokedAt: null } } } });
+      if ((account.credential?.passwordHash ?? account.passwordHash) !== expectedPasswordHash || isRoleAccessSuspended({ roles: account.roleAssignments.map((role) => role.role), staffStatus: account.staffProfile?.status ?? null, procurerStatus: account.procurerProfile?.status ?? null })) return false;
+      if (challengeId && !await tx.loginChallenge.findFirst({ where: { id: challengeId, userId, purpose: 'MFA_ENROLLMENT', consumedAt: null, expiresAt: { gt: new Date() }, attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } } })) return false;
       const enabled = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: { not: null }, disabledAt: null } });
       if (enabled) return false;
       const pending = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: null, disabledAt: null } });
@@ -113,14 +122,19 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
   async completeMfaEnrollment(
     userId: string,
     factorId: string,
+    expectedCiphertext: Uint8Array,
+    expectedPasswordHash: string | null,
     timeStep: bigint,
     now: Date,
     challengeId?: string,
     expectedAttempts?: number
   ): Promise<boolean> {
-    return this.prisma.$transaction(async (tx) => {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
       const account = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: now } });
       if (!account.count) return false;
+      const current = await tx.user.findUniqueOrThrow({ where: { id: userId }, include: { credential: true } });
+      if ((current.credential?.passwordHash ?? current.passwordHash) !== expectedPasswordHash) return false;
       if (challengeId && expectedAttempts !== undefined) {
         const challenge = await tx.loginChallenge.updateMany({
           where: {
@@ -136,10 +150,10 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         if (challenge.count !== 1) return false;
       }
       const result = await tx.mfaFactor.updateMany({
-        where: { id: factorId, userId, enabledAt: null, disabledAt: null },
+        where: { id: factorId, userId, enabledAt: null, disabledAt: null, secretCiphertext: Buffer.from(expectedCiphertext) },
         data: { enabledAt: now, lastAcceptedTimeStep: timeStep }
       });
-      if (result.count !== 1) return false;
+      if (result.count !== 1) throw new EnrollmentRace();
       await tx.staffProfile.updateMany({
         where: { userId, status: 'PENDING_SETUP' },
         data: { status: 'ACTIVE' }
@@ -152,7 +166,11 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         data: { action: 'AUTH_MFA_ENABLED', resourceType: 'USER', resourceId: userId }
       });
       return true;
-    });
+      });
+    } catch (error) {
+      if (error instanceof EnrollmentRace) return false;
+      throw error;
+    }
   }
 
   async acceptTotpStep(userId: string, factorId: string, expectedStep: bigint | null, nextStep: bigint, now: Date): Promise<boolean> {
@@ -173,3 +191,5 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     return result.count === 1;
   }
 }
+
+class EnrollmentRace extends Error {}

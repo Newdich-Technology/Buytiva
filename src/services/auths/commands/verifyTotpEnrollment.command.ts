@@ -42,6 +42,8 @@ export async function verifyTotpEnrollmentCommand(
   const enabled = await dependencies.repository.completeMfaEnrollment(
     userId,
     factor.id,
+    factor.secretCiphertext,
+    account.passwordHash,
     BigInt(timeStep),
     now,
     challengeId,
