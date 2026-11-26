@@ -1,3 +1,4 @@
+import { UserStatus } from '../../../enums/userStatus.enum.js';
 import { AUTH_OTP_MAX_ATTEMPTS } from '../../../constants/auths/auth.constants.js';
 import { invalidChallengeError } from '../../../errors/auths/auth.error.js';
 import { verifyTotpCode } from '../../../lib/security/mfaTotp.js';
@@ -27,7 +28,7 @@ export async function verifyTotpEnrollmentCommand(
     dependencies.repository.findAccountById(userId),
     dependencies.repository.getMfaFactor(userId)
   ]);
-  if (!account || !factor || factor.enabledAt) throw invalidChallengeError();
+  if (!account || account.status !== UserStatus.ACTIVE || !account.emailVerifiedAt || !factor || factor.enabledAt) throw invalidChallengeError();
   const secret = decryptSecret(Buffer.from(factor.secretCiphertext).toString('utf8'), dependencies.config.encryptionKey);
   const timeStep = verifyTotpCode(account.emailNormalized, secret, input.code);
   if (timeStep === null) {
@@ -48,9 +49,9 @@ export async function verifyTotpEnrollmentCommand(
   if (!enabled) throw invalidChallengeError();
   if (!challengeId) return { mfaEnabled: true as const };
   const updatedAccount = await dependencies.repository.findAccountById(userId);
-  if (!updatedAccount) throw invalidChallengeError();
+  if (!updatedAccount || updatedAccount.status !== UserStatus.ACTIVE || !updatedAccount.emailVerifiedAt) throw invalidChallengeError();
   return {
     mfaEnabled: true as const,
-    session: await issueAuthenticatedSession(dependencies.repository, dependencies.config, updatedAccount, now, input.deviceLabel ?? null)
+    session: await issueAuthenticatedSession(dependencies.repository, dependencies.config, account, now, input.deviceLabel ?? null)
   };
 }

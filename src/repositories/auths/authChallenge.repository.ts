@@ -3,6 +3,7 @@ import { AUTH_OTP_DAILY_LIMIT, AUTH_OTP_DAILY_WINDOW_HOURS, AUTH_OTP_MAX_ATTEMPT
 import type { CreateOtpInput } from '../../interfaces/auths/authRepository.interface.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
 import type { EmailOtpRecord } from '../../models/auths/auth.model.js';
+import { invalidChallengeError } from '../../errors/auths/auth.error.js';
 import { AUTH_AUDIT_ACTIONS } from '../../constants/auths/auth.constants.js';
 import { concurrentEmailVerificationError } from '../../errors/auths/auth.error.js';
 
@@ -111,8 +112,15 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
     });
   }
 
-  async createLoginChallenge(input: { id: string; userId: string; tokenHash: string; purpose: 'LOGIN_MFA' | 'MFA_ENROLLMENT'; expiresAt: Date }): Promise<void> {
-    await this.prisma.loginChallenge.create({ data: { ...input, purpose: input.purpose as LoginChallengePurpose } });
+  async createLoginChallenge(input: { id: string; userId: string; tokenHash: string; purpose: 'LOGIN_MFA' | 'MFA_ENROLLMENT'; expiresAt: Date; expectedPasswordHash: string | null }): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: input.userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: new Date() } });
+      if (!locked.count) throw invalidChallengeError();
+      const account = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, include: { credential: true } });
+      if ((account.credential?.passwordHash ?? account.passwordHash) !== input.expectedPasswordHash) throw invalidChallengeError();
+      const { expectedPasswordHash: _hash, ...challenge } = input;
+      await tx.loginChallenge.create({ data: { ...challenge, purpose: input.purpose as LoginChallengePurpose } });
+    });
   }
 
   async findLoginChallenge(tokenHash: string) {
@@ -144,6 +152,8 @@ export class PrismaAuthChallengeRepository implements Pick<AuthRepository,
   ): Promise<boolean> {
     try {
       return await this.prisma.$transaction(async (tx) => {
+        const account = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: now } });
+        if (!account.count) return false;
         const factor = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: { not: null }, disabledAt: null } });
         if (!factor) return false;
         const accepted = await tx.mfaFactor.updateMany({

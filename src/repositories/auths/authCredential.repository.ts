@@ -43,6 +43,8 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     return this.prisma.$transaction(async (tx) => {
       const token = await tx.passwordResetToken.findUnique({ where: { tokenHash } });
       if (!token || token.consumedAt || token.expiresAt <= now) return false;
+      const locked = await tx.user.updateMany({ where: { id: token.userId }, data: { updatedAt: now } });
+      if (!locked.count) return false;
       const consumed = await tx.passwordResetToken.updateMany({
         where: { id: token.id, consumedAt: null, expiresAt: { gt: now } },
         data: { consumedAt: now }
@@ -52,6 +54,7 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         where: { userId: token.userId },
         data: { passwordHash, mustChangePassword: false, passwordChangedAt: now }
       });
+      await tx.loginChallenge.updateMany({ where: { userId: token.userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.authSession.updateMany({
         where: { userId: token.userId, revokedAt: null },
         data: { revokedAt: now, revokedReason: 'PASSWORD_RESET' }
@@ -65,11 +68,14 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
 
   async changePassword(userId: string, passwordHash: string, now: Date): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: userId }, data: { updatedAt: now } });
+      if (!locked.count) return false;
       const changed = await tx.credential.updateMany({
         where: { userId },
         data: { passwordHash, mustChangePassword: false, passwordChangedAt: now }
       });
       if (changed.count !== 1) return false;
+      await tx.loginChallenge.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.authSession.updateMany({
         where: { userId, revokedAt: null },
         data: { revokedAt: now, revokedReason: 'PASSWORD_CHANGED' }
@@ -112,6 +118,8 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     expectedAttempts?: number
   ): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
+      const account = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: now } });
+      if (!account.count) return false;
       if (challengeId && expectedAttempts !== undefined) {
         const challenge = await tx.loginChallenge.updateMany({
           where: {

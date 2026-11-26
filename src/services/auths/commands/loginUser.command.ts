@@ -46,6 +46,7 @@ export async function loginUserCommand(
   await dependencies.repository.createLoginChallenge({
     id: randomUUID(),
     userId: account.id,
+    expectedPasswordHash: account.passwordHash,
     tokenHash: challengeToken.tokenHash,
     purpose: challengePurpose,
     expiresAt: new Date(Date.now() + AUTH_LOGIN_CHALLENGE_MINUTES * AUTH_MINUTE_MS)

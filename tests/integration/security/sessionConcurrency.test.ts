@@ -19,10 +19,10 @@ const databaseUrl = process.env.AUTH_TEST_DATABASE_URL;
   });
   it('creates at most one successor and revokes its session on concurrent refresh replay', async () => {
     const email = `${randomUUID()}@example.invalid`;
-    const user = await prisma.user.create({ data: { email, emailNormalized: email } }); ids.push(user.id);
+    const user = await prisma.user.create({ data: { email, emailNormalized: email, emailVerifiedAt: new Date() } }); ids.push(user.id);
     const sessionId = randomUUID(); const token = randomUUID(); const familyId = randomUUID();
     const now = new Date(); const expires = new Date(now.getTime() + 60_000);
-    await repository.createSession({ sessionId, refreshToken: token, refreshExpiresAt: expires, userId: user.id, tokenHash: hashOneTimeToken(sessionId), familyId, mfaAt: null, deviceLabel: null });
+    await repository.createSession({ sessionId, refreshToken: token, refreshExpiresAt: expires, userId: user.id, tokenHash: hashOneTimeToken(sessionId), familyId, mfaAt: null, deviceLabel: null, expectedPasswordHash: null });
     const responses = await Promise.all([randomUUID(), randomUUID()].map((value) => repository.rotateRefreshToken(hashOneTimeToken(token), { tokenHash: hashOneTimeToken(value), refreshExpiresAt: expires }, now)));
     expect(responses.map((result) => result.status).sort()).toEqual(['REUSED', 'ROTATED']);
     expect(await prisma.refreshToken.count({ where: { sessionId } })).toBe(2);
@@ -32,9 +32,9 @@ const databaseUrl = process.env.AUTH_TEST_DATABASE_URL;
   });
   it('rejects expired sessions and prevents another user from revoking them', async () => {
     const email = `${randomUUID()}@example.invalid`;
-    const user = await prisma.user.create({ data: { email, emailNormalized: email } }); ids.push(user.id);
+    const user = await prisma.user.create({ data: { email, emailNormalized: email, emailVerifiedAt: new Date() } }); ids.push(user.id);
     const sessionId = randomUUID(); const token = randomUUID(); const now = new Date();
-    await repository.createSession({ sessionId, refreshToken: token, refreshExpiresAt: new Date(now.getTime() - 1), userId: user.id, tokenHash: hashOneTimeToken(sessionId), familyId: randomUUID(), mfaAt: null, deviceLabel: null });
+    await repository.createSession({ sessionId, refreshToken: token, refreshExpiresAt: new Date(now.getTime() - 1), userId: user.id, tokenHash: hashOneTimeToken(sessionId), familyId: randomUUID(), mfaAt: null, deviceLabel: null, expectedPasswordHash: null });
     await repository.revokeSession(sessionId, randomUUID(), 'USER_REVOKED_SESSION', now);
     expect((await prisma.authSession.findUniqueOrThrow({ where: { id: sessionId } })).revokedAt).toBeNull();
     expect((await repository.rotateRefreshToken(hashOneTimeToken(token), { tokenHash: randomUUID(), refreshExpiresAt: new Date(now.getTime() + 60_000) }, now)).status).toBe('INVALID');

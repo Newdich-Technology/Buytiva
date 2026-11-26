@@ -1,3 +1,4 @@
+import { invalidChallengeError } from '../../errors/auths/auth.error.js';
 import { PrismaClient } from '../../generated/prisma/client.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
 import type { IssuedSession } from '../../models/auths/auth.model.js';
@@ -13,8 +14,13 @@ export class PrismaAuthSessionRepository implements Pick<AuthRepository,
     familyId: string;
     mfaAt: Date | null;
     deviceLabel: string | null;
+    expectedPasswordHash: string | null;
   }): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: input.userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: new Date() } });
+      if (!locked.count) throw invalidChallengeError();
+      const account = await tx.user.findUniqueOrThrow({ where: { id: input.userId }, include: { credential: true } });
+      if ((account.credential?.passwordHash ?? account.passwordHash) !== input.expectedPasswordHash) throw invalidChallengeError();
       await tx.authSession.create({
         data: {
           id: input.sessionId,
