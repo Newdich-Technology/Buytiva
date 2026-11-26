@@ -23,3 +23,5 @@ CI 45691632029 passed private report duplicate concurrency, stale version, role 
 CI 45740462338 passed the scoped customer HTTP/PostgreSQL race, expiry, revocation and reset rate-limit tests. Malformed signed JWT claims are now rejected; the serializable reset approach initially failed CI 45739637658 intermittently and was replaced with per-account row fencing. This does not establish full red-team or distributed-abuse coverage.
 
 CI 45743359869 passed MFA challenge tests for user/staff suspension, post-reset invalidation and stale credential issuance, along with replay regression. The initial replay fixture lacked a verified email and failed CI 45742914602; the fixture was corrected to represent an eligible account, without weakening the replay assertion. Full role-reactivation and concurrent lifecycle coverage remains open.
+
+Staff reactivation regression: disposable PostgreSQL CI 45744475807 passed authorization, recent-MFA, duplicate reactivation, multi-role session revocation, audit and fresh login challenge checks. Complete adversarial lifecycle concurrency and MFA recovery testing remain outstanding; this does not certify authentication readiness.

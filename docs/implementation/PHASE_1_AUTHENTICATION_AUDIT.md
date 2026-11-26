@@ -7,3 +7,5 @@ Review actions previously required MFA but not *recent* MFA. This change adds th
 CI 45740462338 covers concurrent customer challenge issuance, password reset consumption, and device/session HTTP cases; see `docs/security/authenticationReadiness.md` for findings, exact evidence and remaining limitations. Authentication remains incomplete.
 
 CI 45743359869 verifies stale MFA challenge and credential issuance fencing for the exercised cases. Authentication remains incomplete; multi-role reactivation, MFA recovery, invitation lifecycle and operational checks remain open.
+
+Staff reactivation now exists for suspended profiles, guarded by recent Super Admin MFA and transactional revocation of existing sessions/challenges; see `docs/security/authenticationReadiness.md` and CI 45744475807. Revoked accounts are not restored through this endpoint. MFA recovery, lifecycle interleavings and production delivery/infrastructure evidence remain open.
