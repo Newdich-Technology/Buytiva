@@ -7,6 +7,7 @@ import '../features/auth/invitation_screen.dart';
 import '../features/auth/password_recovery_screen.dart';
 import '../features/auth/change_password_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/addresses/addresses_screen.dart';
 import '../features/auth/auth_landing_screen.dart';
 import '../features/auth/security_settings_screen.dart';
 import '../features/admin/admin_administrators_screen.dart';
@@ -17,6 +18,7 @@ class BuytivaAppRouter {
   static final Map<String, WidgetBuilder> routes = {
     homeRoute: (_) => const AuthLandingScreen(),
     '/login': (_) => const LoginScreen(),
+    '/addresses': (_) => const AddressesScreen(),
     '/home': (_) => const HomeScreen(),
     '/register': (_) => const RegisterScreen(),
     '/procurer-application': (_) => const ProcurerApplicationScreen(),

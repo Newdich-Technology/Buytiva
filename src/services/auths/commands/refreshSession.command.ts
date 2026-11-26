@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { AUTH_DAY_MS, AUTH_REFRESH_TOKEN_DAYS } from '../../../constants/auths/auth.constants.js';
 import { invalidChallengeError } from '../../../errors/auths/auth.error.js';
 import { UserRole } from '../../../enums/userRole.enum.js';
+import { UserStatus } from '../../../enums/userStatus.enum.js';
 import { createAccessCredential } from '../../../lib/security/sessionIssuer.js';
 import { hashOneTimeToken } from '../../../lib/security/oneTimeToken.js';
 import type { AuthDependencies } from '../../../types/authDependencies.type.js';
@@ -20,7 +21,10 @@ export async function refreshSessionCommand(dependencies: AuthDependencies, refr
     dependencies.repository.findAccountById(rotated.userId),
     dependencies.repository.getAccessPrincipal(rotated.sessionId, rotated.userId, now)
   ]);
-  if (!account || !principal) throw invalidChallengeError();
+  if (!account || !principal || principal.userStatus !== UserStatus.ACTIVE || !principal.emailVerifiedAt) {
+    await dependencies.repository.revokeSession(rotated.sessionId, rotated.userId, 'ACCOUNT_UNAVAILABLE', now);
+    throw invalidChallengeError();
+  }
   const access = createAccessCredential(account.id, rotated.sessionId, principal.mfaAt, dependencies.config, now);
   return {
     accessToken: access.token,

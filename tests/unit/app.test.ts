@@ -23,3 +23,22 @@ describe('versioned health endpoint', () => {
     await app.close();
   });
 });
+
+describe('request safety', () => {
+  it('rejects unknown request properties instead of silently discarding them', async () => {
+    const app = createBuytivaFastifyApplication();
+    app.post('/validation-test', { schema: { body: { type: 'object', properties: { name: { type: 'string' } }, required: ['name'], additionalProperties: false } } }, async () => ({ ok: true }));
+    const response = await app.inject({ method: 'POST', url: '/validation-test', payload: { name: 'test', unexpected: true } });
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ error: { code: 'VALIDATION_ERROR' } });
+    await app.close();
+  });
+  it('returns a safe 413 response for oversized requests', async () => {
+    const app = createBuytivaFastifyApplication();
+    app.post('/size-test', async () => ({ ok: true }));
+    const response = await app.inject({ method: 'POST', url: '/size-test', headers: { 'content-type': 'application/json' }, payload: JSON.stringify({ value: 'a'.repeat(1_100_000) }) });
+    expect(response.statusCode).toBe(413);
+    expect(response.json()).toMatchObject({ error: { code: 'VALIDATION_ERROR' } });
+    await app.close();
+  });
+});

@@ -1,0 +1,88 @@
+enum ProcurementOrderStatus {
+  AWAITING_PAYMENT
+  IN_PROGRESS
+  DELIVERY_REPORTED
+  COMPLETED
+  DISPUTED
+  CANCELLED
+}
+
+model ProcurementOrder {
+  id          String                 @id @default(uuid()) @db.Uuid
+  quotationId String                 @unique @db.Uuid
+  quotation   Quotation              @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  requestId   String                 @unique @db.Uuid
+  request     ShoppingRequest        @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  status      ProcurementOrderStatus @default(AWAITING_PAYMENT)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  payment     VerifiedOrderPayment?
+  review      OrderReview?
+  history     ProcurementOrderHistory[]
+
+  @@index([status, createdAt])
+  @@map("procurement_orders")
+}
+
+model ProcurementOrderHistory {
+  id         String                 @id @default(uuid()) @db.Uuid
+  orderId    String                 @db.Uuid
+  order      ProcurementOrder       @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  actorId    String                 @db.Uuid
+  actor      User                   @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  fromStatus ProcurementOrderStatus?
+  toStatus   ProcurementOrderStatus
+  createdAt  DateTime               @default(now())
+
+  @@index([orderId, createdAt, id])
+  @@map("procurement_order_history")
+}
+
+enum ReviewModerationStatus {
+  PENDING
+  APPROVED
+  HIDDEN
+}
+
+// A review derives both participants from the immutable order request.
+model OrderReview {
+  id        String           @id @default(uuid()) @db.Uuid
+  orderId   String           @unique @db.Uuid
+  order     ProcurementOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  rating    Int
+  version   Int              @default(1)
+  moderationStatus ReviewModerationStatus @default(PENDING)
+  reports   ReviewReport[]
+  comment   String?          @db.VarChar(2000)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([moderationStatus, createdAt, id])
+  @@map("order_reviews")
+}
+
+// Reports are private: one report per customer and reviewed version.
+enum ReviewReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model ReviewReport {
+  id            String             @id @default(uuid()) @db.Uuid
+  reviewId      String             @db.Uuid
+  review        OrderReview        @relation(fields: [reviewId], references: [id], onDelete: Restrict)
+  reporterId    String             @db.Uuid
+  reporter      User               @relation(fields: [reporterId], references: [id], onDelete: Restrict)
+  reviewVersion Int
+  ratingSnapshot Int
+  commentSnapshot String?          @db.VarChar(2000)
+  reason        String             @db.VarChar(1000)
+  status        ReviewReportStatus @default(OPEN)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([reviewId, reporterId, reviewVersion])
+  @@index([status, createdAt, id])
+  @@map("review_reports")
+}

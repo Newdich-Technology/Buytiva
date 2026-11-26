@@ -25,6 +25,7 @@ export async function issueAuthenticatedSession(
     refreshToken,
     refreshExpiresAt: refreshExpires,
     userId: account.id,
+    expectedPasswordHash: account.passwordHash,
     tokenHash: hashOneTimeToken(sessionId),
     familyId,
     mfaAt,

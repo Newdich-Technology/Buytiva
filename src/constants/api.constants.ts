@@ -46,6 +46,7 @@ export const STAFF_API_PATHS = {
   auditLogs: '/super-admin/audit-logs',
   updatePermissions: '/super-admin/staff/:id/permissions',
   suspendStaff: '/super-admin/staff/:id/suspend',
+  reactivateStaff: '/super-admin/staff/:id/reactivate',
   revokeStaff: '/super-admin/staff/:id/revoke'
 } as const;
 

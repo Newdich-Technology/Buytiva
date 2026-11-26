@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { InvitationKind, PrismaClient, StaffProfileStatus, UserRole, UserStatus } from '../../generated/prisma/client.js';
+import { InvitationKind, Prisma, PrismaClient, StaffProfileStatus, UserRole, UserStatus } from '../../generated/prisma/client.js';
 import type { StaffInvitationRepository, StaffInvitationRole } from '../../interfaces/administrators/staffInvitationRepository.interface.js';
 import { AUTH_EMAIL_OUTBOX_TYPES } from '../../constants/auths/auth.constants.js';
 
@@ -73,6 +73,24 @@ export class PrismaStaffInvitationRepository implements StaffInvitationRepositor
     });
   }
 
+  async reactivateStaff(input: { userId: string; actorId: string; reason: string; now: Date }): Promise<boolean> {
+    return this.prisma.$transaction(async (tx) => {
+      // Lock in the same order as session issuance; concurrent sessions must not
+      // survive reactivation and silently inherit restored privileges.
+      const locked = await tx.user.updateMany({ where: { id: input.userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: input.now } });
+      if (!locked.count) return false;
+      const role = await tx.roleAssignment.findFirst({ where: { userId: input.userId, role: { in: [UserRole.ADMIN, UserRole.SUPER_ADMIN] }, revokedAt: null } });
+      const factor = await tx.mfaFactor.findFirst({ where: { userId: input.userId, enabledAt: { not: null }, disabledAt: null } });
+      if (!role || !factor) return false;
+      const changed = await tx.staffProfile.updateMany({ where: { userId: input.userId, status: StaffProfileStatus.SUSPENDED }, data: { status: StaffProfileStatus.ACTIVE } });
+      if (!changed.count) return false;
+      await tx.loginChallenge.updateMany({ where: { userId: input.userId, consumedAt: null }, data: { consumedAt: input.now } });
+      await tx.authSession.updateMany({ where: { userId: input.userId, revokedAt: null }, data: { revokedAt: input.now, revokedReason: 'STAFF_REACTIVATED' } });
+      await tx.auditLog.create({ data: { actorId: input.actorId, action: 'STAFF_REACTIVATED', resourceType: 'USER', resourceId: input.userId, metadata: { reason: input.reason } } });
+      return true;
+    });
+  }
+
   async suspendStaff(input: { userId: string; actorId: string; reason: string; now: Date }): Promise<boolean> {
     return this.changeStaffAccess(input, StaffProfileStatus.SUSPENDED);
   }
@@ -92,7 +110,8 @@ export class PrismaStaffInvitationRepository implements StaffInvitationRepositor
   }
 
   private async changeStaffAccess(input: { userId: string; actorId: string; reason: string; now: Date }, status: 'SUSPENDED' | 'REVOKED'): Promise<boolean> {
-    return this.prisma.$transaction(async (tx) => {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
       const superAdmin = await tx.roleAssignment.findFirst({ where: { userId: input.userId, role: UserRole.SUPER_ADMIN, revokedAt: null } });
       if (superAdmin) {
         const activeCount = await tx.roleAssignment.count({ where: { role: UserRole.SUPER_ADMIN, revokedAt: null, user: { status: UserStatus.ACTIVE, staffProfile: { is: { status: StaffProfileStatus.ACTIVE } } } } });
@@ -104,7 +123,11 @@ export class PrismaStaffInvitationRepository implements StaffInvitationRepositor
       await tx.authSession.updateMany({ where: { userId: input.userId, revokedAt: null }, data: { revokedAt: input.now, revokedReason: status } });
       await tx.auditLog.create({ data: { actorId: input.actorId, action: status === StaffProfileStatus.SUSPENDED ? 'STAFF_SUSPENDED' : 'STAFF_REVOKED', resourceType: 'USER', resourceId: input.userId, metadata: { reason: input.reason } } });
       return true;
-    });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2034') return false;
+      throw error;
+    }
   }
 }
 

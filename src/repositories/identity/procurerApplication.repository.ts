@@ -49,8 +49,8 @@ export class PrismaProcurerApplicationRepository implements ProcurerApplicationR
     return challenge?.applicationId && challenge.application?.publicReference ? { id: challenge.id, digest: challenge.digest, attempts: challenge.attempts, maxAttempts: challenge.maxAttempts, applicationId: challenge.applicationId, publicReference: challenge.application.publicReference, applicantEmail: challenge.application.applicantEmail } : null;
   }
 
-  async incrementEmailChallengeAttempt(challengeId: string, expectedAttempts: number, now: Date): Promise<boolean> {
-    const updated = await this.prisma.emailOtpChallenge.updateMany({ where: { id: challengeId, purpose: AuthChallengePurpose.APPLICATION_EMAIL_VERIFICATION, consumedAt: null, supersededAt: null, expiresAt: { gt: now }, attempts: expectedAttempts, maxAttempts: { gt: expectedAttempts } }, data: { attempts: { increment: 1 } } });
+  async incrementEmailChallengeAttempt(challengeId: string, _expectedAttempts: number, now: Date): Promise<boolean> {
+    const updated = await this.prisma.emailOtpChallenge.updateMany({ where: { id: challengeId, purpose: AuthChallengePurpose.APPLICATION_EMAIL_VERIFICATION, consumedAt: null, supersededAt: null, expiresAt: { gt: now }, attempts: { lt: this.prisma.emailOtpChallenge.fields.maxAttempts } }, data: { attempts: { increment: 1 } } });
     return updated.count === 1;
   }
 
@@ -75,8 +75,8 @@ export class PrismaProcurerApplicationRepository implements ProcurerApplicationR
     return { id: challenge.id, applicationId: application.id, digest: challenge.digest, attempts: challenge.attempts, maxAttempts: challenge.maxAttempts, reference: application.publicReference, status: application.status, history: application.statusHistory.map((item) => ({ status: item.nextStatus, reason: item.reason, createdAt: item.createdAt })) };
   }
 
-  async incrementStatusLookupAttempt(id: string, expectedAttempts: number, now: Date): Promise<boolean> {
-    const result = await this.prisma.emailOtpChallenge.updateMany({ where: { id, purpose: AuthChallengePurpose.APPLICATION_STATUS_LOOKUP, consumedAt: null, supersededAt: null, expiresAt: { gt: now }, attempts: expectedAttempts, maxAttempts: { gt: expectedAttempts } }, data: { attempts: { increment: 1 } } });
+  async incrementStatusLookupAttempt(id: string, _expectedAttempts: number, now: Date): Promise<boolean> {
+    const result = await this.prisma.emailOtpChallenge.updateMany({ where: { id, purpose: AuthChallengePurpose.APPLICATION_STATUS_LOOKUP, consumedAt: null, supersededAt: null, expiresAt: { gt: now }, attempts: { lt: this.prisma.emailOtpChallenge.fields.maxAttempts } }, data: { attempts: { increment: 1 } } });
     return result.count === 1;
   }
 

@@ -1,0 +1,63 @@
+enum ShoppingRequestStatus {
+  REQUESTED
+  QUOTED
+  ACCEPTED
+  CANCELLED
+}
+
+model ShoppingRequest {
+  id               String                @id @default(uuid()) @db.Uuid
+  customerId       String                @db.Uuid
+  customer         User                  @relation("CustomerShoppingRequests", fields: [customerId], references: [id], onDelete: Restrict)
+  procurerId       String                @db.Uuid
+  procurer         ProcurerProfile       @relation(fields: [procurerId], references: [userId], onDelete: Restrict)
+  shoppingListId   String                @db.Uuid
+  shoppingList     ShoppingList          @relation(fields: [shoppingListId], references: [id], onDelete: Restrict)
+  addressSnapshot  Json
+  listSnapshot     Json
+  status           ShoppingRequestStatus @default(REQUESTED)
+  quotationRevision Int                  @default(0)
+  quotations       Quotation[]
+  order            ProcurementOrder?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@unique([shoppingListId, procurerId])
+  @@index([customerId, createdAt, id])
+  @@index([procurerId, createdAt, id])
+  @@map("shopping_requests")
+}
+
+enum QuotationStatus {
+  ISSUED
+  SUPERSEDED
+  ACCEPTED
+  REJECTED
+}
+
+model Quotation {
+  id                       String          @id @default(uuid()) @db.Uuid
+  order                    ProcurementOrder?
+  requestId                String          @db.Uuid
+  request                  ShoppingRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  revision                 Int
+  status                   QuotationStatus @default(ISSUED)
+  policyId                 String          @db.Uuid
+  policy                   ProcurerPricingPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  commissionPolicyVersion  String          @db.VarChar(100)
+  commissionBasisPoints    Int
+  currency                 String          @db.VarChar(3)
+  subtotalMinor            BigInt
+  serviceFeeMinor          BigInt
+  deliveryFeeMinor         BigInt
+  totalMinor               BigInt
+  platformCommissionMinor  BigInt
+  procurerEarningsMinor    BigInt
+  expiresAt                DateTime
+  createdAt                DateTime        @default(now())
+  decidedAt                DateTime?
+
+  @@unique([requestId, revision])
+  @@index([requestId, status, expiresAt])
+  @@map("quotations")
+}

@@ -34,6 +34,8 @@ export const AUTH_OUTBOX_MAX_ATTEMPTS = 8;
 export const AUTH_OUTBOX_RETRY_BASE_MS = 60_000;
 export const AUTH_OUTBOX_RETRY_MAX_MS = 3_600_000;
 export const AUTH_OUTBOX_POLL_MS = 2_000;
+// Expired claims can be reclaimed; delivery may have succeeded before the worker died.
+export const AUTH_OUTBOX_LEASE_MS = 5 * AUTH_MINUTE_MS;
 export const AUTH_EMAIL_OUTBOX_TYPES = [
   'AUTH_EMAIL_VERIFICATION',
   'AUTH_PASSWORD_RESET',

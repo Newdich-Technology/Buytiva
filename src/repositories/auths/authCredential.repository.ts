@@ -1,3 +1,5 @@
+import { AUTH_OTP_MAX_ATTEMPTS } from '../../constants/auths/auth.constants.js';
+import { isRoleAccessSuspended } from '../../utils/auths/accountAvailability.js';
 import { PrismaClient } from '../../generated/prisma/client.js';
 import type { AuthRepository } from '../../interfaces/auths/authRepository.interface.js';
 
@@ -15,6 +17,9 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { emailNormalized }, select: { id: true } });
       if (!user) return;
+      // Serialize requests for this account before inspecting existing reset tokens.
+      const locked = await tx.user.updateMany({ where: { id: user.id, emailNormalized }, data: { emailNormalized } });
+      if (!locked.count) return;
       const now = new Date();
       await tx.passwordResetToken.updateMany({
         where: { userId: user.id, consumedAt: null },
@@ -40,6 +45,8 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     return this.prisma.$transaction(async (tx) => {
       const token = await tx.passwordResetToken.findUnique({ where: { tokenHash } });
       if (!token || token.consumedAt || token.expiresAt <= now) return false;
+      const locked = await tx.user.updateMany({ where: { id: token.userId }, data: { updatedAt: now } });
+      if (!locked.count) return false;
       const consumed = await tx.passwordResetToken.updateMany({
         where: { id: token.id, consumedAt: null, expiresAt: { gt: now } },
         data: { consumedAt: now }
@@ -49,6 +56,7 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         where: { userId: token.userId },
         data: { passwordHash, mustChangePassword: false, passwordChangedAt: now }
       });
+      await tx.loginChallenge.updateMany({ where: { userId: token.userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.authSession.updateMany({
         where: { userId: token.userId, revokedAt: null },
         data: { revokedAt: now, revokedReason: 'PASSWORD_RESET' }
@@ -60,13 +68,17 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     });
   }
 
-  async changePassword(userId: string, passwordHash: string, now: Date): Promise<boolean> {
+  async changePassword(userId: string, expectedPasswordHash: string, passwordHash: string, now: Date): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: userId }, data: { updatedAt: now } });
+      if (!locked.count) return false;
       const changed = await tx.credential.updateMany({
-        where: { userId },
+        where: { userId, passwordHash: expectedPasswordHash },
         data: { passwordHash, mustChangePassword: false, passwordChangedAt: now }
       });
       if (changed.count !== 1) return false;
+      await tx.passwordResetToken.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: now } });
+      await tx.loginChallenge.updateMany({ where: { userId, consumedAt: null }, data: { consumedAt: now } });
       await tx.authSession.updateMany({
         where: { userId, revokedAt: null },
         data: { revokedAt: now, revokedReason: 'PASSWORD_CHANGED' }
@@ -78,8 +90,15 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     });
   }
 
-  async saveMfaEnrollment(userId: string, ciphertext: Uint8Array, factorId: string): Promise<boolean> {
+  async saveMfaEnrollment(userId: string, ciphertext: Uint8Array, factorId: string, expectedPasswordHash: string | null, challengeId?: string): Promise<boolean> {
     return this.prisma.$transaction(async (tx) => {
+      const locked = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: new Date() } });
+      if (!locked.count) return false;
+      await tx.staffProfile.updateMany({ where: { userId }, data: { updatedAt: new Date() } });
+      await tx.procurerProfile.updateMany({ where: { userId }, data: { updatedAt: new Date() } });
+      const account = await tx.user.findUniqueOrThrow({ where: { id: userId }, include: { credential: true, staffProfile: true, procurerProfile: true, roleAssignments: { where: { revokedAt: null } } } });
+      if ((account.credential?.passwordHash ?? account.passwordHash) !== expectedPasswordHash || isRoleAccessSuspended({ roles: account.roleAssignments.map((role) => role.role), staffStatus: account.staffProfile?.status ?? null, procurerStatus: account.procurerProfile?.status ?? null })) return false;
+      if (challengeId && !await tx.loginChallenge.findFirst({ where: { id: challengeId, userId, purpose: 'MFA_ENROLLMENT', consumedAt: null, expiresAt: { gt: new Date() }, attempts: { lt: AUTH_OTP_MAX_ATTEMPTS } } })) return false;
       const enabled = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: { not: null }, disabledAt: null } });
       if (enabled) return false;
       const pending = await tx.mfaFactor.findFirst({ where: { userId, enabledAt: null, disabledAt: null } });
@@ -103,12 +122,19 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
   async completeMfaEnrollment(
     userId: string,
     factorId: string,
+    expectedCiphertext: Uint8Array,
+    expectedPasswordHash: string | null,
     timeStep: bigint,
     now: Date,
     challengeId?: string,
     expectedAttempts?: number
   ): Promise<boolean> {
-    return this.prisma.$transaction(async (tx) => {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+      const account = await tx.user.updateMany({ where: { id: userId, status: 'ACTIVE', emailVerifiedAt: { not: null } }, data: { updatedAt: now } });
+      if (!account.count) return false;
+      const current = await tx.user.findUniqueOrThrow({ where: { id: userId }, include: { credential: true } });
+      if ((current.credential?.passwordHash ?? current.passwordHash) !== expectedPasswordHash) return false;
       if (challengeId && expectedAttempts !== undefined) {
         const challenge = await tx.loginChallenge.updateMany({
           where: {
@@ -124,10 +150,10 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         if (challenge.count !== 1) return false;
       }
       const result = await tx.mfaFactor.updateMany({
-        where: { id: factorId, userId, enabledAt: null, disabledAt: null },
+        where: { id: factorId, userId, enabledAt: null, disabledAt: null, secretCiphertext: Buffer.from(expectedCiphertext) },
         data: { enabledAt: now, lastAcceptedTimeStep: timeStep }
       });
-      if (result.count !== 1) return false;
+      if (result.count !== 1) throw new EnrollmentRace();
       await tx.staffProfile.updateMany({
         where: { userId, status: 'PENDING_SETUP' },
         data: { status: 'ACTIVE' }
@@ -140,10 +166,15 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
         data: { action: 'AUTH_MFA_ENABLED', resourceType: 'USER', resourceId: userId }
       });
       return true;
-    });
+      });
+    } catch (error) {
+      if (error instanceof EnrollmentRace) return false;
+      throw error;
+    }
   }
 
   async acceptTotpStep(userId: string, factorId: string, expectedStep: bigint | null, nextStep: bigint, now: Date): Promise<boolean> {
+    if (expectedStep !== null && nextStep <= expectedStep) return false;
     const expected = expectedStep === null ? { lastAcceptedTimeStep: null } : { lastAcceptedTimeStep: expectedStep };
     const result = await this.prisma.mfaFactor.updateMany({
       where: { id: factorId, userId, enabledAt: { not: null }, disabledAt: null, ...expected },
@@ -160,3 +191,5 @@ export class PrismaAuthCredentialRepository implements Pick<AuthRepository,
     return result.count === 1;
   }
 }
+
+class EnrollmentRace extends Error {}

@@ -1,5 +1,6 @@
 import type { AuthDependencies } from '../../types/authDependencies.type.js';
 import type { AuthPrincipal } from '../../models/auths/auth.model.js';
+import { updateCustomerProfileCommand } from '../../services/auths/commands/updateCustomerProfile.command.js';
 import { registerUserCommand } from '../../services/auths/commands/registerUser.command.js';
 import { requestEmailOtpCommand } from '../../services/auths/commands/requestEmailOtp.command.js';
 import { verifyEmailOtpCommand } from '../../services/auths/commands/verifyEmailOtp.command.js';
@@ -12,6 +13,8 @@ import { getCurrentUserQuery } from '../../services/auths/queries/getCurrentUser
 
 export class AuthController {
   constructor(private readonly dependencies: AuthDependencies) {}
+
+  updateCustomerProfile(userId: string, displayName: string) { return updateCustomerProfileCommand(this.dependencies.repository, userId, displayName); }
 
   register(input: { email: string; displayName: string; password: string; termsAccepted: boolean }) {
     return registerUserCommand(this.dependencies, input);

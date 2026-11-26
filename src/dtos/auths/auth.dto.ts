@@ -5,6 +5,8 @@ const passwordField = Type.String({ minLength: 12, maxLength: 128 });
 const codeField = Type.String({ minLength: 6, maxLength: 6, pattern: '^[0-9]{6}$' });
 const challengeField = Type.String({ minLength: 32, maxLength: 128 });
 
+export const updateCustomerProfileBody = Type.Object({ displayName: Type.String({ minLength: 2, maxLength: 120 }) }, { additionalProperties: false });
+
 export const registerUserBody = Type.Object({
   email: emailField,
   displayName: Type.String({ minLength: 2, maxLength: 120 }),

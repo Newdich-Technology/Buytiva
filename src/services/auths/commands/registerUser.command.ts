@@ -1,9 +1,10 @@
+import { normalizeDisplayName } from '../../../validators/auths/displayName.validator.js';
 import { randomUUID } from 'node:crypto';
 import { AUTH_MINUTE_MS, AUTH_OTP_EXPIRY_MINUTES, AUTH_OTP_RESEND_SECONDS, AUTH_SECOND_MS } from '../../../constants/auths/auth.constants.js';
 import { createVerificationEmail } from '../../../lib/email/emailTemplates.js';
 import { createEncryptedEmailOutboxMessage } from '../../../lib/email/encryptedOutboxMessage.js';
 import { createOtpDigest, generateEmailOtp } from '../../../lib/security/otpHasher.js';
-import { invalidInputError, invalidRegistrationError, passwordPolicyError } from '../../../errors/auths/auth.error.js';
+import { invalidRegistrationError, passwordPolicyError } from '../../../errors/auths/auth.error.js';
 import { validatePasswordStrength } from '../../../validators/auths/password.validator.js';
 import { normalizeEmail } from '../../../utils/auths/normalizeEmail.js';
 import type { AuthDependencies } from '../../../types/authDependencies.type.js';
@@ -16,7 +17,8 @@ export interface RegisterUserInput {
 }
 
 export async function registerUserCommand(dependencies: AuthDependencies, input: RegisterUserInput) {
-  if (!input.termsAccepted || input.displayName.trim().length < 2 || input.displayName.length > 120) {
+  const displayName = normalizeDisplayName(input.displayName);
+  if (!input.termsAccepted || !displayName) {
     throw invalidRegistrationError();
   }
   try {
@@ -45,7 +47,7 @@ export async function registerUserCommand(dependencies: AuthDependencies, input:
     id: randomUUID(),
     email: input.email.trim(),
     emailNormalized,
-    displayName: input.displayName.trim(),
+    displayName,
     passwordHash: await dependencies.passwordHasher.hashPassword(input.password),
     challenge: { id: challengeId, digest, expiresAt, resendAt },
     outbox

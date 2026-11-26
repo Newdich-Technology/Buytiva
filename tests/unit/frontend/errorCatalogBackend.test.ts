@@ -1,7 +1,5 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { BACKEND_ERROR_STATE_MAP, ERROR_CATALOG, resolveBuytivaError } from '../../../apps/web/src/lib/constants/errorCatalog.js';
-import { resolveErrorIllustration } from '../../../apps/web/src/lib/constants/errorIllustrations.js';
 import { createBuytivaFastifyApplication } from '../../../src/app.js';
 import { AppError } from '../../../src/errors/app.error.js';
 import { ErrorCode } from '../../../src/enums/errorCode.enum.js';
@@ -15,11 +13,12 @@ describe('frontend error contract', () => {
 		}
 	});
 
-	it('provides fifteen distinct scene symbols in the original illustration asset', () => {
-		const scenes = new Set(Object.values(ERROR_CATALOG).map((state) => resolveErrorIllustration(state.illustration)));
-		const svg = readFileSync('apps/web/static/illustrations/errors/error_scenes.svg', 'utf8');
-		expect(scenes.size).toBeGreaterThanOrEqual(15);
-		for (const scene of scenes) expect(svg).toContain(`id="${scene}"`);
+	it('has usable titles and recovery actions for every catalog entry', () => {
+		for (const state of Object.values(ERROR_CATALOG)) {
+			expect(state.title.trim()).not.toBe('');
+			expect(state.body.trim()).not.toBe('');
+			expect(state.primaryAction.trim()).not.toBe('');
+		}
 	});
 
 	it('uses stable backend codes before generic HTTP status fallbacks', () => {

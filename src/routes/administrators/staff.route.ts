@@ -43,6 +43,10 @@ export const staffRoute: FastifyPluginAsync<AuthenticationApiOptions> = async (a
     requireRecentMfa(request);
     return controller.suspend({ ...request.body, userId: request.params.id, actorId: getAuthenticatedPrincipal(request).userId });
   });
+  api.post(STAFF_API_PATHS.reactivateStaff, { preHandler: authorizedSuperAdministrator, schema: { params: staffIdParams, body: staffDecisionBody, response: { 200: Type.Object({ reactivated: Type.Literal(true), signInAgain: Type.Literal(true) }) }, tags: ['staff administration'], security: [{ bearerAuth: [] }], operationId: 'reactivateStaff' } }, async (request) => {
+    requireRecentMfa(request);
+    return controller.reactivate({ ...request.body, userId: request.params.id, actorId: getAuthenticatedPrincipal(request).userId });
+  });
   api.post(STAFF_API_PATHS.revokeStaff, { preHandler: authorizedSuperAdministrator, schema: { params: staffIdParams, body: staffDecisionBody, response: { 200: Type.Object({ revoked: Type.Literal(true) }) }, tags: ['staff administration'], security: [{ bearerAuth: [] }], operationId: 'revokeStaff' } }, async (request) => {
     requireRecentMfa(request);
     return controller.revoke({ ...request.body, userId: request.params.id, actorId: getAuthenticatedPrincipal(request).userId });

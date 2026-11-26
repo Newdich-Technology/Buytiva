@@ -3,7 +3,7 @@
 
 BUYTIVA is a procurement platform built with Flutter and Dart in apps/mobile, SvelteKit in apps/web, a Node.js, TypeScript, and Fastify API in root src, and PostgreSQL with Prisma in root prisma.
 
-The Ansofra structure is preserved as the complete file map. A path being present does not mean its capability is implemented. Procurer registration, role-management endpoints, discovery, checkout, payment collection, payouts, chat, and file moderation are not yet working features.
+The Ansofra structure is preserved as the complete file map. A path being present does not mean its capability is implemented. Identity, applications, staff management and an initial procurement workflow are implemented in part. Checkout, payment collection, payouts, reviews, chat and file moderation are not complete. See `docs/implementation/PHASE_0_TO_2_MASTER_CHECKLIST.md` and `docs/implementation/RELEASE_READINESS.md` for evidence and open release gates.
 
 ## Current verified behavior
 
@@ -29,7 +29,7 @@ pnpm install
 pnpm dev
 ```
 
-The API listens on port 3000. Its implemented endpoint is GET /api/v1/health.
+The API listens on port 3000. Identity and customer shopping-list routes are registered alongside GET /api/v1/health; see the generated OpenAPI documentation at /api/v1/docs. Shopping-list submission alone does not create a quotation or order. Separate request, quotation and initial order routes exist, but no real payment verification is integrated.
 
 ## Start the web app
 
@@ -62,4 +62,4 @@ Use pnpm db:sync only after reviewing the configured target database. Production
 
 CI runs the database-backed auth tests against a disposable PostgreSQL database. To run them locally, set `DATABASE_URL` and `AUTH_TEST_DATABASE_URL` to the same dedicated test database, then run `pnpm db:sync` and `pnpm test --no-file-parallelism`. These tests delete authentication records; never point them at production or a shared database. The empty migration directory means this test setup uses schema synchronization, not migration validation.
 
-The mobile error catalog mirrors `apps/web/src/lib/constants/errorCatalog.data.json`; update both copies together. CI checks that they match. The mobile package lockfile has not yet been generated, so Flutter dependency resolution is not currently locked.
+The mobile and web error catalogs share the same error contract; update both copies together. CI checks their contract fields while allowing platform-specific artwork. The mobile package lockfile has not yet been generated, so Flutter dependency resolution is not currently locked.

@@ -1,0 +1,14 @@
+// No public API writes this record. A future verified provider integration must create it.
+model VerifiedOrderPayment {
+  id                String           @id @default(uuid()) @db.Uuid
+  orderId           String           @unique @db.Uuid
+  order             ProcurementOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  provider          String           @db.VarChar(40)
+  providerReference String           @unique @db.VarChar(200)
+  currency          String           @db.VarChar(3)
+  amountMinor       BigInt
+  verifiedAt        DateTime
+  reversedAt        DateTime?
+
+  @@map("verified_order_payments")
+}

@@ -1,0 +1,30 @@
+model CustomerAddress {
+  id         String   @id @default(uuid()) @db.Uuid
+  customerId String   @db.Uuid
+  customer   User     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  label      String   @db.VarChar(80)
+  line1      String   @db.VarChar(200)
+  line2      String?  @db.VarChar(200)
+  country    String   @db.VarChar(2)
+  region     String   @db.VarChar(100)
+  city       String   @db.VarChar(100)
+  area       String   @db.VarChar(100)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  preferredBy CustomerPreferredAddress?
+
+  @@unique([customerId, id])
+  @@index([customerId, createdAt, id])
+  @@map("customer_addresses")
+}
+
+// The composite foreign key ensures a preferred address belongs to the same customer.
+model CustomerPreferredAddress {
+  customerId String          @id @db.Uuid
+  addressId  String          @db.Uuid
+  address    CustomerAddress @relation(fields: [customerId, addressId], references: [customerId, id], onDelete: Cascade)
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([customerId, addressId])
+  @@map("customer_preferred_addresses")
+}

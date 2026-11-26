@@ -11,6 +11,7 @@ export function createPrismaAuthRepository(prisma: PrismaClient): AuthRepository
   const credentials = new PrismaAuthCredentialRepository(prisma);
   const sessions = new PrismaAuthSessionRepository(prisma);
   return {
+    updateCustomerDisplayName: users.updateCustomerDisplayName.bind(users),
     registerPendingCustomer: users.registerPendingCustomer.bind(users),
     findAccountByEmail: users.findAccountByEmail.bind(users),
     findAccountById: users.findAccountById.bind(users),

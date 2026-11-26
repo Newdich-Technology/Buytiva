@@ -1,3 +1,5 @@
+import { isRoleAccessSuspended } from '../../../utils/auths/accountAvailability.js';
+import { UserStatus } from '../../../enums/userStatus.enum.js';
 import { AUTH_OTP_MAX_ATTEMPTS } from '../../../constants/auths/auth.constants.js';
 import { invalidChallengeError } from '../../../errors/auths/auth.error.js';
 import { decryptSecret } from '../../../lib/security/secretBox.js';
@@ -17,7 +19,7 @@ export async function completeLoginChallengeCommand(
   }
   const account = await dependencies.repository.findAccountById(challenge.userId);
   const factor = await dependencies.repository.getMfaFactor(challenge.userId);
-  if (!account || !factor?.enabledAt) throw invalidChallengeError();
+  if (!account || account.status !== UserStatus.ACTIVE || !account.emailVerifiedAt || isRoleAccessSuspended(account) || !factor?.enabledAt) throw invalidChallengeError();
   const secret = decryptSecret(Buffer.from(factor.secretCiphertext).toString('utf8'), dependencies.config.encryptionKey);
   const timeStep = verifyTotpCode(account.emailNormalized, secret, input.code);
   if (timeStep === null) {

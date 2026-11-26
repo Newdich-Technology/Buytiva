@@ -1,5 +1,5 @@
 import { OutboxStatus, PrismaClient } from '../../generated/prisma/client.js';
-import { AUTH_EMAIL_OUTBOX_TYPES, AUTH_OUTBOX_MAX_ATTEMPTS, AUTH_OUTBOX_RETRY_BASE_MS, AUTH_OUTBOX_RETRY_MAX_MS } from '../../constants/auths/auth.constants.js';
+import { AUTH_EMAIL_OUTBOX_TYPES, AUTH_OUTBOX_MAX_ATTEMPTS, AUTH_OUTBOX_LEASE_MS, AUTH_OUTBOX_RETRY_BASE_MS, AUTH_OUTBOX_RETRY_MAX_MS } from '../../constants/auths/auth.constants.js';
 
 export interface ClaimedOutboxEvent {
   readonly id: string;
@@ -13,14 +13,28 @@ export class PrismaOutboxRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async claimNextEvent(now: Date, claimToken: string): Promise<ClaimedOutboxEvent | null> {
+    const staleBefore = new Date(now.getTime() - AUTH_OUTBOX_LEASE_MS);
     return this.prisma.$transaction(async (tx) => {
+      // Do not retry abandoned claims forever. Preserve the encrypted payload for operator review.
+      await tx.outboxEvent.updateMany({
+        where: { status: OutboxStatus.PROCESSING, claimedAt: { lte: staleBefore },
+          attempts: { gte: AUTH_OUTBOX_MAX_ATTEMPTS }, eventType: { in: [...AUTH_EMAIL_OUTBOX_TYPES] } },
+        data: { status: OutboxStatus.FAILED, claimedAt: null, claimToken: null, lastErrorCode: 'EMAIL_CLAIM_EXPIRED' }
+      });
+      const eligible = {
+        eventType: { in: [...AUTH_EMAIL_OUTBOX_TYPES] }, attempts: { lt: AUTH_OUTBOX_MAX_ATTEMPTS },
+        OR: [
+          { status: OutboxStatus.PENDING, availableAt: { lte: now } },
+          { status: OutboxStatus.PROCESSING, claimedAt: { lte: staleBefore } }
+        ]
+      };
       const candidate = await tx.outboxEvent.findFirst({
-        where: { status: OutboxStatus.PENDING, availableAt: { lte: now }, eventType: { in: [...AUTH_EMAIL_OUTBOX_TYPES] } },
+        where: eligible,
         orderBy: { createdAt: 'asc' }
       });
       if (!candidate) return null;
       const claimed = await tx.outboxEvent.updateMany({
-        where: { id: candidate.id, status: OutboxStatus.PENDING, availableAt: { lte: now }, eventType: { in: [...AUTH_EMAIL_OUTBOX_TYPES] } },
+        where: { id: candidate.id, ...eligible },
         data: { status: OutboxStatus.PROCESSING, claimedAt: now, claimToken, attempts: { increment: 1 } }
       });
       if (claimed.count !== 1) return null;

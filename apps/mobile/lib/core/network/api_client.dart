@@ -18,6 +18,14 @@ class ApiClient {
     return await _send(path, 'GET', null, token) as Map<String, dynamic>;
   }
 
+  Future<Map<String, dynamic>?> getNullable(String path, {String? token}) async {
+    return await _send(path, 'GET', null, token) as Map<String, dynamic>?;
+  }
+
+  Future<Map<String, dynamic>> put(String path, Map<String, dynamic>? body, {String? token}) async {
+    return await _send(path, 'PUT', body, token) as Map<String, dynamic>;
+  }
+
   Future<List<dynamic>> getList(String path, {String? token}) async {
     return await _send(path, 'GET', null, token) as List<dynamic>;
   }
@@ -43,7 +51,7 @@ class ApiClient {
     final text = await response.transform(utf8.decoder).join();
     final dynamic decoded = text.isEmpty ? <String, dynamic>{} : jsonDecode(text);
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      final message = decoded is Map<String, dynamic> ? decoded['message'] as String? : null;
+      final message = apiErrorMessage(decoded);
       throw ApiError(message ?? authClientErrorMessages['requestFailed']!, statusCode: response.statusCode);
     }
     return decoded;

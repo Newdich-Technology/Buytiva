@@ -10,6 +10,10 @@ export class SmtpEmailSender implements EmailProvider {
       host: config.host,
       port: config.port,
       secure: config.secure,
+      requireTLS: !config.secure,
+      connectionTimeout: 60_000,
+      greetingTimeout: 60_000,
+      socketTimeout: 60_000,
       auth: { user: config.user, pass: config.password },
       tls: { minVersion: 'TLSv1.2' }
     });

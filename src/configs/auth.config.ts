@@ -19,10 +19,19 @@ export function getAuthConfig(environment: NodeJS.ProcessEnv = process.env): Aut
   if (tokenSecret.length < 32 || otpPepper.length < 32 || encryptionKey.length !== 32) {
     throw authenticationConfigurationError();
   }
-  const publicBaseUrl = new URL(environment.PUBLIC_APP_URL ?? AUTH_DEFAULT_PUBLIC_URL).origin;
+  let parsedUrl: URL;
+  try {
+    if (environment.NODE_ENV === 'production' && !environment.PUBLIC_APP_URL) throw authenticationConfigurationError();
+    parsedUrl = new URL(environment.PUBLIC_APP_URL ?? AUTH_DEFAULT_PUBLIC_URL);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol) || parsedUrl.username || parsedUrl.password ||
+      (environment.NODE_ENV === 'production' && parsedUrl.protocol !== 'https:')) throw authenticationConfigurationError();
+  } catch {
+    throw authenticationConfigurationError();
+  }
+  const publicBaseUrl = parsedUrl.origin;
   const passwordMinLength = Number(environment.AUTH_PASSWORD_MIN_LENGTH ?? AUTH_PASSWORD_MIN_LENGTH);
   const passwordMaxLength = Number(environment.AUTH_PASSWORD_MAX_LENGTH ?? AUTH_PASSWORD_MAX_LENGTH);
-  if (!Number.isInteger(passwordMinLength) || passwordMinLength < 12 || passwordMaxLength < passwordMinLength || passwordMaxLength > 256) {
+  if (!Number.isInteger(passwordMinLength) || !Number.isInteger(passwordMaxLength) || passwordMinLength < 12 || passwordMaxLength < passwordMinLength || passwordMaxLength > 256) {
     throw authenticationConfigurationError();
   }
   return {
