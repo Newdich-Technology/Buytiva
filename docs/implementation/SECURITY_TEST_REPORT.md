@@ -27,3 +27,5 @@ CI 45743359869 passed MFA challenge tests for user/staff suspension, post-reset 
 Staff reactivation regression: disposable PostgreSQL CI 45744475807 passed authorization, recent-MFA, duplicate reactivation, multi-role session revocation, audit and fresh login challenge checks. Complete adversarial lifecycle concurrency and MFA recovery testing remain outstanding; this does not certify authentication readiness.
 
 Password-change race and outstanding-reset-token regressions passed on disposable PostgreSQL in CI 45747084449; the tests exercise repository transactions rather than proving every HTTP interleaving. The credential update now compares the authenticated hash, and a successful change invalidates outstanding resets.
+
+MFA enrollment regression in disposable PostgreSQL CI 45748450413 covers replacement of a pending secret between verification and commit, challenge rollback on mismatch, concurrent pending-factor creation, and stale credentials or consumed challenges after password change. These are repository-level tests; broader HTTP and MFA-recovery coverage remains outstanding.
